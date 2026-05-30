@@ -1,26 +1,49 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ---------------------------------------------------------------
+   三木有话说 · 视觉系统（PRD v0.3 第五章）
+   --------------------------------------------------------------- */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@theme {
+  /* 5 个品牌色 */
+  --color-brand-navy: #1E3A8A;
+  --color-brand-yellow: #F2C12E;
+  --color-paper: #FAF7F2;
+  --color-ink: #3F3D3A;
+  --color-rule: #E5E0D8;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* 字体栈（变量由 layout.tsx 注入） */
+  --font-serif: var(--font-noto-serif-sc), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-noto-sans-sc), -apple-system, BlinkMacSystemFont,
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-en: var(--font-inter), system-ui, sans-serif;
+
+  /* 字号梯度（基准 18px，中老年友好） */
+  --text-base: 18px;
+  --text-lg: 20px;
+  --text-xl: 24px;
+  --text-2xl: 32px;
+  --text-3xl: 40px;
+  --text-4xl: 56px;
+
+  /* 内容栏宽度档位 */
+  --container-reading: 720px;
+  --container-card: 1080px;
+  --container-wide: 1280px;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 18px;
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+  color: var(--color-brand-navy);
+  line-height: 1.3;
+  font-weight: 700;
 }

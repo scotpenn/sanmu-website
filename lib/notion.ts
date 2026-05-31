@@ -7,6 +7,8 @@ import type {
 
 // data_source_id of 📝 Blog 博客 (固定 ID, 不会变)
 const BLOG_DATA_SOURCE_ID = "319407d1-e400-4aed-8e36-dfa0ab19e6ea";
+// data_source_id of 📅 Events 线下活动
+const EVENTS_DATA_SOURCE_ID = "d5b3cb57-7b27-4acd-b936-ae2ca6f275f1";
 
 function getNotionClient(): Client {
   const token = process.env.NOTION_TOKEN;
@@ -194,6 +196,119 @@ export async function getAllSlugs(): Promise<string[]> {
   const posts = await getAllPosts();
   return posts.map((p) => p.slug);
 }
+
+// ============ Events ============
+
+export type EventStatus = "草稿" | "即将举办" | "报名中" | "已举办";
+
+export type EventItem = {
+  slug: string;
+  title: string;
+  summary: string;
+  date: string;
+  location: string;
+  status: EventStatus;
+  attendees: number | null;
+  signupUrl: string | null;
+  videoReviewUrl: string | null;
+};
+
+function parseEventProperties(page: PageObjectResponse): EventItem | null {
+  const props = page.properties;
+
+  const titleProp = props["标题"];
+  const slugProp = props["Slug"];
+  const summaryProp = props["简介"];
+  const dateProp = props["日期"];
+  const locationProp = props["地点"];
+  const statusProp = props["状态"];
+  const attendeesProp = props["参与人数"];
+  const signupProp = props["报名链接"];
+  const videoReviewProp = props["视频回顾"];
+
+  if (!titleProp || titleProp.type !== "title") return null;
+  if (!slugProp || slugProp.type !== "rich_text") return null;
+  if (!dateProp || dateProp.type !== "date") return null;
+  if (!statusProp || statusProp.type !== "select" || !statusProp.select) {
+    return null;
+  }
+
+  const slug = richTextToPlainText(slugProp.rich_text).trim();
+  const title = richTextToPlainText(titleProp.title).trim();
+  if (!slug || !title) return null;
+
+  return {
+    slug,
+    title,
+    summary:
+      summaryProp?.type === "rich_text"
+        ? richTextToPlainText(summaryProp.rich_text).trim()
+        : "",
+    date: dateProp.date?.start ?? "",
+    location:
+      locationProp?.type === "rich_text"
+        ? richTextToPlainText(locationProp.rich_text).trim()
+        : "",
+    status: statusProp.select.name as EventStatus,
+    attendees:
+      attendeesProp?.type === "number" ? attendeesProp.number ?? null : null,
+    signupUrl: signupProp?.type === "url" ? signupProp.url || null : null,
+    videoReviewUrl:
+      videoReviewProp?.type === "url" ? videoReviewProp.url || null : null,
+  };
+}
+
+/**
+ * 获取即将举办 / 报名中的活动 (按日期升序, 最近的在前).
+ */
+export async function getUpcomingEvents(): Promise<EventItem[]> {
+  const notion = getNotionClient();
+  const response = await notion.dataSources.query({
+    data_source_id: EVENTS_DATA_SOURCE_ID,
+    filter: {
+      or: [
+        { property: "状态", select: { equals: "即将举办" } },
+        { property: "状态", select: { equals: "报名中" } },
+      ],
+    },
+    sorts: [{ property: "日期", direction: "ascending" }],
+    page_size: 50,
+  });
+
+  const events: EventItem[] = [];
+  for (const page of response.results) {
+    if (!("properties" in page)) continue;
+    const event = parseEventProperties(page as PageObjectResponse);
+    if (event) events.push(event);
+  }
+  return events;
+}
+
+/**
+ * 获取已举办活动 (按日期倒序, 最近的在前).
+ */
+export async function getPastEvents(): Promise<EventItem[]> {
+  const notion = getNotionClient();
+  const response = await notion.dataSources.query({
+    data_source_id: EVENTS_DATA_SOURCE_ID,
+    filter: {
+      property: "状态",
+      select: { equals: "已举办" },
+    },
+    sorts: [{ property: "日期", direction: "descending" }],
+    page_size: 50,
+  });
+
+  const events: EventItem[] = [];
+  for (const page of response.results) {
+    if (!("properties" in page)) continue;
+    const event = parseEventProperties(page as PageObjectResponse);
+    if (event) events.push(event);
+  }
+  return events;
+}
+
+// ============ Blog single post ============
 
 /**
  * 根据 slug 获取单篇博客 (含 page content blocks).

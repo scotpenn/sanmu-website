@@ -1,38 +1,130 @@
 import { Container } from "@/components/Container";
 import { SectionTitle } from "@/components/SectionTitle";
+import { Button } from "@/components/Button";
+import {
+  getUpcomingEvents,
+  getPastEvents,
+  type EventItem,
+} from "@/lib/notion";
 
 export const metadata = {
   title: "线下活动 · 三木有话说",
-  description:
-    "三木举办的面对面线下分享与讲座活动。即将举办与往期回顾。",
+  description: "三木举办的面对面线下分享与讲座活动。即将举办与往期回顾。",
 };
 
-type PastEvent = {
-  slug: string;
-  title: string;
-  subtitle: string;
-  dateISO: string;
-  dateLabel: string;
-  location: string;
-  capacity: string;
-  summary: string;
-};
+function formatDateLabel(isoDate: string): string {
+  if (!isoDate) return "";
+  const d = new Date(isoDate);
+  const year = d.getFullYear();
+  const month = d.getMonth() + 1;
+  const day = d.getDate();
+  const weekdays = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
+  return `${year} 年 ${month} 月 ${day} 日（${weekdays[d.getDay()]}）`;
+}
 
-const PAST_EVENTS: PastEvent[] = [
-  {
-    slug: "houshi-na-xie-shi-er-2026-05",
-    title: "「身后那些事儿」分享会",
-    subtitle: "生命关怀与终极陪伴",
-    dateISO: "2026-05-24",
-    dateLabel: "2026 年 5 月 24 日（周日）上午 10 点",
-    location: "列治文殡仪馆 · 8420 Cambie Road, Richmond BC",
-    capacity: "限额 30 人 · 满员",
-    summary:
-      "三木现场分享身后事相关干货：遗嘱办理、葬礼避坑、政府福利申请。互动答疑 + 现场免费领取遗嘱一份 + 抽奖福利（空气净化器、商超代金券）。",
-  },
-];
+function UpcomingCard({ event }: { event: EventItem }) {
+  return (
+    <article className="border border-rule bg-brand-yellow/10 p-8 md:p-10">
+      <div className="text-xs font-en uppercase tracking-widest text-brand-navy/70 mb-4 font-medium">
+        {event.status} · Upcoming
+      </div>
+      <h3 className="text-2xl md:text-3xl mb-3">{event.title}</h3>
+      <p className="text-base opacity-80 mb-6 leading-relaxed">
+        {event.summary}
+      </p>
 
-export default function EventsPage() {
+      <dl className="text-sm space-y-2 mb-6 border-y border-rule py-5">
+        <div className="flex gap-4">
+          <dt className="font-en uppercase tracking-wide opacity-50 w-14 shrink-0">
+            Date
+          </dt>
+          <dd>
+            <time dateTime={event.date}>{formatDateLabel(event.date)}</time>
+          </dd>
+        </div>
+        {event.location && (
+          <div className="flex gap-4">
+            <dt className="font-en uppercase tracking-wide opacity-50 w-14 shrink-0">
+              Venue
+            </dt>
+            <dd>{event.location}</dd>
+          </div>
+        )}
+      </dl>
+
+      <div className="flex flex-wrap gap-4">
+        {event.signupUrl && (
+          <Button variant="primary" href={event.signupUrl}>
+            立即报名 →
+          </Button>
+        )}
+        <Button variant="secondary" href="mailto:info@sanmu.ca">
+          ✉️ 写信咨询
+        </Button>
+      </div>
+    </article>
+  );
+}
+
+function PastCard({ event }: { event: EventItem }) {
+  return (
+    <article className="border border-rule p-8 md:p-10">
+      <div className="text-xs font-en uppercase tracking-widest opacity-50 mb-4">
+        Past Event
+      </div>
+      <h3 className="text-xl md:text-2xl mb-2">{event.title}</h3>
+
+      <dl className="text-sm space-y-2 mb-6 border-y border-rule py-5">
+        <div className="flex gap-4">
+          <dt className="font-en uppercase tracking-wide opacity-50 w-14 shrink-0">
+            Date
+          </dt>
+          <dd>
+            <time dateTime={event.date}>{formatDateLabel(event.date)}</time>
+          </dd>
+        </div>
+        {event.location && (
+          <div className="flex gap-4">
+            <dt className="font-en uppercase tracking-wide opacity-50 w-14 shrink-0">
+              Venue
+            </dt>
+            <dd>{event.location}</dd>
+          </div>
+        )}
+        {event.attendees !== null && (
+          <div className="flex gap-4">
+            <dt className="font-en uppercase tracking-wide opacity-50 w-14 shrink-0">
+              Scale
+            </dt>
+            <dd>{event.attendees} 人参与</dd>
+          </div>
+        )}
+      </dl>
+
+      {event.summary && (
+        <p className="text-sm leading-relaxed opacity-85 mb-4">{event.summary}</p>
+      )}
+
+      {event.videoReviewUrl && (
+        <a
+          href={event.videoReviewUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-sm font-medium text-brand-navy hover:opacity-80 transition-opacity"
+        >
+          观看现场回顾 →
+        </a>
+      )}
+    </article>
+  );
+}
+
+export default async function EventsPage() {
+  const [upcoming, past] = await Promise.all([
+    getUpcomingEvents(),
+    getPastEvents(),
+  ]);
+
   return (
     <>
       {/* Hero */}
@@ -52,18 +144,26 @@ export default function EventsPage() {
             即将举办 · Upcoming
           </div>
 
-          <div className="border border-rule bg-brand-yellow/10 p-8 md:p-12 text-center max-w-2xl mx-auto">
-            <p className="text-lg mb-3">📅 下一场活动正在筹备中</p>
-            <p className="text-sm opacity-70 mb-6">
-              留下邮箱，第一时间收到通知
-            </p>
-            <a
-              href="mailto:info@sanmu.ca"
-              className="text-sm font-medium text-brand-navy hover:opacity-80 transition-opacity"
-            >
-              info@sanmu.ca →
-            </a>
-          </div>
+          {upcoming.length === 0 ? (
+            <div className="border border-rule bg-brand-yellow/10 p-8 md:p-12 text-center max-w-2xl mx-auto">
+              <p className="text-lg mb-3">📅 下一场活动正在筹备中</p>
+              <p className="text-sm opacity-70 mb-6">
+                留下邮箱，第一时间收到通知
+              </p>
+              <a
+                href="mailto:info@sanmu.ca"
+                className="text-sm font-medium text-brand-navy hover:opacity-80 transition-opacity"
+              >
+                info@sanmu.ca →
+              </a>
+            </div>
+          ) : (
+            <div className="grid gap-6 md:gap-8">
+              {upcoming.map((event) => (
+                <UpcomingCard key={event.slug} event={event} />
+              ))}
+            </div>
+          )}
         </Container>
       </section>
 
@@ -74,47 +174,17 @@ export default function EventsPage() {
             往期回顾 · Past Events
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6 md:gap-8">
-            {PAST_EVENTS.map((event) => (
-              <article
-                key={event.slug}
-                className="border border-rule p-8 md:p-10"
-              >
-                <div className="text-xs font-en uppercase tracking-widest opacity-50 mb-4">
-                  Past Event
-                </div>
-                <h3 className="text-xl md:text-2xl mb-2">{event.title}</h3>
-                <p className="text-base opacity-80 mb-6">{event.subtitle}</p>
-
-                <dl className="text-sm space-y-2 mb-6 border-y border-rule py-5">
-                  <div className="flex gap-4">
-                    <dt className="font-en uppercase tracking-wide opacity-50 w-14 shrink-0">
-                      Date
-                    </dt>
-                    <dd>
-                      <time dateTime={event.dateISO}>{event.dateLabel}</time>
-                    </dd>
-                  </div>
-                  <div className="flex gap-4">
-                    <dt className="font-en uppercase tracking-wide opacity-50 w-14 shrink-0">
-                      Venue
-                    </dt>
-                    <dd>{event.location}</dd>
-                  </div>
-                  <div className="flex gap-4">
-                    <dt className="font-en uppercase tracking-wide opacity-50 w-14 shrink-0">
-                      Scale
-                    </dt>
-                    <dd>{event.capacity}</dd>
-                  </div>
-                </dl>
-
-                <p className="text-sm leading-relaxed opacity-85">
-                  {event.summary}
-                </p>
-              </article>
-            ))}
-          </div>
+          {past.length === 0 ? (
+            <p className="text-sm opacity-60 py-4 text-center">
+              还没有往期记录 · 期待第一场。
+            </p>
+          ) : (
+            <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+              {past.map((event) => (
+                <PastCard key={event.slug} event={event} />
+              ))}
+            </div>
+          )}
 
           <p className="text-center text-sm opacity-60 mt-10">
             想看下一场？{" "}

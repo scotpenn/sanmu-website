@@ -1,0 +1,194 @@
+#!/usr/bin/env node
+/**
+ * refresh-video-index.mjs
+ * 用 YouTube Data API v3 刷新三木频道全部视频的实时 view/like/comment 统计.
+ * 输出: 项目根目录的 video_url_index.json (覆盖)
+ *
+ * 用法 (在 sanmu-website/ 目录下):
+ *   node --env-file=../.env scripts/refresh-video-index.mjs
+ * 或 (已在 package.json scripts):
+ *   npm run refresh:videos
+ *
+ * 数据更新点 (相对 2026-05-28 旧版):
+ *   - 新增 like_count 字段
+ *   - 新增 duration_seconds 字段 (来自 contentDetails.duration ISO-8601)
+ *   - generated_at 改为完整 ISO 时间戳
+ */
+
+import { writeFileSync, readFileSync } from "fs";
+import { resolve } from "path";
+
+const CHANNEL_ID = "UCMhsp4Iyvgc_rCNfkaSNh0Q"; // 三木有话说 @yyds3mu
+const OUTPUT_PATH = resolve(process.cwd(), "..", "video_url_index.json");
+
+const API_KEYS = [
+  process.env.YOUTUBE_API_KEY_1,
+  process.env.YOUTUBE_API_KEY_2,
+  process.env.YOUTUBE_API_KEY_3,
+].filter(Boolean);
+
+if (API_KEYS.length === 0) {
+  console.error(
+    "✗ 没有找到 YOUTUBE_API_KEY_* 环境变量. 请确保用 --env-file=../.env 启动.",
+  );
+  process.exit(1);
+}
+
+let currentKeyIndex = 0;
+
+async function ytFetch(url) {
+  for (let attempt = 0; attempt < API_KEYS.length; attempt++) {
+    const key = API_KEYS[currentKeyIndex];
+    const fullUrl = `${url}&key=${key}`;
+    const res = await fetch(fullUrl);
+    if (res.ok) return res.json();
+    const body = await res.text();
+    if (res.status === 403 && body.includes("quotaExceeded")) {
+      console.warn(`! Key #${currentKeyIndex + 1} 配额耗尽, 切换下一个`);
+      currentKeyIndex = (currentKeyIndex + 1) % API_KEYS.length;
+      continue;
+    }
+    throw new Error(`YouTube API error ${res.status}: ${body.slice(0, 200)}`);
+  }
+  throw new Error("所有 API key 都已耗尽配额");
+}
+
+function parseISODuration(iso) {
+  // PT1H2M3S -> 3723
+  const m = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+  if (!m) return 0;
+  const [, h, min, s] = m;
+  return (parseInt(h || 0) * 3600) + (parseInt(min || 0) * 60) + parseInt(s || 0);
+}
+
+async function getAllVideoIds() {
+  // 拿到 uploads playlist
+  const ch = await ytFetch(
+    `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${CHANNEL_ID}`,
+  );
+  const uploads = ch.items[0].contentDetails.relatedPlaylists.uploads;
+
+  // 翻页拉取全部 videoId
+  const ids = [];
+  let pageToken = "";
+  do {
+    const data = await ytFetch(
+      `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploads}&maxResults=50${
+        pageToken ? `&pageToken=${pageToken}` : ""
+      }`,
+    );
+    data.items.forEach((it) => ids.push(it.snippet.resourceId.videoId));
+    pageToken = data.nextPageToken || "";
+  } while (pageToken);
+  return ids;
+}
+
+async function getVideoStats(ids) {
+  // videos.list 最多 50 个 id, 分批
+  const results = [];
+  for (let i = 0; i < ids.length; i += 50) {
+    const batch = ids.slice(i, i + 50).join(",");
+    const data = await ytFetch(
+      `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics,contentDetails&id=${batch}`,
+    );
+    data.items.forEach((v) => {
+      results.push({
+        video_id: v.id,
+        title: v.snippet.title,
+        url: `https://www.youtube.com/watch?v=${v.id}`,
+        published_at: v.snippet.publishedAt,
+        duration_seconds: parseISODuration(v.contentDetails.duration),
+        view_count: parseInt(v.statistics.viewCount || 0),
+        like_count: parseInt(v.statistics.likeCount || 0),
+        comment_count: parseInt(v.statistics.commentCount || 0),
+      });
+    });
+  }
+  return results;
+}
+
+function loadPrevious() {
+  try {
+    return JSON.parse(readFileSync(OUTPUT_PATH, "utf-8"));
+  } catch {
+    return null;
+  }
+}
+
+function summarizeDelta(prev, curr) {
+  if (!prev || !prev.videos) return;
+  const prevMap = new Map(prev.videos.map((v) => [v.video_id, v]));
+  const grew = [];
+  const newOnes = [];
+  curr.forEach((v) => {
+    const p = prevMap.get(v.video_id);
+    if (!p) {
+      newOnes.push(v);
+    } else {
+      const dv = v.view_count - (p.view_count || 0);
+      const dc = v.comment_count - (p.comment_count || 0);
+      if (dv > 0 || dc > 0) grew.push({ ...v, dv, dc });
+    }
+  });
+  grew.sort((a, b) => b.dv - a.dv);
+
+  console.log("\n────────────────────────────────");
+  console.log(`相对上一版变化 (上版 generated_at: ${prev.generated_at || "未知"})`);
+  console.log("────────────────────────────────");
+  if (newOnes.length > 0) {
+    console.log(`\n🆕 新增 ${newOnes.length} 条视频:`);
+    newOnes.forEach((v) => {
+      console.log(`  ${v.published_at.slice(0, 10)} · ${v.view_count.toLocaleString()} views · ${v.title.slice(0, 50)}`);
+    });
+  }
+  if (grew.length > 0) {
+    console.log(`\n📈 播放增长 Top 10:`);
+    grew.slice(0, 10).forEach((v) => {
+      console.log(`  +${v.dv.toLocaleString().padStart(8)} views (+${v.dc} comments) · ${v.title.slice(0, 50)}`);
+    });
+  }
+}
+
+(async () => {
+  console.log("→ 拉取频道全部 videoId...");
+  const ids = await getAllVideoIds();
+  console.log(`  共 ${ids.length} 条`);
+
+  console.log("→ 批量拉取视频统计 (50/batch)...");
+  const videos = await getVideoStats(ids);
+  console.log(`  已拿到 ${videos.length} 条`);
+
+  // 按发布日期倒序
+  videos.sort((a, b) => (a.published_at < b.published_at ? 1 : -1));
+
+  const prev = loadPrevious();
+
+  const output = {
+    channel: "@yyds3mu",
+    channel_id: CHANNEL_ID,
+    generated_at: new Date().toISOString(),
+    total: videos.length,
+    videos,
+  };
+
+  writeFileSync(OUTPUT_PATH, JSON.stringify(output, null, 2));
+  console.log(`✓ 写入 ${OUTPUT_PATH}`);
+
+  summarizeDelta(prev, videos);
+
+  // 频道汇总
+  const totalViews = videos.reduce((s, v) => s + v.view_count, 0);
+  const totalComments = videos.reduce((s, v) => s + v.comment_count, 0);
+  const totalLikes = videos.reduce((s, v) => s + v.like_count, 0);
+  console.log("\n────────────────────────────────");
+  console.log("频道当前汇总");
+  console.log("────────────────────────────────");
+  console.log(`视频总数: ${videos.length}`);
+  console.log(`总播放:   ${totalViews.toLocaleString()}`);
+  console.log(`总评论:   ${totalComments.toLocaleString()}`);
+  console.log(`总点赞:   ${totalLikes.toLocaleString()}`);
+  console.log(`平均播放: ${Math.round(totalViews / videos.length).toLocaleString()} / 视频`);
+})().catch((e) => {
+  console.error(`✗ 失败: ${e.message}`);
+  process.exit(1);
+});

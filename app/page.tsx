@@ -5,6 +5,12 @@ import { Button } from "@/components/Button";
 import { SectionTitle } from "@/components/SectionTitle";
 import { HandbookSignupForm } from "@/components/HandbookSignupForm";
 import { getAllPosts } from "@/lib/notion";
+import {
+  getTopVideos,
+  formatViewCount,
+  thumbnailUrl,
+  watchUrl,
+} from "@/lib/videos";
 
 const TRUST_STATS = [
   { value: "16", label: "年北美殡葬经验" },
@@ -14,29 +20,7 @@ const TRUST_STATS = [
 
 // RECENT_POSTS 已迁移到 Notion (Phase 2.1). 见 lib/notion.ts.
 
-const RECENT_VIDEOS = [
-  {
-    videoId: "DYV4Ps3UqDQ",
-    title: "送走1000人再无精神内耗-我用“殡葬师思维”戒掉了精神内耗",
-    hook: "在火化炉前 16 年，我用一种特殊的方式想通了。现在分享给你。",
-    views: "209K",
-    date: "2025-11-28",
-  },
-  {
-    videoId: "5OoMNtryaBY",
-    title: "人间幸福大半是假：刻完上百块墓碑，我发现多数人的“幸福”都是假的",
-    hook: "刻完上百块墓碑后，多数人挂在墙上的「幸福」，回头看都是假的。",
-    views: "100K",
-    date: "2026-03-06",
-  },
-  {
-    videoId: "FrDlYi50hGQ",
-    title: "加拿大遗嘱八个大坑千万别踩",
-    hook: "这 8 个坑我亲眼看过太多家庭踩 —— 一份能直接照着填的清单。",
-    views: "76K",
-    date: "2025-09-06",
-  },
-];
+// RECENT_VIDEOS 已迁到 lib/videos.ts (Phase 2.3) · 从 lib/data/videos.json 动态读取 top 3
 
 const TOPIC_CATEGORIES = [
   {
@@ -60,6 +44,7 @@ const TOPIC_CATEGORIES = [
 
 export default async function HomePage() {
   const latestPosts = (await getAllPosts()).slice(0, 3);
+  const topVideos = getTopVideos(3);
 
   return (
     <>
@@ -183,17 +168,17 @@ export default async function HomePage() {
             </div>
 
             <div className="grid md:grid-cols-3 gap-6 md:gap-8">
-              {RECENT_VIDEOS.map((video) => (
+              {topVideos.map((video) => (
                 <a
-                  key={video.videoId}
-                  href={`https://www.youtube.com/watch?v=${video.videoId}`}
+                  key={video.video_id}
+                  href={watchUrl(video.video_id)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group block"
                 >
                   <div className="aspect-video relative overflow-hidden bg-rule mb-4">
                     <Image
-                      src={`https://i.ytimg.com/vi/${video.videoId}/hqdefault.jpg`}
+                      src={thumbnailUrl(video.video_id)}
                       alt={video.title}
                       fill
                       sizes="(min-width: 768px) 320px, 100vw"
@@ -203,11 +188,8 @@ export default async function HomePage() {
                   <h3 className="text-base md:text-lg font-medium leading-snug mb-2 group-hover:text-brand-navy transition-colors">
                     {video.title}
                   </h3>
-                  <p className="text-sm opacity-70 leading-relaxed mb-3">
-                    {video.hook}
-                  </p>
                   <div className="text-xs opacity-50 font-en">
-                    {video.views} views · {video.date}
+                    {formatViewCount(video.view_count)} views · {video.published_at.slice(0, 10)}
                   </div>
                 </a>
               ))}

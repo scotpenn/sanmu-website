@@ -20,6 +20,13 @@ import { resolve } from "path";
 
 const CHANNEL_ID = "UCMhsp4Iyvgc_rCNfkaSNh0Q"; // 三木有话说 @yyds3mu
 const OUTPUT_PATH = resolve(process.cwd(), "..", "video_url_index.json");
+// 同步写入项目内 (Next.js build 时 lib/videos.ts 读取此文件)
+const PROJECT_OUTPUT_PATH = resolve(
+  process.cwd(),
+  "lib",
+  "data",
+  "videos.json",
+);
 
 const API_KEYS = [
   process.env.YOUTUBE_API_KEY_1,
@@ -171,8 +178,11 @@ function summarizeDelta(prev, curr) {
     videos,
   };
 
-  writeFileSync(OUTPUT_PATH, JSON.stringify(output, null, 2));
+  const json = JSON.stringify(output, null, 2);
+  writeFileSync(OUTPUT_PATH, json);
   console.log(`✓ 写入 ${OUTPUT_PATH}`);
+  writeFileSync(PROJECT_OUTPUT_PATH, json);
+  console.log(`✓ 写入 ${PROJECT_OUTPUT_PATH} (Next.js build 读取)`);
 
   summarizeDelta(prev, videos);
 
@@ -188,6 +198,28 @@ function summarizeDelta(prev, curr) {
   console.log(`总评论:   ${totalComments.toLocaleString()}`);
   console.log(`总点赞:   ${totalLikes.toLocaleString()}`);
   console.log(`平均播放: ${Math.round(totalViews / videos.length).toLocaleString()} / 视频`);
+
+  // 自动触发 Vercel deploy hook
+  const deployHook = process.env.VERCEL_DEPLOY_HOOK_URL;
+  if (deployHook) {
+    console.log(`\n→ 触发 Vercel Deploy Hook`);
+    try {
+      const resp = await fetch(deployHook, { method: "POST" });
+      if (resp.ok) {
+        const data = await resp.json();
+        console.log(`  ✓ Deploy 已触发 (job ${data?.job?.id ?? "?"})`);
+        console.log(`  等 2-3 分钟, sanmu.ca/videos 反映最新数据`);
+      } else {
+        console.warn(`  ! Deploy Hook 返回 HTTP ${resp.status}, 请手动点 Notion hub 页的部署按钮`);
+      }
+    } catch (e) {
+      console.warn(`  ! Deploy Hook 调用失败: ${e.message}`);
+    }
+  } else {
+    console.log(
+      `\n提示: 在 .env 添加 VERCEL_DEPLOY_HOOK_URL=... 可自动触发部署`,
+    );
+  }
 })().catch((e) => {
   console.error(`✗ 失败: ${e.message}`);
   process.exit(1);

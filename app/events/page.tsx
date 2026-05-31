@@ -37,7 +37,7 @@ export default function EventsPage() {
     <>
       {/* Hero */}
       <section className="border-b border-rule">
-        <Container width="reading" className="py-16 md:py-20">
+        <Container width="card" className="py-16 md:py-20">
           <SectionTitle eyebrow="EVENTS">线下活动</SectionTitle>
           <p className="text-lg opacity-80 leading-relaxed">
             面对面，把没讲完的话聊透。

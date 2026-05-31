@@ -13,19 +13,22 @@ const TRUST_STATS = [
 
 const RECENT_POSTS = [
   {
-    title: "加拿大葬礼费用：8 件家属一定要避开的坑",
-    date: "2026-05-22",
+    title: "我做殡葬师 16 年，订过 200 块墓碑 —— 发现一个所有人都搞错的真相",
+    href: "/blog/200-mubei-zhen-xiang",
+    date: "2026-05-28",
     readTime: "8 分钟",
-    tag: "葬礼",
+    tag: "终局思维",
   },
   {
     title: "中年精神内耗，是因为你还没看清这件事",
+    href: "/blog",
     date: "2026-05-15",
     readTime: "6 分钟",
     tag: "内耗",
   },
   {
     title: "海外华人遗产传承：3 个最常见的法律误区",
+    href: "/blog",
     date: "2026-05-08",
     readTime: "10 分钟",
     tag: "遗产和遗嘱",
@@ -248,7 +251,7 @@ export default function HomePage() {
               {RECENT_POSTS.map((post) => (
                 <li key={post.title}>
                   <Link
-                    href="/blog"
+                    href={post.href}
                     className="block hover:opacity-80 transition-opacity"
                   >
                     <h3 className="text-base md:text-lg font-medium leading-snug mb-1">

@@ -12,7 +12,7 @@ export default function TestStylePage() {
       <div className="mx-auto max-w-[1080px] px-6 py-16">
         {/* 页头 */}
         <header className="border-b border-rule pb-6 mb-12">
-          <h1 className="font-serif text-brand-navy text-4xl mb-2">视觉系统验收页</h1>
+          <h1 className="text-brand-navy text-4xl mb-2">视觉系统验收页</h1>
           <p className="text-base">
             Phase 1 · Task 4 · 这页用来核对颜色、字体、字号是否符合 PRD v0.3 第五章。
             <br />
@@ -22,7 +22,7 @@ export default function TestStylePage() {
 
         {/* 1. 5 个品牌色 */}
         <section className="mb-16">
-          <h2 className="font-serif text-brand-navy text-2xl mb-6">1 · 五个品牌色</h2>
+          <h2 className="text-brand-navy text-2xl mb-6">1 · 五个品牌色</h2>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             {COLORS.map((c) => (
               <div key={c.name} className="border border-rule rounded overflow-hidden">
@@ -49,28 +49,28 @@ export default function TestStylePage() {
 
         {/* 2. 字体对照 */}
         <section className="mb-16">
-          <h2 className="font-serif text-brand-navy text-2xl mb-6">2 · 中文字体对照</h2>
+          <h2 className="text-brand-navy text-2xl mb-6">2 · 字体角色（JC 风：sans 为主，serif 仅做引文）</h2>
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="border border-rule rounded p-6">
-              <div className="text-sm opacity-60 mb-2 font-en">思源宋体 · 标题专用</div>
+            <div className="border-2 border-brand-navy rounded p-6">
+              <div className="text-sm opacity-60 mb-2 font-en">思源黑体 · 全站默认 · 标题 + 正文</div>
+              <p className="text-2xl text-brand-navy font-extrabold tracking-[-0.01em]">
+                我送过一千多个人最后一程
+              </p>
+              <p className="text-base mt-3">Noto Sans SC · font-sans · weight 800</p>
+            </div>
+            <div className="border border-rule rounded p-6 opacity-80">
+              <div className="text-sm opacity-60 mb-2 font-en">思源宋体 · 仅引文场景使用</div>
               <p className="font-serif text-2xl text-brand-navy leading-tight">
                 我送过一千多个人最后一程
               </p>
-              <p className="font-serif text-base mt-3">
-                Noto Serif SC · font-serif
-              </p>
-            </div>
-            <div className="border border-rule rounded p-6">
-              <div className="text-sm opacity-60 mb-2 font-en">思源黑体 · 正文专用</div>
-              <p className="font-sans text-2xl">我送过一千多个人最后一程</p>
-              <p className="font-sans text-base mt-3">Noto Sans SC · font-sans（默认）</p>
+              <p className="font-serif text-base mt-3">Noto Serif SC · font-serif（保留备用）</p>
             </div>
           </div>
         </section>
 
         {/* 3. 字号梯度 */}
         <section className="mb-16">
-          <h2 className="font-serif text-brand-navy text-2xl mb-6">3 · 字号梯度（基准 18px）</h2>
+          <h2 className="text-brand-navy text-2xl mb-6">3 · 字号梯度（基准 18px）</h2>
           <div className="space-y-3">
             {[
               { cls: "text-4xl", px: "56px", note: "H1 主标题" },
@@ -84,7 +84,7 @@ export default function TestStylePage() {
                 <span className="font-en text-xs opacity-50 w-32 shrink-0">
                   {s.cls} · {s.px}
                 </span>
-                <span className={`${s.cls} font-serif text-brand-navy`}>
+                <span className={`${s.cls} text-brand-navy font-extrabold tracking-[-0.01em]`}>
                   人生末了，重要的事就那几件。
                 </span>
                 <span className="text-sm opacity-60 ml-auto">{s.note}</span>
@@ -95,7 +95,7 @@ export default function TestStylePage() {
 
         {/* 4. 正文阅读样本 */}
         <section className="mb-16">
-          <h2 className="font-serif text-brand-navy text-2xl mb-6">
+          <h2 className="text-brand-navy text-2xl mb-6">
             4 · 正文阅读样本（720px 宽 · 行高 1.8）
           </h2>
           <div className="max-w-[720px]">
@@ -119,7 +119,7 @@ export default function TestStylePage() {
 
         {/* 5. 引文样式 */}
         <section className="mb-16">
-          <h2 className="font-serif text-brand-navy text-2xl mb-6">5 · 引文（明黄高亮）</h2>
+          <h2 className="text-brand-navy text-2xl mb-6">5 · 引文（明黄高亮）</h2>
           <blockquote className="max-w-[720px] border-l-4 border-brand-yellow bg-brand-yellow/15 px-6 py-5">
             <p className="text-lg italic">
               「我每年要送走两百多个人。摸过太多冰冷的手，听过太多来不及的话。」
@@ -132,7 +132,7 @@ export default function TestStylePage() {
 
         {/* 6. 按钮样式 */}
         <section className="mb-16">
-          <h2 className="font-serif text-brand-navy text-2xl mb-6">6 · 按钮（主 / 次）</h2>
+          <h2 className="text-brand-navy text-2xl mb-6">6 · 按钮（主 / 次）</h2>
           <div className="flex flex-wrap gap-4">
             <button
               type="button"

@@ -1,3 +1,7 @@
+import { Container } from "@/components/Container";
+import { Button } from "@/components/Button";
+import { SectionTitle } from "@/components/SectionTitle";
+
 const COLORS = [
   { cls: "bg-brand-navy", hex: "#1E3A8A", name: "brand-navy", desc: "Logo / 标题 / 主按钮", textOnDark: true },
   { cls: "bg-brand-yellow", hex: "#F2C12E", name: "brand-yellow", desc: "引文背景 / 高亮", textOnDark: false },
@@ -8,8 +12,8 @@ const COLORS = [
 
 export default function TestStylePage() {
   return (
-    <main className="bg-paper text-ink min-h-screen">
-      <div className="mx-auto max-w-[1080px] px-6 py-16">
+    <div className="py-16">
+      <Container width="card">
         {/* 页头 */}
         <header className="border-b border-rule pb-6 mb-12">
           <h1 className="text-brand-navy text-4xl mb-2">视觉系统验收页</h1>
@@ -130,33 +134,84 @@ export default function TestStylePage() {
           </blockquote>
         </section>
 
-        {/* 6. 按钮样式 */}
+        {/* 6. Button 组件 */}
         <section className="mb-16">
-          <h2 className="text-brand-navy text-2xl mb-6">6 · 按钮（主 / 次）</h2>
-          <div className="flex flex-wrap gap-4">
-            <button
-              type="button"
-              className="bg-brand-navy text-paper px-7 py-3 text-base hover:opacity-90 transition"
-            >
+          <h2 className="text-brand-navy text-2xl mb-6">
+            6 · Button 组件 · <span className="font-en text-base opacity-60">@/components/Button</span>
+          </h2>
+          <div className="flex flex-wrap items-center gap-4 mb-4">
+            <Button variant="primary" href="/test-style">
               索取《身后事安心手册》
-            </button>
-            <button
-              type="button"
-              className="border-2 border-brand-navy text-brand-navy px-7 py-3 text-base hover:bg-brand-navy hover:text-paper transition"
-            >
+            </Button>
+            <Button variant="secondary" href="/test-style">
               观看最新视频
-            </button>
+            </Button>
           </div>
-          <p className="mt-4 text-sm opacity-60">
-            交互原则：「被察觉但不被注意」— hover 仅做透明度 / 反色微变。
+          <p className="text-sm opacity-60">
+            两种 variant：primary（藏蓝实色） / secondary（藏蓝描边）。
+            hover 主按钮变 85% 透明度，次按钮加 5% 藏蓝底色。
+            <br />
+            传 <code className="font-en bg-rule px-1 rounded">href</code> 渲染为 Next.js Link；不传则为 <code className="font-en bg-rule px-1 rounded">button</code> 元素。
           </p>
+        </section>
+
+        {/* 7. Container 组件 */}
+        <section className="mb-16">
+          <h2 className="text-brand-navy text-2xl mb-6">
+            7 · Container 组件 · <span className="font-en text-base opacity-60">@/components/Container</span>
+          </h2>
+          <p className="text-sm opacity-70 mb-4">
+            内容居中容器，三档宽度。下面三个色块各自用一档（背景仅为演示宽度差异）：
+          </p>
+          <div className="space-y-3">
+            <Container width="wide" className="bg-brand-navy/10 py-3 text-center text-sm">
+              width=&quot;wide&quot; · max-w-1280px · 极少数全宽场景
+            </Container>
+            <Container width="card" className="bg-brand-navy/15 py-3 text-center text-sm">
+              width=&quot;card&quot; · max-w-1080px · 卡片网格 · 默认值
+            </Container>
+            <Container width="reading" className="bg-brand-navy/20 py-3 text-center text-sm">
+              width=&quot;reading&quot; · max-w-720px · 博客正文
+            </Container>
+          </div>
+        </section>
+
+        {/* 8. SectionTitle 组件 */}
+        <section className="mb-16">
+          <h2 className="text-brand-navy text-2xl mb-6">
+            8 · SectionTitle 组件 · <span className="font-en text-base opacity-60">@/components/SectionTitle</span>
+          </h2>
+          <p className="text-sm opacity-70 mb-6">
+            三种用法演示：
+          </p>
+
+          <div className="border border-rule rounded p-6 mb-4">
+            <div className="text-xs font-en opacity-50 mb-3">A · 仅主标题（默认 · 左对齐）</div>
+            <SectionTitle>最近的线下活动</SectionTitle>
+          </div>
+
+          <div className="border border-rule rounded p-6 mb-4">
+            <div className="text-xs font-en opacity-50 mb-3">
+              B · 带 eyebrow 小标签（首页常用）
+            </div>
+            <SectionTitle eyebrow="LATEST ARTICLES">最新内容</SectionTitle>
+          </div>
+
+          <div className="border border-rule rounded p-6">
+            <div className="text-xs font-en opacity-50 mb-3">
+              C · 带 eyebrow + 居中（CTA 屏常用）
+            </div>
+            <SectionTitle eyebrow="FREE DOWNLOAD" align="center">
+              免费索取《身后事安心手册》
+            </SectionTitle>
+          </div>
         </section>
 
         {/* 页脚 */}
         <footer className="border-t border-rule pt-6 text-sm opacity-60">
           视觉系统出处：PRD v0.3 第五章 · 实现：Tailwind v4 @theme · 路径：app/globals.css
         </footer>
-      </div>
-    </main>
+      </Container>
+    </div>
   );
 }

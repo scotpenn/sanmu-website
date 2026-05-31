@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Serif_SC, Noto_Sans_SC, Inter } from "next/font/google";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import "./globals.css";
 
 const notoSerifSC = Noto_Serif_SC({
@@ -36,7 +38,11 @@ export default function RootLayout({
       lang="zh-CN"
       className={`${notoSerifSC.variable} ${notoSansSC.variable} ${inter.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <Header />
+        <main className="flex-1">{children}</main>
+        <Footer />
+      </body>
     </html>
   );
 }

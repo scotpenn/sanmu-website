@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Container } from "@/components/Container";
 import { SectionTitle } from "@/components/SectionTitle";
-import { getAllPosts } from "@/lib/posts";
+import { getAllPosts } from "@/lib/notion";
 
 export const metadata = {
   title: "博客 · 三木有话说",
@@ -9,8 +9,8 @@ export const metadata = {
     "把视频里讲不完的写在这里。葬礼、遗嘱、骨灰、政府福利、原生家庭、中年危机、终局思维 —— 海外华人值得读的深度文章。",
 };
 
-export default function BlogPage() {
-  const posts = getAllPosts();
+export default async function BlogPage() {
+  const posts = await getAllPosts();
 
   return (
     <>
@@ -56,7 +56,7 @@ export default function BlogPage() {
                   <div className="text-sm opacity-60 font-en flex flex-wrap gap-x-3">
                     <time dateTime={post.date}>{post.date}</time>
                     <span>·</span>
-                    <span>{post.readTime}</span>
+                    <span>{post.readMinutes} 分钟</span>
                   </div>
                 </Link>
               </article>

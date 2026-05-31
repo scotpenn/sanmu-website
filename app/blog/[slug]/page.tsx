@@ -2,10 +2,11 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Container } from "@/components/Container";
 import { Button } from "@/components/Button";
-import { getAllSlugs, getPostBySlug } from "@/lib/posts";
+import { getAllSlugs, getPostBySlug } from "@/lib/notion";
 
-export function generateStaticParams() {
-  return getAllSlugs().map((slug) => ({ slug }));
+export async function generateStaticParams() {
+  const slugs = await getAllSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
@@ -14,7 +15,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = await getPostBySlug(slug);
   if (!post) return { title: "文章未找到 · 三木有话说" };
   return {
     title: `${post.title} · 三木有话说`,
@@ -28,7 +29,7 @@ export default async function PostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = await getPostBySlug(slug);
   if (!post) notFound();
 
   return (
@@ -55,7 +56,7 @@ export default async function PostPage({
           <div className="text-sm opacity-60 font-en flex flex-wrap gap-x-3">
             <time dateTime={post.date}>{post.date}</time>
             <span>·</span>
-            <span>{post.readTime}</span>
+            <span>{post.readMinutes} 分钟</span>
             <span>·</span>
             <span>三木</span>
           </div>

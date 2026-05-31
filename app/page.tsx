@@ -4,6 +4,7 @@ import { Container } from "@/components/Container";
 import { Button } from "@/components/Button";
 import { SectionTitle } from "@/components/SectionTitle";
 import { HandbookSignupForm } from "@/components/HandbookSignupForm";
+import { getAllPosts } from "@/lib/notion";
 
 const TRUST_STATS = [
   { value: "16", label: "年北美殡葬经验" },
@@ -11,29 +12,7 @@ const TRUST_STATS = [
   { value: "12", label: "大主题持续输出" },
 ];
 
-const RECENT_POSTS = [
-  {
-    title: "我做殡葬师 16 年，订过 200 块墓碑 —— 发现一个所有人都搞错的真相",
-    href: "/blog/200-mubei-zhen-xiang",
-    date: "2026-05-28",
-    readTime: "8 分钟",
-    tag: "终局思维",
-  },
-  {
-    title: "中年精神内耗，是因为你还没看清这件事",
-    href: "/blog",
-    date: "2026-05-15",
-    readTime: "6 分钟",
-    tag: "内耗",
-  },
-  {
-    title: "海外华人遗产传承：3 个最常见的法律误区",
-    href: "/blog",
-    date: "2026-05-08",
-    readTime: "10 分钟",
-    tag: "遗产和遗嘱",
-  },
-];
+// RECENT_POSTS 已迁移到 Notion (Phase 2.1). 见 lib/notion.ts.
 
 const RECENT_VIDEOS = [
   {
@@ -79,7 +58,9 @@ const TOPIC_CATEGORIES = [
   },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const latestPosts = (await getAllPosts()).slice(0, 3);
+
   return (
     <>
       {/* 屏 1 · Hero */}
@@ -247,23 +228,36 @@ export default function HomePage() {
               </Link>
             </div>
 
-            <ul className="space-y-5">
-              {RECENT_POSTS.map((post) => (
-                <li key={post.title}>
-                  <Link
-                    href={post.href}
-                    className="block hover:opacity-80 transition-opacity"
-                  >
-                    <h3 className="text-base md:text-lg font-medium leading-snug mb-1">
-                      {post.title}
-                    </h3>
-                    <div className="text-xs opacity-60 font-en">
-                      {post.date} · {post.readTime} · {post.tag}
-                    </div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            {latestPosts.length === 0 ? (
+              <p className="text-sm opacity-60 py-4">
+                博客刚开张，还没有文章 ·{" "}
+                <a
+                  href="mailto:info@sanmu.ca"
+                  className="text-brand-navy hover:opacity-80 transition-opacity font-medium"
+                >
+                  留邮箱第一时间收到新文 →
+                </a>
+              </p>
+            ) : (
+              <ul className="space-y-5">
+                {latestPosts.map((post) => (
+                  <li key={post.slug}>
+                    <Link
+                      href={`/blog/${post.slug}`}
+                      className="block hover:opacity-80 transition-opacity"
+                    >
+                      <h3 className="text-base md:text-lg font-medium leading-snug mb-1">
+                        {post.title}
+                      </h3>
+                      <div className="text-xs opacity-60 font-en">
+                        {post.date} · {post.readMinutes} 分钟
+                        {post.tags[0] && ` · ${post.tags[0]}`}
+                      </div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </Container>
       </section>

@@ -175,10 +175,30 @@ async function main() {
     },
   });
 
-  console.log(`\n✓ 完成!`);
-  console.log(`\n下一步:`);
-  console.log(`  1. 打开 Notion hub 页, 点 🚀 一键重新部署 sanmu.ca`);
-  console.log(`  2. 等 2-3 分钟, sanmu.ca/events 显示活动封面图`);
+  console.log(`\n✓ Notion 更新完成`);
+
+  // 6. Trigger Vercel deploy hook (auto-publish)
+  const deployHook = process.env.VERCEL_DEPLOY_HOOK_URL;
+  if (deployHook) {
+    console.log(`\n→ 触发 Vercel Deploy Hook`);
+    try {
+      const resp = await fetch(deployHook, { method: "POST" });
+      if (resp.ok) {
+        const data = await resp.json();
+        console.log(`  ✓ Deploy 已触发 (job ${data?.job?.id ?? "?"})`);
+        console.log(`  等 2-3 分钟, sanmu.ca/events 显示新照片`);
+      } else {
+        console.warn(`  ! Deploy Hook 返回 HTTP ${resp.status}, 请手动点 Notion hub 页的部署按钮`);
+      }
+    } catch (e) {
+      console.warn(`  ! Deploy Hook 调用失败: ${e.message}`);
+      console.warn(`    手动方案: 打开 Notion hub 页, 点 🚀 部署按钮`);
+    }
+  } else {
+    console.log(
+      `\n提示: 在 .env 添加 VERCEL_DEPLOY_HOOK_URL=... 可自动触发部署, 否则需手动点 hub 页部署按钮`,
+    );
+  }
 }
 
 main().catch((e) => {

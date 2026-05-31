@@ -215,6 +215,10 @@ export type EventItem = {
   photos: string[];
 };
 
+export type EventDetail = EventItem & {
+  blocks: PostBlock[];
+};
+
 /**
  * 从 Notion Files 字段提取外部 URL.
  * **只接受 external 类型** (Notion "Link" 模式), 跳过 upload 类型 (1 小时过期 S3 URL).
@@ -307,6 +311,69 @@ export async function getUpcomingEvents(): Promise<EventItem[]> {
     if (event) events.push(event);
   }
   return events;
+}
+
+/**
+ * 获取所有活动的 slug 列表 (含 upcoming / past / 草稿外), 给 generateStaticParams 用.
+ */
+export async function getAllEventSlugs(): Promise<string[]> {
+  const notion = getNotionClient();
+  const response = await notion.dataSources.query({
+    data_source_id: EVENTS_DATA_SOURCE_ID,
+    filter: {
+      or: [
+        { property: "状态", select: { equals: "即将举办" } },
+        { property: "状态", select: { equals: "报名中" } },
+        { property: "状态", select: { equals: "已举办" } },
+      ],
+    },
+    page_size: 100,
+  });
+  const slugs: string[] = [];
+  for (const page of response.results) {
+    if (!("properties" in page)) continue;
+    const slugProp = (page as PageObjectResponse).properties["Slug"];
+    if (slugProp?.type === "rich_text") {
+      const s = richTextToPlainText(slugProp.rich_text).trim();
+      if (s) slugs.push(s);
+    }
+  }
+  return slugs;
+}
+
+/**
+ * 根据 slug 获取单个活动 (含 page content blocks).
+ * 用于: 活动详情页 /events/[slug]
+ */
+export async function getEventBySlug(
+  slug: string,
+): Promise<EventDetail | null> {
+  const notion = getNotionClient();
+  const response = await notion.dataSources.query({
+    data_source_id: EVENTS_DATA_SOURCE_ID,
+    filter: {
+      and: [
+        { property: "Slug", rich_text: { equals: slug } },
+        {
+          or: [
+            { property: "状态", select: { equals: "即将举办" } },
+            { property: "状态", select: { equals: "报名中" } },
+            { property: "状态", select: { equals: "已举办" } },
+          ],
+        },
+      ],
+    },
+    page_size: 1,
+  });
+  if (response.results.length === 0) return null;
+  const page = response.results[0];
+  if (!("properties" in page)) return null;
+
+  const event = parseEventProperties(page as PageObjectResponse);
+  if (!event) return null;
+
+  const blocks = await fetchAllBlocks(notion, page.id);
+  return { ...event, blocks: parseBlocks(blocks) };
 }
 
 /**

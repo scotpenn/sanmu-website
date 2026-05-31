@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Container } from "@/components/Container";
 import { SectionTitle } from "@/components/SectionTitle";
 import { Button } from "@/components/Button";
@@ -24,24 +25,31 @@ function formatDateLabel(isoDate: string): string {
 }
 
 function UpcomingCard({ event }: { event: EventItem }) {
+  const href = `/events/${event.slug}`;
   return (
     <article className="border border-rule bg-brand-yellow/10 overflow-hidden">
-      {event.coverImageUrl && (
-        <div className="aspect-[16/9] relative bg-rule">
-          <Image
-            src={event.coverImageUrl}
-            alt={event.title}
-            fill
-            sizes="(min-width: 768px) 1080px, 100vw"
-            className="object-cover"
-          />
-        </div>
-      )}
+      <Link href={href} className="block hover:opacity-95 transition-opacity">
+        {event.coverImageUrl && (
+          <div className="aspect-[16/9] relative bg-rule">
+            <Image
+              src={event.coverImageUrl}
+              alt={event.title}
+              fill
+              sizes="(min-width: 768px) 1080px, 100vw"
+              className="object-cover"
+            />
+          </div>
+        )}
+      </Link>
       <div className="p-8 md:p-10">
       <div className="text-xs font-en uppercase tracking-widest text-brand-navy/70 mb-4 font-medium">
         {event.status} · Upcoming
       </div>
-      <h3 className="text-2xl md:text-3xl mb-3">{event.title}</h3>
+      <Link href={href} className="block group">
+        <h3 className="text-2xl md:text-3xl mb-3 group-hover:text-brand-navy transition-colors">
+          {event.title}
+        </h3>
+      </Link>
       <p className="text-base opacity-80 mb-6 leading-relaxed">
         {event.summary}
       </p>
@@ -81,24 +89,31 @@ function UpcomingCard({ event }: { event: EventItem }) {
 }
 
 function PastCard({ event }: { event: EventItem }) {
+  const href = `/events/${event.slug}`;
   return (
     <article className="border border-rule overflow-hidden">
-      {event.coverImageUrl && (
-        <div className="aspect-[16/9] relative bg-rule">
-          <Image
-            src={event.coverImageUrl}
-            alt={event.title}
-            fill
-            sizes="(min-width: 768px) 540px, 100vw"
-            className="object-cover"
-          />
-        </div>
-      )}
+      <Link href={href} className="block hover:opacity-95 transition-opacity">
+        {event.coverImageUrl && (
+          <div className="aspect-[16/9] relative bg-rule">
+            <Image
+              src={event.coverImageUrl}
+              alt={event.title}
+              fill
+              sizes="(min-width: 768px) 540px, 100vw"
+              className="object-cover"
+            />
+          </div>
+        )}
+      </Link>
       <div className="p-8 md:p-10">
       <div className="text-xs font-en uppercase tracking-widest opacity-50 mb-4">
         Past Event
       </div>
-      <h3 className="text-xl md:text-2xl mb-2">{event.title}</h3>
+      <Link href={href} className="block group">
+        <h3 className="text-xl md:text-2xl mb-2 group-hover:text-brand-navy transition-colors">
+          {event.title}
+        </h3>
+      </Link>
 
       <dl className="text-sm space-y-2 mb-6 border-y border-rule py-5">
         <div className="flex gap-4">

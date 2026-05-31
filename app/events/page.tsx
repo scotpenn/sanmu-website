@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Container } from "@/components/Container";
 import { SectionTitle } from "@/components/SectionTitle";
 import { Button } from "@/components/Button";
@@ -24,7 +25,19 @@ function formatDateLabel(isoDate: string): string {
 
 function UpcomingCard({ event }: { event: EventItem }) {
   return (
-    <article className="border border-rule bg-brand-yellow/10 p-8 md:p-10">
+    <article className="border border-rule bg-brand-yellow/10 overflow-hidden">
+      {event.coverImageUrl && (
+        <div className="aspect-[16/9] relative bg-rule">
+          <Image
+            src={event.coverImageUrl}
+            alt={event.title}
+            fill
+            sizes="(min-width: 768px) 1080px, 100vw"
+            className="object-cover"
+          />
+        </div>
+      )}
+      <div className="p-8 md:p-10">
       <div className="text-xs font-en uppercase tracking-widest text-brand-navy/70 mb-4 font-medium">
         {event.status} · Upcoming
       </div>
@@ -62,13 +75,26 @@ function UpcomingCard({ event }: { event: EventItem }) {
           ✉️ 写信咨询
         </Button>
       </div>
+      </div>
     </article>
   );
 }
 
 function PastCard({ event }: { event: EventItem }) {
   return (
-    <article className="border border-rule p-8 md:p-10">
+    <article className="border border-rule overflow-hidden">
+      {event.coverImageUrl && (
+        <div className="aspect-[16/9] relative bg-rule">
+          <Image
+            src={event.coverImageUrl}
+            alt={event.title}
+            fill
+            sizes="(min-width: 768px) 540px, 100vw"
+            className="object-cover"
+          />
+        </div>
+      )}
+      <div className="p-8 md:p-10">
       <div className="text-xs font-en uppercase tracking-widest opacity-50 mb-4">
         Past Event
       </div>
@@ -115,6 +141,7 @@ function PastCard({ event }: { event: EventItem }) {
           观看现场回顾 →
         </a>
       )}
+      </div>
     </article>
   );
 }

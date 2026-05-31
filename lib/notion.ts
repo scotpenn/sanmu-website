@@ -211,7 +211,26 @@ export type EventItem = {
   attendees: number | null;
   signupUrl: string | null;
   videoReviewUrl: string | null;
+  coverImageUrl: string | null;
+  photos: string[];
 };
+
+/**
+ * 从 Notion Files 字段提取外部 URL.
+ * **只接受 external 类型** (Notion "Link" 模式), 跳过 upload 类型 (1 小时过期 S3 URL).
+ * 用户需在 Notion 文件字段用 "Link" 模式贴 Cloudinary / 其他图床的 URL.
+ */
+function parseExternalFiles(
+  prop: PageObjectResponse["properties"][string] | undefined,
+): string[] {
+  if (!prop || prop.type !== "files") return [];
+  const urls: string[] = [];
+  for (const f of prop.files) {
+    if (f.type === "external") urls.push(f.external.url);
+    // f.type === "file" 是 Notion 上传 (1 小时过期), 忽略.
+  }
+  return urls;
+}
 
 function parseEventProperties(page: PageObjectResponse): EventItem | null {
   const props = page.properties;
@@ -225,6 +244,8 @@ function parseEventProperties(page: PageObjectResponse): EventItem | null {
   const attendeesProp = props["参与人数"];
   const signupProp = props["报名链接"];
   const videoReviewProp = props["视频回顾"];
+  const coverProp = props["封面图"];
+  const photosProp = props["现场照片"];
 
   if (!titleProp || titleProp.type !== "title") return null;
   if (!slugProp || slugProp.type !== "rich_text") return null;
@@ -236,6 +257,8 @@ function parseEventProperties(page: PageObjectResponse): EventItem | null {
   const slug = richTextToPlainText(slugProp.rich_text).trim();
   const title = richTextToPlainText(titleProp.title).trim();
   if (!slug || !title) return null;
+
+  const coverImages = parseExternalFiles(coverProp);
 
   return {
     slug,
@@ -255,6 +278,8 @@ function parseEventProperties(page: PageObjectResponse): EventItem | null {
     signupUrl: signupProp?.type === "url" ? signupProp.url || null : null,
     videoReviewUrl:
       videoReviewProp?.type === "url" ? videoReviewProp.url || null : null,
+    coverImageUrl: coverImages[0] ?? null,
+    photos: parseExternalFiles(photosProp),
   };
 }
 

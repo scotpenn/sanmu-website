@@ -31,7 +31,7 @@ const TOPIC_CATEGORIES = [
   {
     title: "精神疗愈",
     description:
-      "精神内耗、中年危机、终局思维 —— 从火化炉前的视角，看清你的纠结。",
+      "精神内耗、中年危机、终局思维 —— 从殡仪馆内的视角，看清你的纠结。",
     href: "/blog",
   },
   {
@@ -100,7 +100,7 @@ export default async function HomePage() {
           </SectionTitle>
 
           <p className="text-lg leading-relaxed mb-12 opacity-90">
-            我做殡葬师 16 年。送过 1000 多人最后一程。6 年前开始拍视频。把火化炉前看到的事，讲给还来得及的人。时间永远比你以为的少。
+            我做殡葬师 16 年。送过 1000 多人最后一程。6 年前开始拍视频。把殡仪馆内看到的事，讲给还来得及的人。时间永远比你以为的少。
           </p>
 
           {/* 信任数字带 */}

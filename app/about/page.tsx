@@ -6,7 +6,7 @@ import { SectionTitle } from "@/components/SectionTitle";
 export const metadata = {
   title: "关于三木 · 三木有话说",
   description:
-    "三木，温哥华殡葬师，16 年送过 1000+ 个人最后一程。在 YouTube 频道《三木有话说》分享火化炉前看到的事。",
+    "三木，温哥华殡葬师，16 年送过 1000+ 个人最后一程。在 YouTube 频道《三木有话说》分享殡仪馆内看到的事。",
 };
 
 const WORKS = [
@@ -150,7 +150,7 @@ export default function AboutPage() {
               我不能替你做决定。
             </p>
             <p>
-              但如果你愿意听，我可以告诉你火化炉前我看到的那些事 ——
+              但如果你愿意听，我可以告诉你殡仪馆内我看到的那些事 ——
               <br className="hidden md:block" />
               那些可能让你重新思考人生的事。
             </p>

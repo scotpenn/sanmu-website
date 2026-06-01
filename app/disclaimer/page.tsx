@@ -88,7 +88,7 @@ export default function DisclaimerPage() {
 
             <h2 className="text-2xl mt-12 mb-3">最后一句话</h2>
             <p className="font-serif text-xl text-brand-navy border-l-4 border-brand-yellow pl-6 my-10 leading-relaxed">
-              我不能替你做决定。但如果你愿意听, 我可以告诉你火化炉前我看到的那些事。
+              我不能替你做决定。但如果你愿意听, 我可以告诉你殡仪馆内我看到的那些事。
             </p>
             <p>
               <strong>看完, 你自己判断, 自己决定, 自己负责</strong>。这是我对你的尊重, 也是我能给的所有承诺。

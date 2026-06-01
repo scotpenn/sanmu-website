@@ -30,6 +30,19 @@ export function Button({
   const cls = `${BASE} ${VARIANT_CLASSES[variant]} ${className}`;
 
   if (href) {
+    const isExternal = /^https?:\/\//i.test(href);
+    if (isExternal) {
+      return (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={cls}
+        >
+          {children}
+        </a>
+      );
+    }
     return (
       <Link href={href} className={cls}>
         {children}

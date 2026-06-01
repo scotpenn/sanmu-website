@@ -8,10 +8,8 @@ const CONTENT_LINKS = [
 ];
 
 const SOCIAL_LINKS = [
-  { href: "https://www.youtube.com/@yyds3mu", label: "YouTube" },
-  { href: "#", label: "公众号" },
-  { href: "#", label: "视频号" },
-  { href: "#", label: "小红书" },
+  { href: "https://www.youtube.com/@yyds3mu", label: "YouTube · @yyds3mu" },
+  { href: "https://xhslink.com/m/51jimi2BVtR", label: "小红书 · @温哥华三木" },
 ];
 
 export function Footer() {

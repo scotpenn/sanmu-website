@@ -120,6 +120,34 @@ async function getVideoStats(ids) {
   return results;
 }
 
+async function getAllPlaylists() {
+  const data = await ytFetch(
+    `https://www.googleapis.com/youtube/v3/playlists?part=snippet,contentDetails&channelId=${CHANNEL_ID}&maxResults=50`,
+  );
+  return (data.items || []).map((pl) => ({
+    id: pl.id,
+    title: pl.snippet.title,
+    description: pl.snippet.description || "",
+    published_at: pl.snippet.publishedAt,
+    item_count: pl.contentDetails.itemCount,
+  }));
+}
+
+async function getPlaylistVideoIds(playlistId) {
+  const ids = [];
+  let pageToken = "";
+  do {
+    const data = await ytFetch(
+      `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&maxResults=50${
+        pageToken ? `&pageToken=${pageToken}` : ""
+      }`,
+    );
+    data.items.forEach((it) => ids.push(it.snippet.resourceId.videoId));
+    pageToken = data.nextPageToken || "";
+  } while (pageToken);
+  return ids;
+}
+
 function loadPrevious() {
   try {
     return JSON.parse(readFileSync(OUTPUT_PATH, "utf-8"));
@@ -174,6 +202,18 @@ function summarizeDelta(prev, curr) {
   // 按发布日期倒序
   videos.sort((a, b) => (a.published_at < b.published_at ? 1 : -1));
 
+  console.log("→ 拉取频道全部 playlists...");
+  const playlistsMeta = await getAllPlaylists();
+  console.log(`  共 ${playlistsMeta.length} 个 playlist`);
+
+  console.log("→ 拉取每个 playlist 的视频成员...");
+  const playlists = [];
+  for (const pl of playlistsMeta) {
+    const videoIds = await getPlaylistVideoIds(pl.id);
+    playlists.push({ ...pl, video_ids: videoIds });
+    console.log(`  ${pl.title}: ${videoIds.length} 个视频`);
+  }
+
   const prev = loadPrevious();
 
   const output = {
@@ -181,6 +221,7 @@ function summarizeDelta(prev, curr) {
     channel_id: CHANNEL_ID,
     generated_at: new Date().toISOString(),
     total: videos.length,
+    playlists,
     videos,
   };
 

@@ -1,5 +1,7 @@
 import data from "./data/videos.json";
 
+// ============ Types ============
+
 export type Video = {
   video_id: string;
   title: string;
@@ -11,65 +13,78 @@ export type Video = {
   comment_count: number;
 };
 
-export type VideoCategory = "feature" | "practical" | "evergreen";
-
-export const CATEGORY_META: Record<
-  VideoCategory,
-  { label: string; en: string; description: string }
-> = {
-  feature: {
-    label: "破圈精选",
-    en: "Featured",
-    description: "突破核心受众的高播放代表作",
-  },
-  practical: {
-    label: "实用指南",
-    en: "How-to Guides",
-    description: "遗嘱 / 葬礼 / 政府福利 等可直接照做的清单",
-  },
-  evergreen: {
-    label: "留存系列",
-    en: "Evergreen",
-    description: "长期可看的人生议题深度内容",
-  },
+export type Playlist = {
+  id: string;
+  title: string;
+  description: string;
+  published_at: string;
+  item_count: number;
+  video_ids: string[];
 };
 
-// 高于此阈值归入 "破圈精选"
-const FEATURE_VIEW_THRESHOLD = 30000;
+const rawData = data as {
+  channel: string;
+  channel_id: string;
+  generated_at: string;
+  total: number;
+  playlists: Playlist[];
+  videos: Video[];
+};
 
-// 实用指南关键词. 标题包含任意一个即归入此类.
-const PRACTICAL_KEYWORDS =
-  /遗嘱|葬礼|骨灰|福利|申请|如何|怎么|应该|生前|手册|墓地|火葬|土葬|临终|步骤|攻略|清单|流程|大坑|避坑/;
+const VIDEO_MAP = new Map(rawData.videos.map((v) => [v.video_id, v]));
 
-export function categorize(video: Video): VideoCategory {
-  if (video.view_count >= FEATURE_VIEW_THRESHOLD) return "feature";
-  if (PRACTICAL_KEYWORDS.test(video.title)) return "practical";
-  return "evergreen";
-}
-
-// 排除 shorts (标题含 #short)
+// 排除 Shorts (标题含 #short 或时长 < 60 秒)
 function isLongVideo(v: Video): boolean {
-  return !v.title.includes("#short");
+  return !v.title.includes("#short") && v.duration_seconds >= 60;
 }
 
-export function getAllVideos(): Video[] {
-  return (data.videos as Video[]).filter(isLongVideo);
+// ============ Playlists ============
+
+/**
+ * 获取频道所有 playlist (按 publishedAt 降序, API 默认顺序).
+ * 网站调用时可以再 sort 成自定义顺序.
+ */
+export function getAllPlaylists(): Playlist[] {
+  return rawData.playlists;
 }
 
-export function getCategoryVideos(cat: VideoCategory): Video[] {
-  return getAllVideos()
-    .filter((v) => categorize(v) === cat)
-    .sort((a, b) => b.view_count - a.view_count);
+/**
+ * 获取某 playlist 内的视频, 默认按 YouTube playlist 内原顺序.
+ * sortBy="views" -> 按播放量降序;
+ * sortBy="date"  -> 按发布日期降序.
+ */
+export function getPlaylistVideos(
+  playlistId: string,
+  opts?: { sortBy?: "views" | "date" | "playlist_order" },
+): Video[] {
+  const pl = rawData.playlists.find((p) => p.id === playlistId);
+  if (!pl) return [];
+  const videos = pl.video_ids
+    .map((id) => VIDEO_MAP.get(id))
+    .filter((v): v is Video => v !== undefined)
+    .filter(isLongVideo);
+
+  const sortBy = opts?.sortBy ?? "playlist_order";
+  if (sortBy === "views") {
+    videos.sort((a, b) => b.view_count - a.view_count);
+  } else if (sortBy === "date") {
+    videos.sort((a, b) => (a.published_at < b.published_at ? 1 : -1));
+  }
+  return videos;
 }
+
+// ============ Top videos (首页屏 4 用) ============
 
 export function getTopVideos(n: number): Video[] {
-  return getAllVideos()
+  return rawData.videos
+    .filter(isLongVideo)
     .slice()
     .sort((a, b) => b.view_count - a.view_count)
     .slice(0, n);
 }
 
-// 209,682 -> "20.9 万"
+// ============ Formatters ============
+
 export function formatViewCount(n: number): string {
   if (n >= 10000) return `${(n / 10000).toFixed(1).replace(/\.0$/, "")} 万`;
   if (n >= 1000) return `${(n / 1000).toFixed(1).replace(/\.0$/, "")}K`;

@@ -38,7 +38,7 @@ export function Header() {
   }, [isOpen]);
 
   return (
-    <header className="border-b border-rule relative bg-paper">
+    <header className="border-b border-rule sticky top-0 z-40 bg-paper/95 backdrop-blur-sm">
       <div className="mx-auto max-w-[1280px] px-6 py-5 flex items-center justify-between gap-4">
         <Link
           href="/"

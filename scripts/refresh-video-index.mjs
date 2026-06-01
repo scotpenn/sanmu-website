@@ -19,7 +19,13 @@ import { writeFileSync, readFileSync } from "fs";
 import { resolve } from "path";
 
 const CHANNEL_ID = "UCMhsp4Iyvgc_rCNfkaSNh0Q"; // 三木有话说 @yyds3mu
-const OUTPUT_PATH = resolve(process.cwd(), "..", "video_url_index.json");
+// 项目根 data/ 目录 (2026-05-31 整理后)
+const OUTPUT_PATH = resolve(
+  process.cwd(),
+  "..",
+  "data",
+  "video_url_index.json",
+);
 // 同步写入项目内 (Next.js build 时 lib/videos.ts 读取此文件)
 const PROJECT_OUTPUT_PATH = resolve(
   process.cwd(),

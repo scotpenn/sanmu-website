@@ -6,7 +6,7 @@ import { Button } from "@/components/Button";
 export const metadata = {
   title: "《身后事安心手册》v2.7 · 免费索取",
   description:
-    "温哥华殡葬师三木整理的 8 份实用文档·遗嘱模板·政府福利申请·87 件事清单·葬礼费用对比·向死而生活法·预立医疗委托·信用记录防盗·中英双语 80+ 页. 来信免费获取.",
+    "温哥华殡葬师三木整理的 8 份加拿大实用文档·遗嘱模板·政府福利申请·87 件事清单·葬礼费用对比·向死而生活法·预立医疗委托·信用记录防盗·80+ 页. 来信免费获取.",
 };
 
 const SUBJECT = "申请《身后事安心手册》v2.7";
@@ -114,10 +114,12 @@ export default function HandbookPage() {
                 但需要时它已经在你抽屉里。
               </h1>
               <p className="text-lg md:text-xl opacity-85 leading-relaxed mb-6">
-                《身后事安心手册》—— 8 份文档 / 80+ 页 / 中英双语。
+                《身后事安心手册》—— 8 份文档 / 80+ 页 / 加拿大场景。
               </p>
               <p className="text-base opacity-75 leading-relaxed mb-10 max-w-[520px]">
-                三木在加拿大做殡葬师 16 年，送过 1000+ 个家庭最后一程。这本手册是他和团队这些年看到家属反复踩的坑、被错误信息坑过的钱、错过的政府福利窗口期，整理出来的清单 + 模板 + 流程图。
+                三木在加拿大做殡葬师 16 年。送过 1000+ 个家庭。频道 6 年。
+                <br />
+                这本手册是他看到家属反复踩的坑、被错误信息坑过的钱、错过的政府福利窗口期，整理成的清单、模板和流程图。
               </p>
               <div className="flex flex-wrap gap-4">
                 <Button variant="primary" href={MAILTO_HREF}>

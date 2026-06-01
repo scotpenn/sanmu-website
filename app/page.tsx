@@ -12,9 +12,9 @@ import {
 } from "@/lib/videos";
 
 const TRUST_STATS = [
-  { value: "16", label: "年北美殡葬经验" },
-  { value: "1000+", label: "真实告别经历" },
-  { value: "12", label: "大主题持续输出" },
+  { value: "16", label: "年北美殡葬" },
+  { value: "1000+", label: "真实告别" },
+  { value: "6", label: "年频道运营" },
 ];
 
 // RECENT_POSTS 已迁移到 Notion (Phase 2.1). 见 lib/notion.ts.
@@ -59,7 +59,7 @@ export default async function HomePage() {
                 我就聊什么。
               </h1>
               <p className="text-lg md:text-xl opacity-80 mb-10 max-w-[480px]">
-                温哥华殡葬师 · 用 16 年告别经验，陪你看清生死与人生
+                温哥华殡葬师 16 年。送过 1000 多人。拍视频 6 年。
               </p>
               <div className="flex flex-wrap gap-4">
                 <Button variant="primary" href="/resources/handbook">
@@ -100,7 +100,7 @@ export default async function HomePage() {
           </SectionTitle>
 
           <p className="text-lg leading-relaxed mb-12 opacity-90">
-            我做殡葬师 16 年。送过 1000 多个人最后一程。三年前开始拍视频，把火化炉前看到的事讲给还来得及的人听 —— 因为时间永远比你以为的少。
+            我做殡葬师 16 年。送过 1000 多人最后一程。6 年前开始拍视频。把火化炉前看到的事，讲给还来得及的人。时间永远比你以为的少。
           </p>
 
           {/* 信任数字带 */}
@@ -272,17 +272,14 @@ export default async function HomePage() {
       {/* 屏 5b · 手册申请 · JC 风藏蓝实底 hard CTA */}
       <section className="bg-brand-navy text-paper">
         <Container width="reading" className="py-20 md:py-24 text-center">
-          <div className="text-sm font-en uppercase tracking-wider opacity-60 mb-3 font-medium">
-            Free Handbook · v2.7
-          </div>
           <h2 className="text-3xl md:text-4xl text-paper mb-6 font-extrabold tracking-[-0.01em]">
-            免费索取《身后事安心手册》
+            免费索取《身后事安心手册》v2.7
           </h2>
           <p className="text-lg opacity-90 mb-4 max-w-[560px] mx-auto leading-relaxed">
-            8 份文档 · 80+ 页 · 中英双语
+            8 份文档 · 80+ 页 · 加拿大场景
           </p>
           <p className="text-base opacity-80 mb-10 max-w-[560px] mx-auto leading-relaxed">
-            这份手册我整理了一年，迭代过 7 个版本。它不会让你看完就死无牵挂，但能让你比 90% 的家庭少踩很多坑。
+            整理 1 年。迭代 7 版。它不会让你看完就死无牵挂，但能让你比 90% 的家庭少踩很多坑。
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
             <a

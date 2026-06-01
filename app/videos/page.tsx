@@ -4,6 +4,7 @@ import { SectionTitle } from "@/components/SectionTitle";
 import {
   getAllPlaylists,
   getPlaylistVideos,
+  getOrphanVideos,
   formatViewCount,
   thumbnailUrl,
   watchUrl,
@@ -81,6 +82,7 @@ function sortPlaylists(playlists: Playlist[]): Playlist[] {
 
 export default function VideosPage() {
   const playlists = sortPlaylists(getAllPlaylists());
+  const orphans = getOrphanVideos({ sortBy: "views" });
 
   return (
     <>
@@ -101,6 +103,30 @@ export default function VideosPage() {
       {playlists.map((pl) => (
         <PlaylistSection key={pl.id} playlist={pl} />
       ))}
+
+      {/* 其他视频 · 未归入主题系列的零散内容 */}
+      {orphans.length > 0 && (
+        <section className="border-b border-rule">
+          <Container width="card" className="py-16 md:py-20">
+            <div className="border-b border-rule pb-6 mb-8">
+              <div className="flex flex-wrap items-baseline justify-between gap-3 mb-3">
+                <h2 className="text-2xl md:text-3xl">其他视频</h2>
+                <div className="text-xs font-en uppercase tracking-wider text-brand-navy/70 font-medium">
+                  {orphans.length} videos
+                </div>
+              </div>
+              <p className="text-base opacity-70 leading-relaxed max-w-[720px]">
+                尚未归入主题系列的零散内容 —— 短片、试拍、采访花絮等。
+              </p>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6">
+              {orphans.map((v) => (
+                <VideoCard key={v.video_id} video={v} />
+              ))}
+            </div>
+          </Container>
+        </section>
+      )}
 
       {/* 底部 · YouTube 频道引流 */}
       <section>

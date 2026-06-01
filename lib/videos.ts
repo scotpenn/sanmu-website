@@ -73,6 +73,29 @@ export function getPlaylistVideos(
   return videos;
 }
 
+/**
+ * 获取所有不在任何 playlist 里的视频 ("孤儿视频").
+ * 注: 不过滤 #short, 全部展示.
+ */
+export function getOrphanVideos(opts?: {
+  sortBy?: "views" | "date";
+}): Video[] {
+  const inPlaylist = new Set<string>();
+  rawData.playlists.forEach((pl) =>
+    pl.video_ids.forEach((id) => inPlaylist.add(id)),
+  );
+
+  const orphans = rawData.videos.filter((v) => !inPlaylist.has(v.video_id));
+
+  const sortBy = opts?.sortBy ?? "views";
+  if (sortBy === "views") {
+    orphans.sort((a, b) => b.view_count - a.view_count);
+  } else {
+    orphans.sort((a, b) => (a.published_at < b.published_at ? 1 : -1));
+  }
+  return orphans;
+}
+
 // ============ Top videos (首页屏 4 用) ============
 
 export function getTopVideos(n: number): Video[] {

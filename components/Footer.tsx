@@ -7,9 +7,42 @@ const CONTENT_LINKS = [
   { href: "/resources/handbook", label: "资料" },
 ];
 
+function YouTubeIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="w-6 h-6 shrink-0" aria-hidden>
+      <path
+        fill="#FF0000"
+        d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"
+      />
+      <path fill="#fff" d="M9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+    </svg>
+  );
+}
+
+function XiaohongshuIcon() {
+  return (
+    <span
+      className="inline-flex items-center justify-center w-6 h-6 rounded bg-[#FF2442] text-white text-xs font-extrabold leading-none shrink-0"
+      aria-hidden
+    >
+      红
+    </span>
+  );
+}
+
 const SOCIAL_LINKS = [
-  { href: "https://www.youtube.com/@yyds3mu", label: "YouTube · @yyds3mu" },
-  { href: "https://xhslink.com/m/51jimi2BVtR", label: "小红书 · @温哥华三木" },
+  {
+    href: "https://www.youtube.com/@yyds3mu",
+    name: "YouTube",
+    handle: "@yyds3mu",
+    Icon: YouTubeIcon,
+  },
+  {
+    href: "https://xhslink.com/m/51jimi2BVtR",
+    name: "小红书",
+    handle: "@温哥华三木",
+    Icon: XiaohongshuIcon,
+  },
 ];
 
 export function Footer() {
@@ -53,28 +86,25 @@ export function Footer() {
             </div>
             <a
               href="mailto:info@sanmu.ca"
-              className="block text-sm mb-3 hover:text-brand-navy transition-colors"
+              className="block text-sm mb-4 hover:text-brand-navy transition-colors"
             >
               info@sanmu.ca
             </a>
-            <ul className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
-              {SOCIAL_LINKS.map((s) => {
-                const isExternal = /^https?:\/\//i.test(s.href);
-                return (
-                  <li key={s.label}>
-                    <a
-                      href={s.href}
-                      {...(isExternal && {
-                        target: "_blank",
-                        rel: "noopener noreferrer",
-                      })}
-                      className="hover:text-brand-navy transition-colors opacity-70 hover:opacity-100"
-                    >
-                      {s.label}
-                    </a>
-                  </li>
-                );
-              })}
+            <ul className="space-y-2 text-sm">
+              {SOCIAL_LINKS.map(({ href, name, handle, Icon }) => (
+                <li key={href}>
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${name} ${handle}`}
+                    className="inline-flex items-center gap-2 hover:opacity-80 transition-opacity"
+                  >
+                    <Icon />
+                    <span>{handle}</span>
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
         </div>

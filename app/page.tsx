@@ -3,7 +3,6 @@ import Link from "next/link";
 import { Container } from "@/components/Container";
 import { Button } from "@/components/Button";
 import { SectionTitle } from "@/components/SectionTitle";
-import { HandbookSignupForm } from "@/components/HandbookSignupForm";
 import { getAllPosts } from "@/lib/notion";
 import {
   getTopVideos,
@@ -268,17 +267,33 @@ export default async function HomePage() {
       <section className="bg-brand-navy text-paper">
         <Container width="reading" className="py-20 md:py-24 text-center">
           <div className="text-sm font-en uppercase tracking-wider opacity-60 mb-3 font-medium">
-            Free Handbook
+            Free Handbook · v2.7
           </div>
           <h2 className="text-3xl md:text-4xl text-paper mb-6 font-extrabold tracking-[-0.01em]">
             免费索取《身后事安心手册》
           </h2>
-          <p className="text-lg opacity-90 mb-10 max-w-[520px] mx-auto leading-relaxed">
-            这份手册我整理了一年，迭代过 7 个版本。它不会让你看完就死无牵挂，但能让你比 90% 的家庭少踩很多坑。留下邮箱，我把它发给你。
+          <p className="text-lg opacity-90 mb-4 max-w-[560px] mx-auto leading-relaxed">
+            8 份文档 · 80+ 页 · 中英双语
           </p>
-          <HandbookSignupForm />
-          <p className="mt-6 text-xs opacity-50">
-            我不会群发广告 · 任何时候可一键退订
+          <p className="text-base opacity-80 mb-10 max-w-[560px] mx-auto leading-relaxed">
+            这份手册我整理了一年，迭代过 7 个版本。它不会让你看完就死无牵挂，但能让你比 90% 的家庭少踩很多坑。
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <a
+              href={`mailto:info@sanmu.ca?subject=${encodeURIComponent("申请《身后事安心手册》v2.7")}`}
+              className="inline-block px-7 py-3 bg-brand-yellow text-brand-navy font-medium hover:opacity-90 transition-opacity"
+            >
+              ✉️ 来信索取
+            </a>
+            <Link
+              href="/resources/handbook"
+              className="inline-block px-7 py-3 border border-paper/40 text-paper hover:bg-paper/10 transition-colors"
+            >
+              先看完整介绍 →
+            </Link>
+          </div>
+          <p className="mt-8 text-xs opacity-50">
+            写信到 info@sanmu.ca · 三木亲自看 · 工作日内 24 小时回信
           </p>
         </Container>
       </section>

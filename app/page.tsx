@@ -79,10 +79,10 @@ export default async function HomePage() {
                 className="block hover:opacity-90 transition-opacity"
               >
                 <Image
-                  src="/handbook-cover.jpg"
+                  src="/handbook-cover.png"
                   alt="《身后事安心手册》v2.7 · 三木有话说频道整理"
-                  width={1655}
-                  height={2340}
+                  width={1414}
+                  height={2000}
                   priority
                   className="w-[240px] md:w-[280px] lg:w-[300px] h-auto shadow-xl border border-rule"
                 />

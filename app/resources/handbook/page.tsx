@@ -135,10 +135,10 @@ export default function HandbookPage() {
             {/* 右 · 手册封面 (真实 PDF 第一页) */}
             <div className="md:col-span-5 flex justify-center md:justify-end">
               <Image
-                src="/handbook-cover.jpg"
+                src="/handbook-cover.png"
                 alt="《身后事安心手册》v2.7 · 三木有话说频道整理"
-                width={1655}
-                height={2340}
+                width={1414}
+                height={2000}
                 priority
                 className="w-[280px] md:w-[320px] lg:w-[340px] h-auto shadow-xl border border-rule"
               />

@@ -71,16 +71,22 @@ export default async function HomePage() {
               </div>
             </div>
 
-            {/* 右侧手册封面 */}
+            {/* 右侧手册封面 · 点击跳 /resources/handbook */}
             <div className="md:col-span-5 flex justify-center md:justify-end">
-              <Image
-                src="/handbook-cover.jpg"
-                alt="《身后事安心手册》v2.7 · 三木有话说频道整理"
-                width={1655}
-                height={2340}
-                priority
-                className="w-[240px] md:w-[280px] lg:w-[300px] h-auto shadow-xl border border-rule"
-              />
+              <Link
+                href="/resources/handbook"
+                aria-label="查看《身后事安心手册》完整介绍"
+                className="block hover:opacity-90 transition-opacity"
+              >
+                <Image
+                  src="/handbook-cover.jpg"
+                  alt="《身后事安心手册》v2.7 · 三木有话说频道整理"
+                  width={1655}
+                  height={2340}
+                  priority
+                  className="w-[240px] md:w-[280px] lg:w-[300px] h-auto shadow-xl border border-rule"
+                />
+              </Link>
             </div>
           </div>
         </Container>

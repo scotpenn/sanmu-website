@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Container } from "@/components/Container";
 import { SectionTitle } from "@/components/SectionTitle";
 import { Button } from "@/components/Button";
@@ -131,23 +132,16 @@ export default function HandbookPage() {
               </div>
             </div>
 
-            {/* 右 · 手册封面 */}
+            {/* 右 · 手册封面 (真实 PDF 第一页) */}
             <div className="md:col-span-5 flex justify-center md:justify-end">
-              <div className="w-[280px] aspect-[3/4] bg-brand-navy text-paper flex flex-col items-center justify-center p-6 text-center shadow-lg">
-                <div className="text-xs font-en uppercase tracking-widest opacity-70 mb-3">
-                  Free · 80+ Pages
-                </div>
-                <div className="text-2xl font-extrabold leading-tight mb-2">
-                  身后事
-                  <br />
-                  安心手册
-                </div>
-                <div className="text-xs opacity-70 mt-auto">
-                  v2.7 · 累计迭代 7 次
-                  <br />
-                  三木有话说频道出品
-                </div>
-              </div>
+              <Image
+                src="/handbook-cover.jpg"
+                alt="《身后事安心手册》v2.7 · 三木有话说频道整理"
+                width={1655}
+                height={2340}
+                priority
+                className="w-[280px] md:w-[320px] lg:w-[340px] h-auto shadow-xl border border-rule"
+              />
             </div>
           </div>
         </Container>

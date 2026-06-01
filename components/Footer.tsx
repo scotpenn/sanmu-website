@@ -8,7 +8,7 @@ const CONTENT_LINKS = [
 ];
 
 const SOCIAL_LINKS = [
-  { href: "#", label: "YouTube" },
+  { href: "https://www.youtube.com/@yyds3mu", label: "YouTube" },
   { href: "#", label: "公众号" },
   { href: "#", label: "视频号" },
   { href: "#", label: "小红书" },
@@ -60,16 +60,23 @@ export function Footer() {
               info@sanmu.ca
             </a>
             <ul className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
-              {SOCIAL_LINKS.map((s) => (
-                <li key={s.label}>
-                  <a
-                    href={s.href}
-                    className="hover:text-brand-navy transition-colors opacity-70 hover:opacity-100"
-                  >
-                    {s.label}
-                  </a>
-                </li>
-              ))}
+              {SOCIAL_LINKS.map((s) => {
+                const isExternal = /^https?:\/\//i.test(s.href);
+                return (
+                  <li key={s.label}>
+                    <a
+                      href={s.href}
+                      {...(isExternal && {
+                        target: "_blank",
+                        rel: "noopener noreferrer",
+                      })}
+                      className="hover:text-brand-navy transition-colors opacity-70 hover:opacity-100"
+                    >
+                      {s.label}
+                    </a>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </div>
@@ -77,12 +84,20 @@ export function Footer() {
         {/* 底部 · 版权行 */}
         <div className="border-t border-rule pt-6 flex flex-wrap justify-between gap-3 text-xs opacity-60">
           <div>© 2026 三木有话说 · 由三木个人运营 · sanmu.ca</div>
-          <Link
-            href="/privacy"
-            className="hover:text-brand-navy transition-colors"
-          >
-            隐私政策
-          </Link>
+          <div className="flex flex-wrap gap-x-4 gap-y-1">
+            <Link
+              href="/disclaimer"
+              className="hover:text-brand-navy transition-colors"
+            >
+              免责声明
+            </Link>
+            <Link
+              href="/privacy"
+              className="hover:text-brand-navy transition-colors"
+            >
+              隐私政策
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

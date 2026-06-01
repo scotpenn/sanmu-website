@@ -2,6 +2,11 @@ import { Container } from "@/components/Container";
 import { Button } from "@/components/Button";
 import { SectionTitle } from "@/components/SectionTitle";
 
+export const metadata = {
+  title: "视觉系统验收页",
+  robots: { index: false, follow: false },
+};
+
 const COLORS = [
   { cls: "bg-brand-navy", hex: "#1E3A8A", name: "brand-navy", desc: "Logo / 标题 / 主按钮", textOnDark: true },
   { cls: "bg-brand-yellow", hex: "#F2C12E", name: "brand-yellow", desc: "引文背景 / 高亮", textOnDark: false },

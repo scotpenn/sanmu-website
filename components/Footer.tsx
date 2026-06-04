@@ -109,8 +109,22 @@ export function Footer() {
           </div>
         </div>
 
+        {/* 简要免责声明 */}
+        <div className="border-t border-rule pt-6 mb-5 text-xs leading-relaxed opacity-60">
+          <p>
+            <span className="font-medium">免责声明：</span>
+            本网站及《三木有话说》频道的全部内容（包括视频、文章与下载资料），均基于三木个人从业经验整理，仅供一般参考与教育用途，不构成法律、医疗、财务、心理健康或其他专业建议。涉及遗嘱与遗产规划、政府福利申请、殡仪服务合同等具体事项，请以官方最新规定为准，并咨询相关持牌专业人士。
+            <Link
+              href="/disclaimer"
+              className="underline underline-offset-2 hover:text-brand-navy transition-colors ml-1"
+            >
+              阅读完整免责声明
+            </Link>
+          </p>
+        </div>
+
         {/* 底部 · 版权行 */}
-        <div className="border-t border-rule pt-6 flex flex-wrap justify-between gap-3 text-xs opacity-60">
+        <div className="flex flex-wrap justify-between gap-3 text-xs opacity-60">
           <div>© 2026 三木有话说 · 由三木个人运营 · sanmu.ca</div>
           <div className="flex flex-wrap gap-x-4 gap-y-1">
             <Link

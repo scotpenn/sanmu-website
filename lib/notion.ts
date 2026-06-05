@@ -204,6 +204,38 @@ export async function getAllSlugs(): Promise<string[]> {
   return posts.map((p) => p.slug);
 }
 
+/**
+ * 取与当前文章关键词(tags)最相关的 count 篇.
+ * 排序: 共享 tag 数 ↓ → 同 category 优先 → 发布日期较新优先.
+ * 共享为 0 的也参与排序, 因此只要总篇数够, 结果总会补满到 count 篇.
+ */
+export async function getRelatedPosts(
+  currentSlug: string,
+  count = 3,
+): Promise<PostMeta[]> {
+  const all = await getAllPosts();
+  const current = all.find((p) => p.slug === currentSlug);
+  const others = all.filter((p) => p.slug !== currentSlug);
+  if (!current) return others.slice(0, count);
+
+  const currentTags = new Set(current.tags);
+  const scored = others
+    .map((post) => ({
+      post,
+      shared: post.tags.filter((t) => currentTags.has(t)).length,
+      sameCat:
+        current.category && post.category === current.category ? 1 : 0,
+    }))
+    .sort(
+      (a, b) =>
+        b.shared - a.shared ||
+        b.sameCat - a.sameCat ||
+        (a.post.date < b.post.date ? 1 : -1),
+    );
+
+  return scored.slice(0, count).map((s) => s.post);
+}
+
 // ============ Events ============
 
 export type EventStatus = "草稿" | "即将举办" | "报名中" | "已举办";

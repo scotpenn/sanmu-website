@@ -37,7 +37,8 @@
 归一逻辑:`https://www.sanmu.ca/blog/x` 与 `https://sanmu.ca/blog/x` → `/blog/x`;已是相对路径则原样。
 
 ### 在 Notion 怎么用
-正文选中文字 → 设链接 → 内链填 `/blog/某slug`(相对)或完整 URL 均可。
+正文选中文字 → 设链接 → **推荐内链填完整 URL `https://www.sanmu.ca/blog/某slug`**(Notion 更认完整 URL;渲染时自动归一成相对路径走 Next `<Link>`)。相对路径 `/blog/某slug` 也支持。
+⚠️ 内链务必用规范域名 `www.sanmu.ca`,不要用 `*.vercel.app` 预览域名(不含 `sanmu.ca` 会被当站外链接)。
 
 ### 边界 & YAGNI
 - 旧纯文字段落不受影响(无 href 即纯文字)。

@@ -4,6 +4,11 @@ import Link from "next/link";
 import { Container } from "@/components/Container";
 import { Button } from "@/components/Button";
 import { getAllEventSlugs, getEventBySlug } from "@/lib/notion";
+import { videoIdFromUrl } from "@/lib/videos";
+import { VideoJsonLd } from "@/components/VideoJsonLd";
+
+// ISR: 每小时后台刷新. 改了活动内容后详情页自动更新; build 后新增的活动也按需生成.
+export const revalidate = 3600;
 
 export async function generateStaticParams() {
   const slugs = await getAllEventSlugs();
@@ -161,6 +166,12 @@ export default async function EventDetailPage({
                 if (block.type === "video") {
                   return (
                     <div key={idx} className="my-8 aspect-video">
+                      <VideoJsonLd
+                        videoId={block.videoId}
+                        fallbackName={event.title}
+                        description={event.summary}
+                        fallbackUploadDate={event.date}
+                      />
                       <iframe
                         src={`https://www.youtube.com/embed/${block.videoId}`}
                         title="Embedded video"
@@ -216,6 +227,14 @@ export default async function EventDetailPage({
               现场回顾 · Recap Video
             </div>
             <div className="aspect-video">
+              {videoIdFromUrl(event.videoReviewUrl) && (
+                <VideoJsonLd
+                  videoId={videoIdFromUrl(event.videoReviewUrl)!}
+                  fallbackName={`${event.title} · 现场回顾`}
+                  description={event.summary}
+                  fallbackUploadDate={event.date}
+                />
+              )}
               <iframe
                 src={event.videoReviewUrl.replace(
                   "youtube.com/watch?v=",

@@ -3,6 +3,11 @@ import Link from "next/link";
 import { Container } from "@/components/Container";
 import { Button } from "@/components/Button";
 import { getAllSlugs, getPostBySlug } from "@/lib/notion";
+import { VideoJsonLd } from "@/components/VideoJsonLd";
+
+// ISR: 每小时后台刷新. 改了文章内容后详情页自动更新; build 后新增的文章
+// (不在 generateStaticParams 里) 也会在首次访问时按需生成.
+export const revalidate = 3600;
 
 export async function generateStaticParams() {
   const slugs = await getAllSlugs();
@@ -88,6 +93,12 @@ export default async function PostPage({
               if (block.type === "video") {
                 return (
                   <div key={idx} className="my-10">
+                    <VideoJsonLd
+                      videoId={block.videoId}
+                      fallbackName={post.title}
+                      description={post.subtitle}
+                      fallbackUploadDate={post.date}
+                    />
                     <div className="text-sm font-en uppercase tracking-wider text-brand-navy/70 mb-3 font-medium">
                       Watch on YouTube
                     </div>

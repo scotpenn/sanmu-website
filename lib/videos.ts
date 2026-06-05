@@ -5,6 +5,7 @@ import data from "./data/videos.json";
 export type Video = {
   video_id: string;
   title: string;
+  description?: string; // YouTube 简介原文 (含链接/话题标签/时间戳等噪音), 用 videoSummary() 清洗
   url: string;
   published_at: string;
   duration_seconds: number;
@@ -130,4 +131,72 @@ export function thumbnailUrl(videoId: string): string {
 
 export function watchUrl(videoId: string): string {
   return `https://www.youtube.com/watch?v=${videoId}`;
+}
+
+/**
+ * 从 YouTube 简介原文提取一句话摘要, 用于 VideoObject.description / 卡片简介.
+ * 规则: 取第一段非空行 → 去掉「【视频简介】」这类标签和开头符号 → 超长则截到首句 (加省略号).
+ * 简介里的链接/时间戳/话题标签都在后续段落, 取第一行天然避开.
+ */
+export function videoSummary(
+  description: string | undefined,
+  maxLen = 120,
+): string {
+  if (!description) return "";
+  const firstLine = description
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .find((l) => l.length > 0);
+  if (!firstLine) return "";
+
+  const s = firstLine
+    .replace(/^[【[][^】\]]*[】\]]\s*/, "") // 去掉开头的【xxx】/[xxx] 标签
+    .replace(/^[\s•·\-—📌⏱🎥📘🎯👋🔗]+/, "") // 去掉开头项目符号/emoji
+    .trim();
+  if (!s) return "";
+  if (s.length <= maxLen) return s;
+
+  // 超长: 逐句累加到接近 maxLen 为止
+  const parts = (s.match(/[^。！？]*[。！？]?/g) || [s]).filter(Boolean);
+  let out = "";
+  for (const p of parts) {
+    if (out && out.length + p.length > maxLen) break;
+    out += p;
+    if (out.length >= maxLen) break;
+  }
+  out = out || s.slice(0, maxLen);
+  return /[。！？]$/.test(out) ? out : out.replace(/[，、,\s]+\S*$/, "") + "…";
+}
+
+/**
+ * 从 YouTube watch/embed/youtu.be 链接里抽出 11 位 videoId. 抽不到返回 null.
+ */
+export function videoIdFromUrl(url: string | null | undefined): string | null {
+  if (!url) return null;
+  const match = url.match(
+    /(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{11})/,
+  );
+  return match?.[1] ?? null;
+}
+
+/**
+ * 按 videoId 反查频道视频元数据 (title / published_at / duration 等).
+ * 用于给嵌了 YouTube 的页面生成 VideoObject 结构化数据. 视频不在频道数据里时返回 undefined.
+ */
+export function getVideoById(videoId: string): Video | undefined {
+  return VIDEO_MAP.get(videoId);
+}
+
+/**
+ * 秒数转 ISO 8601 时长 (如 PT1H2M3S), Google VideoObject.duration 要求的格式.
+ */
+export function iso8601Duration(seconds: number): string {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+  let out = "PT";
+  if (h > 0) out += `${h}H`;
+  if (m > 0) out += `${m}M`;
+  if (s > 0 || (h === 0 && m === 0)) out += `${s}S`;
+  return out;
 }

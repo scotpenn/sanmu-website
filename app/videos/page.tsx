@@ -11,6 +11,7 @@ import {
   type Video,
   type Playlist,
 } from "@/lib/videos";
+import { VideoJsonLd } from "@/components/VideoJsonLd";
 
 export const metadata = {
   title: "视频内容 · 三木有话说",
@@ -26,6 +27,12 @@ function VideoCard({ video }: { video: Video }) {
       rel="noopener noreferrer"
       className="group block"
     >
+      <VideoJsonLd
+        videoId={video.video_id}
+        fallbackName={video.title}
+        description={video.title}
+        fallbackUploadDate={video.published_at}
+      />
       <div className="aspect-video relative overflow-hidden bg-rule mb-3">
         <Image
           src={thumbnailUrl(video.video_id)}

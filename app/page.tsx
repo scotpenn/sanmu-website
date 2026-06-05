@@ -11,6 +11,9 @@ import {
   watchUrl,
 } from "@/lib/videos";
 
+// ISR: 每小时后台刷新, 首页"最近文章"发新文后自动更新, 无需 redeploy.
+export const revalidate = 3600;
+
 const TRUST_STATS = [
   { value: "16", label: "年北美殡葬" },
   { value: "1000+", label: "真实告别" },

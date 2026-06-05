@@ -9,6 +9,9 @@ import {
   type EventItem,
 } from "@/lib/notion";
 
+// ISR: 每小时后台刷新, 活动状态/新活动自动更新, 无需 redeploy.
+export const revalidate = 3600;
+
 export const metadata = {
   title: "线下活动 · 三木有话说",
   description: "三木举办的面对面线下分享与讲座活动。即将举办与往期回顾。",

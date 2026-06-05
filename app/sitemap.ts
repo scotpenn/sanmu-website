@@ -3,6 +3,10 @@ import { getAllPosts, getAllEventSlugs } from "@/lib/notion";
 
 const SITE = "https://www.sanmu.ca";
 
+// ISR: 每小时后台重新查 Notion 一次, 发新文章后无需 redeploy, sitemap 自动更新.
+// 不设则 Next 视为永久静态 (revalidate 无限), 只在 build 时刷新一次.
+export const revalidate = 3600;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 静态路由
   const staticRoutes: MetadataRoute.Sitemap = [

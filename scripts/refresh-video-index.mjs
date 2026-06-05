@@ -12,6 +12,7 @@
  * 数据更新点 (相对 2026-05-28 旧版):
  *   - 新增 like_count 字段
  *   - 新增 duration_seconds 字段 (来自 contentDetails.duration ISO-8601)
+ *   - 新增 description 字段 (来自 snippet.description, 用于 VideoObject 结构化数据简介)
  *   - generated_at 改为完整 ISO 时间戳
  */
 
@@ -108,6 +109,7 @@ async function getVideoStats(ids) {
       results.push({
         video_id: v.id,
         title: v.snippet.title,
+        description: v.snippet.description || "",
         url: `https://www.youtube.com/watch?v=${v.id}`,
         published_at: v.snippet.publishedAt,
         duration_seconds: parseISODuration(v.contentDetails.duration),

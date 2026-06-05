@@ -3,6 +3,9 @@ import { Container } from "@/components/Container";
 import { SectionTitle } from "@/components/SectionTitle";
 import { getAllPosts } from "@/lib/notion";
 
+// ISR: 每小时后台刷新, 发新文章后列表自动更新, 无需 redeploy.
+export const revalidate = 3600;
+
 export const metadata = {
   title: "博客 · 三木有话说",
   description:

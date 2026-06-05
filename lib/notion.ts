@@ -22,8 +22,10 @@ function getNotionClient(): Client {
 
 // ============ Types ============
 
+export type RichSegment = { text: string; href?: string };
+
 export type PostBlock =
-  | { type: "paragraph"; text: string }
+  | { type: "paragraph"; segments: RichSegment[] }
   | { type: "quote"; text: string }
   | { type: "heading"; level: 2 | 3; text: string }
   | { type: "video"; videoId: string };
@@ -107,8 +109,13 @@ function parseBlocks(blocks: BlockObjectResponse[]): PostBlock[] {
   for (const b of blocks) {
     switch (b.type) {
       case "paragraph": {
-        const text = richTextToPlainText(b.paragraph.rich_text).trim();
-        if (text) result.push({ type: "paragraph", text });
+        const segments: RichSegment[] = b.paragraph.rich_text.map((rt) => ({
+          text: rt.plain_text,
+          href: rt.href ?? undefined,
+        }));
+        if (segments.some((s) => s.text.trim())) {
+          result.push({ type: "paragraph", segments });
+        }
         break;
       }
       case "quote": {

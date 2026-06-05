@@ -4,6 +4,7 @@ import { Container } from "@/components/Container";
 import { Button } from "@/components/Button";
 import { getAllSlugs, getPostBySlug } from "@/lib/notion";
 import { VideoJsonLd } from "@/components/VideoJsonLd";
+import { RichText } from "@/components/RichText";
 
 // ISR: 每小时后台刷新. 改了文章内容后详情页自动更新; build 后新增的文章
 // (不在 generateStaticParams 里) 也会在首次访问时按需生成.
@@ -76,7 +77,7 @@ export default async function PostPage({
               if (block.type === "paragraph") {
                 return (
                   <p key={idx} className="text-lg leading-[1.85]">
-                    {block.text}
+                    <RichText segments={block.segments} />
                   </p>
                 );
               }

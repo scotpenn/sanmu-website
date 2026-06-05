@@ -6,6 +6,7 @@ import { Button } from "@/components/Button";
 import { getAllEventSlugs, getEventBySlug } from "@/lib/notion";
 import { videoIdFromUrl } from "@/lib/videos";
 import { VideoJsonLd } from "@/components/VideoJsonLd";
+import { RichText } from "@/components/RichText";
 
 // ISR: 每小时后台刷新. 改了活动内容后详情页自动更新; build 后新增的活动也按需生成.
 export const revalidate = 3600;
@@ -134,7 +135,7 @@ export default async function EventDetailPage({
                 if (block.type === "paragraph") {
                   return (
                     <p key={idx} className="text-base leading-[1.85]">
-                      {block.text}
+                      <RichText segments={block.segments} />
                     </p>
                   );
                 }

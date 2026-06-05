@@ -2,9 +2,10 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Container } from "@/components/Container";
 import { Button } from "@/components/Button";
-import { getAllSlugs, getPostBySlug } from "@/lib/notion";
+import { getAllSlugs, getPostBySlug, getRelatedPosts } from "@/lib/notion";
 import { VideoJsonLd } from "@/components/VideoJsonLd";
 import { RichText } from "@/components/RichText";
+import { RelatedPosts } from "@/components/RelatedPosts";
 
 // ISR: 每小时后台刷新. 改了文章内容后详情页自动更新; build 后新增的文章
 // (不在 generateStaticParams 里) 也会在首次访问时按需生成.
@@ -37,6 +38,7 @@ export default async function PostPage({
   const { slug } = await params;
   const post = await getPostBySlug(slug);
   if (!post) notFound();
+  const related = await getRelatedPosts(slug, 3);
 
   return (
     <>
@@ -120,6 +122,15 @@ export default async function PostPage({
           </div>
         </Container>
       </article>
+
+      {/* 相关阅读 */}
+      {related.length > 0 && (
+        <section className="border-t border-rule">
+          <Container width="reading" className="py-16 md:py-20">
+            <RelatedPosts posts={related} />
+          </Container>
+        </section>
+      )}
 
       {/* 文末四模块 */}
       <section className="border-t border-rule bg-brand-yellow/[0.05]">

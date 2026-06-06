@@ -4,96 +4,79 @@ import { Container } from "@/components/Container";
 import { Button } from "@/components/Button";
 import { SectionTitle } from "@/components/SectionTitle";
 import { getAllPosts } from "@/lib/notion";
-import { DEFAULT_LOCALE } from "@/lib/i18n";
+import {
+  TRADITIONAL_LOCALE,
+  localizedPath,
+  minutesLabel,
+} from "@/lib/i18n";
 import { pageSeo } from "@/lib/seo";
 import {
   getTopVideos,
   formatViewCount,
   thumbnailUrl,
   watchUrl,
+  localizeVideoTitle,
 } from "@/lib/videos";
 
-// ISR: 每小时后台刷新, 首页"最近文章"发新文后自动更新, 无需 redeploy.
 export const revalidate = 3600;
 
 export const metadata = pageSeo({
-  title: "温哥华殡葬师陪你看清生死与人生",
+  title: "溫哥華殯葬師陪你看清生死與人生",
   description:
-    "16 年北美殡葬经验，1000+ 真实告别。葬礼避坑、遗嘱填坑、政府福利申请、终局思维 —— 海外华人最该看的频道。",
+    "16 年北美殯葬經驗，1000+ 真實告別。葬禮避坑、遺囑填坑、政府福利申請、終局思維，海外華人最該看的頻道。",
   path: "/",
-  locale: DEFAULT_LOCALE,
+  locale: TRADITIONAL_LOCALE,
 });
 
 const TRUST_STATS = [
-  { value: "16", label: "年北美殡葬" },
-  { value: "1000+", label: "真实告别" },
-  { value: "6", label: "年频道运营" },
+  { value: "16", label: "年北美殯葬" },
+  { value: "1000+", label: "真實告別" },
+  { value: "6", label: "年頻道營運" },
 ];
 
-// RECENT_POSTS 已迁移到 Notion (Phase 2.1). 见 lib/notion.ts.
-
-// RECENT_VIDEOS 已迁到 lib/videos.ts (Phase 2.3) · 从 lib/data/videos.json 动态读取 top 3
-
-const TOPIC_CATEGORIES = [
-  {
-    title: "实用指南",
-    description:
-      "葬礼避坑、遗嘱填坑、骨灰运输、政府福利申请 —— 一份能直接用的清单。",
-    href: "/blog",
-  },
-  {
-    title: "精神疗愈",
-    description:
-      "精神内耗、中年危机、终局思维 —— 从殡仪馆内的视角，看清你的纠结。",
-    href: "/blog",
-  },
-  {
-    title: "关系重塑",
-    description: "婚姻、原生家庭、无效社交 —— 殡仪馆里看到的真实关系。",
-    href: "/blog",
-  },
-];
-
-export default async function HomePage() {
-  const latestPosts = (await getAllPosts()).slice(0, 3);
+export default async function TraditionalHomePage() {
+  const latestPosts = (await getAllPosts(TRADITIONAL_LOCALE)).slice(0, 3);
   const topVideos = getTopVideos(3);
 
   return (
     <>
-      {/* 屏 1 · Hero */}
       <section className="border-b border-rule">
         <Container width="card" className="py-20 md:py-28">
           <div className="grid md:grid-cols-12 gap-10 md:gap-16 items-center">
-            {/* 左侧文字 */}
             <div className="md:col-span-7">
               <h1 className="text-4xl md:text-5xl lg:text-6xl mb-6">
-                你怕什么，
+                你怕什麼，
                 <br />
-                我就聊什么。
+                我就聊什麼。
               </h1>
               <p className="text-lg md:text-xl opacity-80 mb-10 max-w-[480px]">
-                温哥华殡葬师 16 年。送过 1000 多人。拍视频 6 年。
+                溫哥華殯葬師 16 年。送過 1000 多人。拍影片 6 年。
               </p>
               <div className="flex flex-wrap gap-4">
-                <Button variant="primary" href="/resources/handbook">
-                  索取《身后事安心手册》
+                <Button
+                  variant="primary"
+                  href={localizedPath("/resources/handbook", TRADITIONAL_LOCALE)}
+                >
+                  索取《身後事安心手冊》
                 </Button>
-                <Button variant="secondary" href="/videos">
-                  观看最新视频
+                <Button
+                  variant="secondary"
+                  href={localizedPath("/videos", TRADITIONAL_LOCALE)}
+                >
+                  觀看最新影片
                 </Button>
               </div>
             </div>
 
-            {/* 右侧手册封面 · 点击跳 /resources/handbook */}
             <div className="md:col-span-5 flex justify-center md:justify-end">
               <Link
-                href="/resources/handbook"
-                aria-label="查看《身后事安心手册》完整介绍"
+                href={localizedPath("/resources/handbook", TRADITIONAL_LOCALE)}
+                aria-label="查看《身後事安心手冊》完整介紹"
                 className="block hover:opacity-90 transition-opacity"
               >
                 <Image
                   src="/handbook-cover.png"
-                  alt="《身后事安心手册》v2.7 · 三木有话说频道整理"
+                  alt="《身後事安心手冊》v2.7 · 三木有話說頻道整理"
                   width={1414}
                   height={2000}
                   priority
@@ -105,18 +88,14 @@ export default async function HomePage() {
         </Container>
       </section>
 
-      {/* 屏 2 · 我是三木 + 信任数字带 · 暖黄淡底 */}
       <section className="border-b border-rule bg-brand-yellow/[0.05]">
         <Container width="reading" className="py-20 md:py-24 text-center">
           <SectionTitle align="center" className="mb-6">
             我是三木
           </SectionTitle>
-
           <p className="text-lg leading-relaxed mb-12 opacity-90">
-            我做殡葬师 16 年。送过 1000 多人最后一程。6 年前开始拍视频。把殡仪馆内看到的事，讲给还来得及的人。时间永远比你以为的少。
+            我做殯葬師 16 年。送過 1000 多人最後一程。6 年前開始拍影片。把殯儀館內看到的事，講給還來得及的人。
           </p>
-
-          {/* 信任数字带 */}
           <div className="border-y border-rule py-8 mb-10 grid grid-cols-3 gap-4">
             {TRUST_STATS.map((stat) => (
               <div key={stat.label}>
@@ -129,51 +108,23 @@ export default async function HomePage() {
               </div>
             ))}
           </div>
-
           <Link
-            href="/about"
+            href={localizedPath("/about", TRADITIONAL_LOCALE)}
             className="inline-flex items-center gap-2 text-brand-navy hover:opacity-80 transition-opacity font-medium"
           >
-            了解更多关于我 <span aria-hidden>→</span>
+            了解更多關於我 <span aria-hidden>→</span>
           </Link>
         </Container>
       </section>
 
-      {/* 屏 3 · 我聊三类话题 */}
       <section className="border-b border-rule">
         <Container width="card" className="py-20 md:py-24">
-          <SectionTitle align="center">我聊三类话题</SectionTitle>
+          <SectionTitle align="center">最新內容</SectionTitle>
 
-          <div className="grid md:grid-cols-3 gap-6 md:gap-8 mt-12">
-            {TOPIC_CATEGORIES.map((cat) => (
-              <Link
-                key={cat.title}
-                href={cat.href}
-                className="block border border-rule p-8 hover:border-brand-navy hover:bg-brand-navy/[0.02] transition-colors"
-              >
-                <h3 className="text-xl md:text-2xl mb-4">{cat.title}</h3>
-                <p className="text-sm leading-relaxed opacity-80 mb-6">
-                  {cat.description}
-                </p>
-                <span className="text-sm font-medium text-brand-navy">
-                  查看相关内容 →
-                </span>
-              </Link>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      {/* 屏 4 · 最新内容 · 视频 3 列网格 + 文章紧凑 list */}
-      <section className="border-b border-rule">
-        <Container width="card" className="py-20 md:py-24">
-          <SectionTitle align="center">最新内容</SectionTitle>
-
-          {/* 最热视频 · 3 列卡片带 thumbnail */}
           <div className="mt-12 mb-16">
             <div className="flex items-end justify-between border-b border-rule pb-3 mb-6">
               <div className="text-sm font-en uppercase tracking-wider text-brand-navy/70 font-medium">
-                最热视频 · Top Videos
+                熱門影片 · Top Videos
               </div>
               <a
                 href="https://www.youtube.com/@yyds3mu"
@@ -181,10 +132,9 @@ export default async function HomePage() {
                 rel="noopener noreferrer"
                 className="text-xs text-brand-navy hover:opacity-80 transition-opacity font-medium"
               >
-                去 YouTube 频道 →
+                去 YouTube 頻道 →
               </a>
             </div>
-
             <div className="grid md:grid-cols-3 gap-6 md:gap-8">
               {topVideos.map((video) => (
                 <a
@@ -197,45 +147,45 @@ export default async function HomePage() {
                   <div className="aspect-video relative overflow-hidden bg-rule mb-4">
                     <Image
                       src={thumbnailUrl(video.video_id)}
-                      alt={video.title}
+                      alt={localizeVideoTitle(video.title, TRADITIONAL_LOCALE, video.video_id)}
                       fill
                       sizes="(min-width: 768px) 320px, 100vw"
                       className="object-cover transition-transform duration-300 group-hover:scale-105"
                     />
                   </div>
                   <h3 className="text-base md:text-lg font-medium leading-snug mb-2 group-hover:text-brand-navy transition-colors">
-                    {video.title}
+                    {localizeVideoTitle(video.title, TRADITIONAL_LOCALE, video.video_id)}
                   </h3>
                   <div className="text-xs opacity-50 font-en">
-                    {formatViewCount(video.view_count)} views · {video.published_at.slice(0, 10)}
+                    {formatViewCount(video.view_count, TRADITIONAL_LOCALE)} views ·{" "}
+                    {video.published_at.slice(0, 10)}
                   </div>
                 </a>
               ))}
             </div>
           </div>
 
-          {/* 最近文章 · 紧凑 list */}
           <div>
             <div className="flex items-end justify-between border-b border-rule pb-3 mb-6">
               <div className="text-sm font-en uppercase tracking-wider text-brand-navy/70 font-medium">
                 最近文章 · Latest Articles
               </div>
               <Link
-                href="/blog"
+                href={localizedPath("/blog", TRADITIONAL_LOCALE)}
                 className="text-xs text-brand-navy hover:opacity-80 transition-opacity font-medium"
               >
-                查看所有博客 →
+                查看所有網誌 →
               </Link>
             </div>
 
             {latestPosts.length === 0 ? (
               <p className="text-sm opacity-60 py-4">
-                博客刚开张，还没有文章 ·{" "}
+                繁體文章正在整理中 ·{" "}
                 <a
                   href="mailto:info@sanmu.ca"
                   className="text-brand-navy hover:opacity-80 transition-opacity font-medium"
                 >
-                  留邮箱第一时间收到新文 →
+                  留 email 第一時間收到新文 →
                 </a>
               </p>
             ) : (
@@ -243,14 +193,14 @@ export default async function HomePage() {
                 {latestPosts.map((post) => (
                   <li key={post.slug}>
                     <Link
-                      href={`/blog/${post.slug}`}
+                      href={localizedPath(`/blog/${post.slug}`, TRADITIONAL_LOCALE)}
                       className="block hover:opacity-80 transition-opacity"
                     >
                       <h3 className="text-base md:text-lg font-medium leading-snug mb-1">
                         {post.title}
                       </h3>
                       <div className="text-xs opacity-60 font-en">
-                        {post.date} · {post.readMinutes} 分钟
+                        {post.date} · {minutesLabel(post.readMinutes, TRADITIONAL_LOCALE)}
                         {post.tags[0] && ` · ${post.tags[0]}`}
                       </div>
                     </Link>
@@ -262,55 +212,23 @@ export default async function HomePage() {
         </Container>
       </section>
 
-      {/* 屏 5a · 线下活动 */}
-      <section className="border-b border-rule">
-        <Container width="card" className="py-20 md:py-24">
-          <SectionTitle align="center">最近的线下活动</SectionTitle>
-
-          <div className="max-w-md mx-auto border border-rule bg-brand-yellow/10 p-8 text-center mt-8">
-            <p className="text-lg mb-2">📅 下一场活动正在筹备中</p>
-            <p className="text-sm opacity-70 mb-6">
-              留下邮箱，第一时间收到通知
-            </p>
-            <Link
-              href="/events"
-              className="text-sm font-medium text-brand-navy hover:opacity-80 transition-opacity"
-            >
-              查看全部活动 →
-            </Link>
-          </div>
-        </Container>
-      </section>
-
-      {/* 屏 5b · 手册申请 · JC 风藏蓝实底 hard CTA */}
       <section className="bg-brand-navy text-paper">
         <Container width="reading" className="py-20 md:py-24 text-center">
           <h2 className="text-3xl md:text-4xl text-paper mb-6 font-extrabold tracking-[-0.01em]">
-            免费索取《身后事安心手册》v2.7
+            免費索取《身後事安心手冊》v2.7
           </h2>
           <p className="text-lg opacity-90 mb-4 max-w-[560px] mx-auto leading-relaxed">
-            8 份文档 · 80+ 页 · 加拿大场景
+            8 份文件 · 80+ 頁 · 加拿大場景
           </p>
           <p className="text-base opacity-80 mb-10 max-w-[560px] mx-auto leading-relaxed">
-            整理 1 年。迭代 7 版。它不会让你看完就死无牵挂，但能让你比 90% 的家庭少踩很多坑。
+            它不能替你做所有決定，但能讓你比大多數家庭少踩很多坑。
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <a
-              href={`mailto:info@sanmu.ca?subject=${encodeURIComponent("申请《身后事安心手册》v2.7")}`}
-              className="inline-block px-7 py-3 bg-brand-yellow text-brand-navy font-medium hover:opacity-90 transition-opacity"
-            >
-              ✉️ 来信索取
-            </a>
-            <Link
-              href="/resources/handbook"
-              className="inline-block px-7 py-3 border border-paper/40 text-paper hover:bg-paper/10 transition-colors"
-            >
-              先看完整介绍 →
-            </Link>
-          </div>
-          <p className="mt-8 text-xs opacity-50">
-            写信到 info@sanmu.ca · 三木亲自看 · 工作日内 24 小时回信
-          </p>
+          <Button
+            variant="primary"
+            href={localizedPath("/resources/handbook", TRADITIONAL_LOCALE)}
+          >
+            先看完整介紹 →
+          </Button>
         </Container>
       </section>
     </>

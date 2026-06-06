@@ -1,47 +1,134 @@
 import type { MetadataRoute } from "next";
 import { getAllPosts, getAllEventSlugs } from "@/lib/notion";
-
-const SITE = "https://www.sanmu.ca";
+import {
+  DEFAULT_LOCALE,
+  LOCALES,
+  TRADITIONAL_LOCALE,
+  type Locale,
+} from "@/lib/i18n";
+import { localeUrl, hreflangLanguages } from "@/lib/seo";
 
 // ISR: 每小时后台重新查 Notion 一次, 发新文章后无需 redeploy, sitemap 自动更新.
 // 不设则 Next 视为永久静态 (revalidate 无限), 只在 build 时刷新一次.
 export const revalidate = 3600;
 
+function sitemapEntry({
+  path,
+  locale,
+  priority,
+  changeFrequency,
+  lastModified,
+  availableLocales = LOCALES,
+}: {
+  path: string;
+  locale: Locale;
+  priority: number;
+  changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"];
+  lastModified?: Date;
+  /** 该路径实际存在的语言版本. 不传 = 两种都有(静态页). */
+  availableLocales?: readonly Locale[];
+}): MetadataRoute.Sitemap[number] {
+  return {
+    url: localeUrl(path, locale),
+    lastModified,
+    priority,
+    changeFrequency,
+    // 复用 seo.ts 的智能 hreflang: 只 emit 实际存在的语言版本 + 合理的 x-default
+    alternates: {
+      languages: hreflangLanguages(path, availableLocales),
+    },
+  };
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 静态路由
-  const staticRoutes: MetadataRoute.Sitemap = [
-    { url: `${SITE}/`, priority: 1.0, changeFrequency: "weekly" },
-    { url: `${SITE}/about`, priority: 0.9, changeFrequency: "monthly" },
-    { url: `${SITE}/blog`, priority: 0.9, changeFrequency: "weekly" },
-    { url: `${SITE}/videos`, priority: 0.8, changeFrequency: "weekly" },
-    { url: `${SITE}/events`, priority: 0.8, changeFrequency: "monthly" },
+  const staticPaths = [
+    { path: "/", priority: 1.0, changeFrequency: "weekly" },
+    { path: "/about", priority: 0.9, changeFrequency: "monthly" },
+    { path: "/blog", priority: 0.9, changeFrequency: "weekly" },
+    { path: "/videos", priority: 0.8, changeFrequency: "weekly" },
+    { path: "/events", priority: 0.8, changeFrequency: "monthly" },
     {
-      url: `${SITE}/resources/handbook`,
+      path: "/resources/handbook",
       priority: 0.8,
       changeFrequency: "monthly",
     },
-    { url: `${SITE}/disclaimer`, priority: 0.3, changeFrequency: "yearly" },
-    { url: `${SITE}/privacy`, priority: 0.3, changeFrequency: "yearly" },
-  ];
+    { path: "/disclaimer", priority: 0.3, changeFrequency: "yearly" },
+    { path: "/privacy", priority: 0.3, changeFrequency: "yearly" },
+  ] satisfies Array<{
+    path: string;
+    priority: number;
+    changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"];
+  }>;
 
-  // 动态拉博客 + 活动 (从 Notion)
-  const [posts, eventSlugs] = await Promise.all([
-    getAllPosts(),
-    getAllEventSlugs(),
+  const staticRoutes: MetadataRoute.Sitemap = staticPaths.flatMap((route) => [
+    sitemapEntry({ ...route, locale: DEFAULT_LOCALE }),
+    sitemapEntry({ ...route, locale: TRADITIONAL_LOCALE }),
   ]);
 
-  const blogRoutes: MetadataRoute.Sitemap = posts.map((post) => ({
-    url: `${SITE}/blog/${post.slug}`,
-    lastModified: post.date ? new Date(post.date) : undefined,
-    priority: 0.7,
-    changeFrequency: "monthly",
-  }));
+  // 动态拉博客 + 活动 (从 Notion)
+  const [hansPosts, hantPosts, hansEventSlugs, hantEventSlugs] = await Promise.all([
+    getAllPosts(DEFAULT_LOCALE),
+    getAllPosts(TRADITIONAL_LOCALE),
+    getAllEventSlugs(DEFAULT_LOCALE),
+    getAllEventSlugs(TRADITIONAL_LOCALE),
+  ]);
 
-  const eventRoutes: MetadataRoute.Sitemap = eventSlugs.map((slug) => ({
-    url: `${SITE}/events/${slug}`,
-    priority: 0.6,
-    changeFrequency: "monthly",
-  }));
+  // 每个 slug 实际存在哪些语言版本 (简→繁 稳定顺序), 给智能 hreflang 用.
+  const hansBlogSlugs = new Set(hansPosts.map((p) => p.slug));
+  const hantBlogSlugs = new Set(hantPosts.map((p) => p.slug));
+  const hansEventSet = new Set(hansEventSlugs);
+  const hantEventSet = new Set(hantEventSlugs);
+  const localesFor = (slug: string, hans: Set<string>, hant: Set<string>) =>
+    LOCALES.filter(
+      (l) =>
+        (l === DEFAULT_LOCALE && hans.has(slug)) ||
+        (l === TRADITIONAL_LOCALE && hant.has(slug)),
+    );
+
+  const blogRoutes: MetadataRoute.Sitemap = [
+    ...hansPosts.map((post) =>
+      sitemapEntry({
+        path: `/blog/${post.slug}`,
+        locale: DEFAULT_LOCALE,
+        lastModified: post.date ? new Date(post.date) : undefined,
+        priority: 0.7,
+        changeFrequency: "monthly",
+        availableLocales: localesFor(post.slug, hansBlogSlugs, hantBlogSlugs),
+      }),
+    ),
+    ...hantPosts.map((post) =>
+      sitemapEntry({
+        path: `/blog/${post.slug}`,
+        locale: TRADITIONAL_LOCALE,
+        lastModified: post.date ? new Date(post.date) : undefined,
+        priority: 0.7,
+        changeFrequency: "monthly",
+        availableLocales: localesFor(post.slug, hansBlogSlugs, hantBlogSlugs),
+      }),
+    ),
+  ];
+
+  const eventRoutes: MetadataRoute.Sitemap = [
+    ...hansEventSlugs.map((slug) =>
+      sitemapEntry({
+        path: `/events/${slug}`,
+        locale: DEFAULT_LOCALE,
+        priority: 0.6,
+        changeFrequency: "monthly",
+        availableLocales: localesFor(slug, hansEventSet, hantEventSet),
+      }),
+    ),
+    ...hantEventSlugs.map((slug) =>
+      sitemapEntry({
+        path: `/events/${slug}`,
+        locale: TRADITIONAL_LOCALE,
+        priority: 0.6,
+        changeFrequency: "monthly",
+        availableLocales: localesFor(slug, hansEventSet, hantEventSet),
+      }),
+    ),
+  ];
 
   return [...staticRoutes, ...blogRoutes, ...eventRoutes];
 }

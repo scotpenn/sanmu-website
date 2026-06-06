@@ -40,3 +40,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# AI agent skills (本地工具, 非网站代码)
+/.agents/
+/skills-lock.json

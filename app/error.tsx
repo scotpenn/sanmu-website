@@ -25,7 +25,7 @@ export default function GlobalError({
         </div>
         <h1 className="text-3xl md:text-4xl mb-6">页面出了点问题</h1>
         <p className="text-lg opacity-80 mb-10 max-w-[520px] mx-auto leading-relaxed">
-          这不是你的错。可能是网络抽风，也可能是我们代码里的 bug。点下面"再试一次"通常能恢复。
+          这不是你的错。可能是网络抽风，也可能是我们代码里的 bug。点下面「再试一次」通常能恢复。
         </p>
 
         <div className="flex flex-wrap items-center justify-center gap-4 mb-12">

@@ -1,11 +1,15 @@
 import { Container } from "@/components/Container";
 import { SectionTitle } from "@/components/SectionTitle";
+import { DEFAULT_LOCALE } from "@/lib/i18n";
+import { pageSeo } from "@/lib/seo";
 
-export const metadata = {
-  title: "免责声明 · 三木有话说",
+export const metadata = pageSeo({
+  title: "免责声明",
   description:
     "三木有话说频道与 sanmu.ca 网站内容性质说明 · 内容仅供参考, 不构成法律 / 医疗 / 金融建议.",
-};
+  path: "/disclaimer",
+  locale: DEFAULT_LOCALE,
+});
 
 export default function DisclaimerPage() {
   return (
@@ -66,7 +70,7 @@ export default function DisclaimerPage() {
 
             <h2 className="text-2xl mt-12 mb-3">关于个案差异</h2>
             <p>
-              文章里提到的故事、案例、数字都来自真实经历, 但每个家庭、每个人情况不同。直接套用别人的方案可能不适合你。我分享的是"思考的方向"和"该问的问题", 不是"标准答案"。
+              文章里提到的故事、案例、数字都来自真实经历, 但每个家庭、每个人情况不同。直接套用别人的方案可能不适合你。我分享的是「思考的方向」和「该问的问题」, 不是「标准答案」。
             </p>
 
             <h2 className="text-2xl mt-12 mb-3">关于外部链接</h2>

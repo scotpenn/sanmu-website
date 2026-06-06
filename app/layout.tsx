@@ -51,9 +51,6 @@ export const metadata: Metadata = {
     "中年危机",
     "原生家庭",
   ],
-  alternates: {
-    canonical: "/",
-  },
   openGraph: {
     type: "website",
     locale: "zh_CN",
@@ -89,7 +86,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="zh-CN"
+      lang="zh"
       className={`${notoSerifSC.variable} ${notoSansSC.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">

@@ -1,4 +1,11 @@
 import data from "./data/videos.json";
+import {
+  DEFAULT_LOCALE,
+  TRADITIONAL_LOCALE,
+  toTraditional,
+  type Locale,
+} from "./i18n";
+import { VIDEO_TITLE_OVERRIDES } from "./video-title-overrides";
 
 // ============ Types ============
 
@@ -37,6 +44,28 @@ const VIDEO_MAP = new Map(rawData.videos.map((v) => [v.video_id, v]));
 // 排除 Shorts (标题含 #short 或时长 < 60 秒)
 function isLongVideo(v: Video): boolean {
   return !v.title.includes("#short") && v.duration_seconds >= 60;
+}
+
+// ============ 繁体本地化 ============
+// 视频/playlist 标题与简介来自 YouTube, 都是简体. 繁体站默认机器转繁,
+// 视频标题再叠一层人工覆盖表 (VIDEO_TITLE_OVERRIDES) 修正机器误判.
+
+/** 繁体化任意文案 (简体 locale 原样返回). 已是繁体的文本转换是幂等的. */
+export function localizeText(text: string, locale: Locale): string {
+  return locale === TRADITIONAL_LOCALE ? toTraditional(text) : text;
+}
+
+/** 繁体化视频标题: 优先人工覆盖表, 否则机器转繁. */
+export function localizeVideoTitle(
+  title: string,
+  locale: Locale,
+  videoId?: string,
+): string {
+  if (locale !== TRADITIONAL_LOCALE) return title;
+  if (videoId && VIDEO_TITLE_OVERRIDES[videoId]) {
+    return VIDEO_TITLE_OVERRIDES[videoId];
+  }
+  return toTraditional(title);
 }
 
 // ============ Playlists ============
@@ -109,8 +138,14 @@ export function getTopVideos(n: number): Video[] {
 
 // ============ Formatters ============
 
-export function formatViewCount(n: number): string {
-  if (n >= 10000) return `${(n / 10000).toFixed(1).replace(/\.0$/, "")} 万`;
+export function formatViewCount(
+  n: number,
+  locale: Locale = DEFAULT_LOCALE,
+): string {
+  if (n >= 10000) {
+    const unit = locale === TRADITIONAL_LOCALE ? "萬" : "万";
+    return `${(n / 10000).toFixed(1).replace(/\.0$/, "")} ${unit}`;
+  }
   if (n >= 1000) return `${(n / 1000).toFixed(1).replace(/\.0$/, "")}K`;
   return String(n);
 }

@@ -2,12 +2,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/Container";
 import { SectionTitle } from "@/components/SectionTitle";
+import { DEFAULT_LOCALE } from "@/lib/i18n";
+import { pageSeo } from "@/lib/seo";
 
-export const metadata = {
-  title: "关于三木 · 三木有话说",
+export const metadata = pageSeo({
+  title: "关于三木",
   description:
     "三木，温哥华殡葬师，16 年送过 1000+ 个人最后一程。在 YouTube 频道《三木有话说》分享殡仪馆内看到的事。",
-};
+  path: "/about",
+  locale: DEFAULT_LOCALE,
+});
 
 const WORKS = [
   {

@@ -1,11 +1,20 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import {
+  localeFromPathname,
+  navLabels,
+  siteName,
+  withLocalePrefix,
+} from "@/lib/i18n";
 
 const CONTENT_LINKS = [
-  { href: "/blog", label: "博客" },
-  { href: "/videos", label: "视频" },
-  { href: "/events", label: "活动" },
-  { href: "/resources/handbook", label: "资料" },
-];
+  { href: "/blog", key: "blog" },
+  { href: "/videos", key: "videos" },
+  { href: "/events", key: "events" },
+  { href: "/resources/handbook", key: "resources" },
+] as const;
 
 function YouTubeIcon() {
   return (
@@ -46,6 +55,10 @@ const SOCIAL_LINKS = [
 ];
 
 export function Footer() {
+  const pathname = usePathname();
+  const locale = localeFromPathname(pathname);
+  const isTraditional = locale === "zh-Hant";
+
   return (
     <footer className="border-t border-rule mt-auto">
       <div className="mx-auto max-w-[1280px] px-6 py-12">
@@ -53,10 +66,12 @@ export function Footer() {
           {/* 列 1 · Logo + 一句简介 */}
           <div>
             <div className="text-2xl font-extrabold text-brand-navy tracking-[-0.01em] mb-3">
-              三木有话说
+              {siteName[locale]}
             </div>
             <p className="text-sm leading-relaxed opacity-70">
-              温哥华殡葬师，16 年送过 1000+ 个人最后一程。你怕什么，他就聊什么。
+              {isTraditional
+                ? "溫哥華殯葬師，16 年送過 1000+ 個人最後一程。你怕什麼，他就聊什麼。"
+                : "温哥华殡葬师，16 年送过 1000+ 个人最后一程。你怕什么，他就聊什么。"}
             </p>
           </div>
 
@@ -69,10 +84,10 @@ export function Footer() {
               {CONTENT_LINKS.map((item) => (
                 <li key={item.href}>
                   <Link
-                    href={item.href}
+                    href={withLocalePrefix(item.href, locale)}
                     className="hover:text-brand-navy transition-colors"
                   >
-                    {item.label}
+                    {navLabels[locale][item.key]}
                   </Link>
                 </li>
               ))}
@@ -112,32 +127,39 @@ export function Footer() {
         {/* 简要免责声明 */}
         <div className="border-t border-rule pt-6 mb-5 text-xs leading-relaxed opacity-60">
           <p>
-            <span className="font-medium">免责声明：</span>
-            本网站及《三木有话说》频道的全部内容（包括视频、文章与下载资料），均基于三木个人从业经验整理，仅供一般参考与教育用途，不构成法律、医疗、财务、心理健康或其他专业建议。涉及遗嘱与遗产规划、政府福利申请、殡仪服务合同等具体事项，请以官方最新规定为准，并咨询相关持牌专业人士。
+            <span className="font-medium">
+              {isTraditional ? "免責聲明：" : "免责声明："}
+            </span>
+            {isTraditional
+              ? "本網站及《三木有話說》頻道的全部內容（包括影片、文章與下載資料），均基於三木個人從業經驗整理，僅供一般參考與教育用途，不構成法律、醫療、財務、心理健康或其他專業建議。涉及遺囑與遺產規劃、政府福利申請、殯儀服務合約等具體事項，請以官方最新規定為準，並諮詢相關持牌專業人士。"
+              : "本网站及《三木有话说》频道的全部内容（包括视频、文章与下载资料），均基于三木个人从业经验整理，仅供一般参考与教育用途，不构成法律、医疗、财务、心理健康或其他专业建议。涉及遗嘱与遗产规划、政府福利申请、殡仪服务合同等具体事项，请以官方最新规定为准，并咨询相关持牌专业人士。"}
             <Link
-              href="/disclaimer"
+              href={withLocalePrefix("/disclaimer", locale)}
               className="underline underline-offset-2 hover:text-brand-navy transition-colors ml-1"
             >
-              阅读完整免责声明
+              {isTraditional ? "閱讀完整免責聲明" : "阅读完整免责声明"}
             </Link>
           </p>
         </div>
 
         {/* 底部 · 版权行 */}
         <div className="flex flex-wrap justify-between gap-3 text-xs opacity-60">
-          <div>© 2026 三木有话说 · 由三木个人运营 · sanmu.ca</div>
+          <div>
+            © 2026 {siteName[locale]} ·{" "}
+            {isTraditional ? "由三木個人營運" : "由三木个人运营"} · sanmu.ca
+          </div>
           <div className="flex flex-wrap gap-x-4 gap-y-1">
             <Link
-              href="/disclaimer"
+              href={withLocalePrefix("/disclaimer", locale)}
               className="hover:text-brand-navy transition-colors"
             >
-              免责声明
+              {isTraditional ? "免責聲明" : "免责声明"}
             </Link>
             <Link
-              href="/privacy"
+              href={withLocalePrefix("/privacy", locale)}
               className="hover:text-brand-navy transition-colors"
             >
-              隐私政策
+              {isTraditional ? "隱私政策" : "隐私政策"}
             </Link>
           </div>
         </div>

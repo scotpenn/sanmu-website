@@ -8,27 +8,47 @@ import {
   getPastEvents,
   type EventItem,
 } from "@/lib/notion";
+import {
+  DEFAULT_LOCALE,
+  localizedPath,
+  peopleLabel,
+  textForLocale,
+  type Locale,
+} from "@/lib/i18n";
+import { pageSeo } from "@/lib/seo";
 
 // ISR: 每小时后台刷新, 活动状态/新活动自动更新, 无需 redeploy.
 export const revalidate = 3600;
 
-export const metadata = {
-  title: "线下活动 · 三木有话说",
-  description: "三木举办的面对面线下分享与讲座活动。即将举办与往期回顾。",
-};
+export function generateEventsIndexMetadata(locale: Locale) {
+  return pageSeo({
+    title: textForLocale(locale, "线下活动"),
+    description: textForLocale(
+      locale,
+      "三木举办的面对面线下分享与讲座活动。即将举办与往期回顾。",
+    ),
+    path: "/events",
+    locale,
+  });
+}
 
-function formatDateLabel(isoDate: string): string {
+export const metadata = generateEventsIndexMetadata(DEFAULT_LOCALE);
+
+function formatDateLabel(isoDate: string, locale: Locale): string {
   if (!isoDate) return "";
   const d = new Date(isoDate);
   const year = d.getFullYear();
   const month = d.getMonth() + 1;
   const day = d.getDate();
-  const weekdays = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
+  const weekdays =
+    locale === "zh-Hant"
+      ? ["週日", "週一", "週二", "週三", "週四", "週五", "週六"]
+      : ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
   return `${year} 年 ${month} 月 ${day} 日（${weekdays[d.getDay()]}）`;
 }
 
-function UpcomingCard({ event }: { event: EventItem }) {
-  const href = `/events/${event.slug}`;
+function UpcomingCard({ event, locale }: { event: EventItem; locale: Locale }) {
+  const href = localizedPath(`/events/${event.slug}`, locale);
   return (
     <article className="border border-rule bg-brand-yellow/10 overflow-hidden">
       <Link href={href} className="block hover:opacity-95 transition-opacity">
@@ -63,13 +83,13 @@ function UpcomingCard({ event }: { event: EventItem }) {
             Date
           </dt>
           <dd>
-            <time dateTime={event.date}>{formatDateLabel(event.date)}</time>
+            <time dateTime={event.date}>{formatDateLabel(event.date, locale)}</time>
           </dd>
         </div>
         {event.location && (
           <div className="flex gap-4">
             <dt className="font-en uppercase tracking-wide opacity-50 w-14 shrink-0">
-              Venue
+            Venue
             </dt>
             <dd>{event.location}</dd>
           </div>
@@ -79,11 +99,11 @@ function UpcomingCard({ event }: { event: EventItem }) {
       <div className="flex flex-wrap gap-4">
         {event.signupUrl && (
           <Button variant="primary" href={event.signupUrl}>
-            立即报名 →
+            {textForLocale(locale, "立即报名 →")}
           </Button>
         )}
         <Button variant="secondary" href="mailto:info@sanmu.ca">
-          ✉️ 写信咨询
+          ✉️ {textForLocale(locale, "写信咨询")}
         </Button>
       </div>
       </div>
@@ -91,8 +111,8 @@ function UpcomingCard({ event }: { event: EventItem }) {
   );
 }
 
-function PastCard({ event }: { event: EventItem }) {
-  const href = `/events/${event.slug}`;
+function PastCard({ event, locale }: { event: EventItem; locale: Locale }) {
+  const href = localizedPath(`/events/${event.slug}`, locale);
   return (
     <article className="border border-rule overflow-hidden">
       <Link href={href} className="block hover:opacity-95 transition-opacity">
@@ -124,7 +144,7 @@ function PastCard({ event }: { event: EventItem }) {
             Date
           </dt>
           <dd>
-            <time dateTime={event.date}>{formatDateLabel(event.date)}</time>
+            <time dateTime={event.date}>{formatDateLabel(event.date, locale)}</time>
           </dd>
         </div>
         {event.location && (
@@ -140,7 +160,7 @@ function PastCard({ event }: { event: EventItem }) {
             <dt className="font-en uppercase tracking-wide opacity-50 w-14 shrink-0">
               Scale
             </dt>
-            <dd>{event.attendees} 人参与</dd>
+            <dd>{peopleLabel(event.attendees, locale)}</dd>
           </div>
         )}
       </dl>
@@ -156,7 +176,7 @@ function PastCard({ event }: { event: EventItem }) {
           rel="noopener noreferrer"
           className="text-sm font-medium text-brand-navy hover:opacity-80 transition-opacity"
         >
-          观看现场回顾 →
+          {textForLocale(locale, "观看现场回顾 →")}
         </a>
       )}
       </div>
@@ -164,10 +184,14 @@ function PastCard({ event }: { event: EventItem }) {
   );
 }
 
-export default async function EventsPage() {
+export async function EventsIndexPage({
+  locale = DEFAULT_LOCALE,
+}: {
+  locale?: Locale;
+}) {
   const [upcoming, past] = await Promise.all([
-    getUpcomingEvents(),
-    getPastEvents(),
+    getUpcomingEvents(locale),
+    getPastEvents(locale),
   ]);
 
   return (
@@ -175,9 +199,11 @@ export default async function EventsPage() {
       {/* Hero */}
       <section className="border-b border-rule">
         <Container width="card" className="py-16 md:py-20">
-          <SectionTitle eyebrow="EVENTS">线下活动</SectionTitle>
+          <SectionTitle eyebrow="EVENTS">
+            {textForLocale(locale, "线下活动")}
+          </SectionTitle>
           <p className="text-lg opacity-80 leading-relaxed">
-            面对面，把没讲完的话聊透。
+            {textForLocale(locale, "面对面，把没讲完的话聊透。")}
           </p>
         </Container>
       </section>
@@ -186,14 +212,16 @@ export default async function EventsPage() {
       <section className="border-b border-rule">
         <Container width="card" className="py-16 md:py-20">
           <div className="text-sm font-en uppercase tracking-wider text-brand-navy/70 mb-6 font-medium border-b border-rule pb-3">
-            即将举办 · Upcoming
+            {textForLocale(locale, "即将举办")} · Upcoming
           </div>
 
           {upcoming.length === 0 ? (
             <div className="border border-rule bg-brand-yellow/10 p-8 md:p-12 text-center max-w-2xl mx-auto">
-              <p className="text-lg mb-3">📅 下一场活动正在筹备中</p>
+              <p className="text-lg mb-3">
+                📅 {textForLocale(locale, "下一场活动正在筹备中")}
+              </p>
               <p className="text-sm opacity-70 mb-6">
-                留下邮箱，第一时间收到通知
+                {textForLocale(locale, "留下邮箱，第一时间收到通知")}
               </p>
               <a
                 href="mailto:info@sanmu.ca"
@@ -205,7 +233,7 @@ export default async function EventsPage() {
           ) : (
             <div className="grid gap-6 md:gap-8">
               {upcoming.map((event) => (
-                <UpcomingCard key={event.slug} event={event} />
+                <UpcomingCard key={event.slug} event={event} locale={locale} />
               ))}
             </div>
           )}
@@ -216,32 +244,36 @@ export default async function EventsPage() {
       <section>
         <Container width="card" className="py-16 md:py-20">
           <div className="text-sm font-en uppercase tracking-wider text-brand-navy/70 mb-6 font-medium border-b border-rule pb-3">
-            往期回顾 · Past Events
+            {textForLocale(locale, "往期回顾")} · Past Events
           </div>
 
           {past.length === 0 ? (
             <p className="text-sm opacity-60 py-4 text-center">
-              还没有往期记录 · 期待第一场。
+              {textForLocale(locale, "还没有往期记录 · 期待第一场。")}
             </p>
           ) : (
             <div className="grid md:grid-cols-2 gap-6 md:gap-8">
               {past.map((event) => (
-                <PastCard key={event.slug} event={event} />
+                <PastCard key={event.slug} event={event} locale={locale} />
               ))}
             </div>
           )}
 
           <p className="text-center text-sm opacity-60 mt-10">
-            想看下一场？{" "}
+            {textForLocale(locale, "想看下一场？")}{" "}
             <a
               href="mailto:info@sanmu.ca"
               className="text-brand-navy hover:opacity-80 transition-opacity font-medium"
             >
-              留下邮箱我通知你 →
+              {textForLocale(locale, "留下邮箱我通知你 →")}
             </a>
           </p>
         </Container>
       </section>
     </>
   );
+}
+
+export default function EventsPage() {
+  return <EventsIndexPage locale={DEFAULT_LOCALE} />;
 }

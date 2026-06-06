@@ -2,12 +2,16 @@ import Image from "next/image";
 import { Container } from "@/components/Container";
 import { SectionTitle } from "@/components/SectionTitle";
 import { Button } from "@/components/Button";
+import { DEFAULT_LOCALE } from "@/lib/i18n";
+import { pageSeo } from "@/lib/seo";
 
-export const metadata = {
+export const metadata = pageSeo({
   title: "《身后事安心手册》v2.7 · 免费索取",
   description:
     "温哥华殡葬师三木整理的 8 份加拿大实用文档·遗嘱模板·政府福利申请·87 件事清单·葬礼费用对比·向死而生活法·预立医疗委托·信用记录防盗·80+ 页. 来信免费获取.",
-};
+  path: "/resources/handbook",
+  locale: DEFAULT_LOCALE,
+});
 
 const SUBJECT = "申请《身后事安心手册》v2.7";
 const BODY = `您好 三木，
@@ -176,7 +180,7 @@ export default function HandbookPage() {
         <Container width="card" className="py-20 md:py-24">
           <SectionTitle align="center">手册包含什么</SectionTitle>
           <p className="text-center opacity-70 mb-12 max-w-[560px] mx-auto">
-            8 份独立文档，按"事发紧急程度"和"使用场景"组织。可以单独打印某一份，也可以整本存档。
+            8 份独立文档，按「事发紧急程度」和「使用场景」组织。可以单独打印某一份，也可以整本存档。
           </p>
 
           <div className="grid md:grid-cols-2 gap-6 md:gap-8">

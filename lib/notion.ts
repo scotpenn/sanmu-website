@@ -1,14 +1,71 @@
 import { Client } from "@notionhq/client";
+import https from "node:https";
 import type {
   BlockObjectResponse,
   PageObjectResponse,
   RichTextItemResponse,
 } from "@notionhq/client";
+import { DEFAULT_LOCALE, LOCALES, type Locale } from "@/lib/i18n";
 
 // data_source_id of 📝 Blog 博客 (固定 ID, 不会变)
 const BLOG_DATA_SOURCE_ID = "319407d1-e400-4aed-8e36-dfa0ab19e6ea";
 // data_source_id of 📅 Events 线下活动
 const EVENTS_DATA_SOURCE_ID = "d5b3cb57-7b27-4acd-b936-ae2ca6f275f1";
+
+let notionClient: Client | null = null;
+
+async function notionHttpFetch(
+  input: RequestInfo | URL,
+  init?: RequestInit,
+): Promise<Response> {
+  const request = new Request(input, init);
+  const url = new URL(request.url);
+  const headers: Record<string, string> = {};
+  request.headers.forEach((value, key) => {
+    headers[key] = value;
+  });
+
+  const body =
+    request.method === "GET" || request.method === "HEAD"
+      ? undefined
+      : Buffer.from(await request.arrayBuffer());
+
+  return new Promise((resolve, reject) => {
+    const req = https.request(
+      {
+        method: request.method,
+        protocol: url.protocol,
+        hostname: url.hostname,
+        path: `${url.pathname}${url.search}`,
+        headers,
+      },
+      (res) => {
+        const chunks: Buffer[] = [];
+        res.on("data", (chunk) => chunks.push(Buffer.from(chunk)));
+        res.on("end", () => {
+          const responseHeaders = new Headers();
+          for (const [key, value] of Object.entries(res.headers)) {
+            if (Array.isArray(value)) {
+              for (const item of value) responseHeaders.append(key, item);
+            } else if (value !== undefined) {
+              responseHeaders.set(key, value);
+            }
+          }
+          resolve(
+            new Response(Buffer.concat(chunks), {
+              status: res.statusCode,
+              statusText: res.statusMessage,
+              headers: responseHeaders,
+            }),
+          );
+        });
+      },
+    );
+    req.on("error", reject);
+    if (body) req.write(body);
+    req.end();
+  });
+}
 
 function getNotionClient(): Client {
   const token = process.env.NOTION_TOKEN;
@@ -17,7 +74,10 @@ function getNotionClient(): Client {
       "NOTION_TOKEN 环境变量未设置。本地: 在 .env.local 加 NOTION_TOKEN=secret_xxx。生产: 在 Vercel Settings → Environment Variables 加。",
     );
   }
-  return new Client({ auth: token });
+  if (!notionClient) {
+    notionClient = new Client({ auth: token, fetch: notionHttpFetch });
+  }
+  return notionClient;
 }
 
 // ============ Types ============
@@ -34,6 +94,7 @@ export type PostCategory = "实用指南" | "精神疗愈" | "关系重塑";
 
 export type PostMeta = {
   slug: string;
+  locale: Locale;
   title: string;
   subtitle: string;
   date: string; // ISO date string
@@ -70,6 +131,7 @@ function parseProperties(page: PageObjectResponse): PostMeta | null {
   const tagsProp = props["关键词"];
   const categoryProp = props["类型"];
   const videoProp = props["视频链接"];
+  const localeProp = props["语言版本"];
 
   if (!titleProp || titleProp.type !== "title") return null;
   if (!slugProp || slugProp.type !== "rich_text") return null;
@@ -83,6 +145,10 @@ function parseProperties(page: PageObjectResponse): PostMeta | null {
 
   return {
     slug,
+    locale:
+      localeProp?.type === "select" && localeProp.select
+        ? (localeProp.select.name as Locale)
+        : DEFAULT_LOCALE,
     title,
     subtitle:
       subtitleProp?.type === "rich_text"
@@ -174,14 +240,18 @@ async function fetchAllBlocks(
  * 获取所有「已发布」状态的博客 (按发布日期降序). 不含 page content blocks.
  * 用于: 博客列表页 / 首页"最近文章"
  */
-export async function getAllPosts(): Promise<PostMeta[]> {
+export async function getAllPosts(
+  locale: Locale = DEFAULT_LOCALE,
+): Promise<PostMeta[]> {
   const notion = getNotionClient();
 
   const response = await notion.dataSources.query({
     data_source_id: BLOG_DATA_SOURCE_ID,
     filter: {
-      property: "状态",
-      select: { equals: "已发布" },
+      and: [
+        { property: "状态", select: { equals: "已发布" } },
+        { property: "语言版本", select: { equals: locale } },
+      ],
     },
     sorts: [{ property: "发布日期", direction: "descending" }],
     page_size: 100,
@@ -199,9 +269,71 @@ export async function getAllPosts(): Promise<PostMeta[]> {
 /**
  * 获取所有「已发布」博客的 slug 列表, 给 generateStaticParams 用.
  */
-export async function getAllSlugs(): Promise<string[]> {
-  const posts = await getAllPosts();
+export async function getAllSlugs(
+  locale: Locale = DEFAULT_LOCALE,
+): Promise<string[]> {
+  const posts = await getAllPosts(locale);
   return posts.map((p) => p.slug);
+}
+
+/**
+ * 某博客 slug 已发布的语言版本集合 (按 简→繁 稳定排序). 给 hreflang 用.
+ * 规范上简繁一起发布会返回两种; 过渡期(只发了一种)会只返回一种,
+ * 让 hreflang 不去 emit 指向 404 的另一语言版本。
+ */
+export async function getPublishedPostLocales(slug: string): Promise<Locale[]> {
+  const notion = getNotionClient();
+  const response = await notion.dataSources.query({
+    data_source_id: BLOG_DATA_SOURCE_ID,
+    filter: {
+      and: [
+        { property: "Slug", rich_text: { equals: slug } },
+        { property: "状态", select: { equals: "已发布" } },
+      ],
+    },
+    page_size: 10,
+  });
+  const found = new Set<Locale>();
+  for (const page of response.results) {
+    if (!("properties" in page)) continue;
+    const lp = (page as PageObjectResponse).properties["语言版本"];
+    if (lp?.type === "select" && lp.select) {
+      const name = lp.select.name;
+      if (name === "zh-Hans" || name === "zh-Hant") found.add(name);
+    }
+  }
+  return LOCALES.filter((l) => found.has(l));
+}
+
+/** 某活动 slug 已发布的语言版本集合 (按 简→繁 稳定排序). 给 hreflang 用. */
+export async function getPublishedEventLocales(slug: string): Promise<Locale[]> {
+  const notion = getNotionClient();
+  const response = await notion.dataSources.query({
+    data_source_id: EVENTS_DATA_SOURCE_ID,
+    filter: {
+      and: [
+        { property: "Slug", rich_text: { equals: slug } },
+        {
+          or: [
+            { property: "状态", select: { equals: "即将举办" } },
+            { property: "状态", select: { equals: "报名中" } },
+            { property: "状态", select: { equals: "已举办" } },
+          ],
+        },
+      ],
+    },
+    page_size: 10,
+  });
+  const found = new Set<Locale>();
+  for (const page of response.results) {
+    if (!("properties" in page)) continue;
+    const lp = (page as PageObjectResponse).properties["语言版本"];
+    if (lp?.type === "select" && lp.select) {
+      const name = lp.select.name;
+      if (name === "zh-Hans" || name === "zh-Hant") found.add(name);
+    }
+  }
+  return LOCALES.filter((l) => found.has(l));
 }
 
 /**
@@ -212,8 +344,9 @@ export async function getAllSlugs(): Promise<string[]> {
 export async function getRelatedPosts(
   currentSlug: string,
   count = 3,
+  locale: Locale = DEFAULT_LOCALE,
 ): Promise<PostMeta[]> {
-  const all = await getAllPosts();
+  const all = await getAllPosts(locale);
   const current = all.find((p) => p.slug === currentSlug);
   const others = all.filter((p) => p.slug !== currentSlug);
   if (!current) return others.slice(0, count);
@@ -242,6 +375,7 @@ export type EventStatus = "草稿" | "即将举办" | "报名中" | "已举办";
 
 export type EventItem = {
   slug: string;
+  locale: Locale;
   title: string;
   summary: string;
   date: string;
@@ -289,6 +423,7 @@ function parseEventProperties(page: PageObjectResponse): EventItem | null {
   const videoReviewProp = props["视频回顾"];
   const coverProp = props["封面图"];
   const photosProp = props["现场照片"];
+  const localeProp = props["语言版本"];
 
   if (!titleProp || titleProp.type !== "title") return null;
   if (!slugProp || slugProp.type !== "rich_text") return null;
@@ -305,6 +440,10 @@ function parseEventProperties(page: PageObjectResponse): EventItem | null {
 
   return {
     slug,
+    locale:
+      localeProp?.type === "select" && localeProp.select
+        ? (localeProp.select.name as Locale)
+        : DEFAULT_LOCALE,
     title,
     summary:
       summaryProp?.type === "rich_text"
@@ -329,14 +468,21 @@ function parseEventProperties(page: PageObjectResponse): EventItem | null {
 /**
  * 获取即将举办 / 报名中的活动 (按日期升序, 最近的在前).
  */
-export async function getUpcomingEvents(): Promise<EventItem[]> {
+export async function getUpcomingEvents(
+  locale: Locale = DEFAULT_LOCALE,
+): Promise<EventItem[]> {
   const notion = getNotionClient();
   const response = await notion.dataSources.query({
     data_source_id: EVENTS_DATA_SOURCE_ID,
     filter: {
-      or: [
-        { property: "状态", select: { equals: "即将举办" } },
-        { property: "状态", select: { equals: "报名中" } },
+      and: [
+        { property: "语言版本", select: { equals: locale } },
+        {
+          or: [
+            { property: "状态", select: { equals: "即将举办" } },
+            { property: "状态", select: { equals: "报名中" } },
+          ],
+        },
       ],
     },
     sorts: [{ property: "日期", direction: "ascending" }],
@@ -355,15 +501,22 @@ export async function getUpcomingEvents(): Promise<EventItem[]> {
 /**
  * 获取所有活动的 slug 列表 (含 upcoming / past / 草稿外), 给 generateStaticParams 用.
  */
-export async function getAllEventSlugs(): Promise<string[]> {
+export async function getAllEventSlugs(
+  locale: Locale = DEFAULT_LOCALE,
+): Promise<string[]> {
   const notion = getNotionClient();
   const response = await notion.dataSources.query({
     data_source_id: EVENTS_DATA_SOURCE_ID,
     filter: {
-      or: [
-        { property: "状态", select: { equals: "即将举办" } },
-        { property: "状态", select: { equals: "报名中" } },
-        { property: "状态", select: { equals: "已举办" } },
+      and: [
+        { property: "语言版本", select: { equals: locale } },
+        {
+          or: [
+            { property: "状态", select: { equals: "即将举办" } },
+            { property: "状态", select: { equals: "报名中" } },
+            { property: "状态", select: { equals: "已举办" } },
+          ],
+        },
       ],
     },
     page_size: 100,
@@ -386,6 +539,7 @@ export async function getAllEventSlugs(): Promise<string[]> {
  */
 export async function getEventBySlug(
   slug: string,
+  locale: Locale = DEFAULT_LOCALE,
 ): Promise<EventDetail | null> {
   const notion = getNotionClient();
   const response = await notion.dataSources.query({
@@ -393,6 +547,7 @@ export async function getEventBySlug(
     filter: {
       and: [
         { property: "Slug", rich_text: { equals: slug } },
+        { property: "语言版本", select: { equals: locale } },
         {
           or: [
             { property: "状态", select: { equals: "即将举办" } },
@@ -418,13 +573,17 @@ export async function getEventBySlug(
 /**
  * 获取已举办活动 (按日期倒序, 最近的在前).
  */
-export async function getPastEvents(): Promise<EventItem[]> {
+export async function getPastEvents(
+  locale: Locale = DEFAULT_LOCALE,
+): Promise<EventItem[]> {
   const notion = getNotionClient();
   const response = await notion.dataSources.query({
     data_source_id: EVENTS_DATA_SOURCE_ID,
     filter: {
-      property: "状态",
-      select: { equals: "已举办" },
+      and: [
+        { property: "状态", select: { equals: "已举办" } },
+        { property: "语言版本", select: { equals: locale } },
+      ],
     },
     sorts: [{ property: "日期", direction: "descending" }],
     page_size: 50,
@@ -445,7 +604,10 @@ export async function getPastEvents(): Promise<EventItem[]> {
  * 根据 slug 获取单篇博客 (含 page content blocks).
  * 用于: 博客详情页 /blog/[slug]
  */
-export async function getPostBySlug(slug: string): Promise<Post | null> {
+export async function getPostBySlug(
+  slug: string,
+  locale: Locale = DEFAULT_LOCALE,
+): Promise<Post | null> {
   const notion = getNotionClient();
 
   const response = await notion.dataSources.query({
@@ -454,6 +616,7 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
       and: [
         { property: "Slug", rich_text: { equals: slug } },
         { property: "状态", select: { equals: "已发布" } },
+        { property: "语言版本", select: { equals: locale } },
       ],
     },
     page_size: 1,

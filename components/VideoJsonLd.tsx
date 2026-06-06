@@ -4,7 +4,10 @@ import {
   watchUrl,
   iso8601Duration,
   videoSummary,
+  localizeText,
+  localizeVideoTitle,
 } from "@/lib/videos";
+import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n";
 
 type Props = {
   /** YouTube videoId (11 位) */
@@ -15,6 +18,8 @@ type Props = {
   description: string;
   /** 频道数据里查不到 published_at 时的兜底上传日期 (ISO date, 一般传文章发布日) */
   fallbackUploadDate: string;
+  /** 页面语言. 繁体页传 zh-Hant, 让 JSON-LD 的标题/简介也繁体, 与可见文字一致. */
+  locale?: Locale;
 };
 
 /**
@@ -27,17 +32,27 @@ export function VideoJsonLd({
   fallbackName,
   description,
   fallbackUploadDate,
+  locale = DEFAULT_LOCALE,
 }: Props) {
   const video = getVideoById(videoId);
 
   // 简介优先级: 视频自己的 YouTube 简介(清洗后) > 调用方传入的兜底 > 标题
   const videoDesc = videoSummary(video?.description);
 
+  // 繁体页: 标题走覆盖表+机器转繁, 简介机器转繁 (已是繁体的入参转换是幂等的),
+  // 保证结构化数据与页面可见文字同语言.
+  const name = video
+    ? localizeVideoTitle(video.title, locale, video.video_id)
+    : localizeText(fallbackName, locale);
+
   const jsonLd: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "VideoObject",
-    name: video?.title ?? fallbackName,
-    description: videoDesc || description || video?.title || fallbackName,
+    name,
+    description: localizeText(
+      videoDesc || description || video?.title || fallbackName,
+      locale,
+    ),
     thumbnailUrl: thumbnailUrl(videoId),
     uploadDate: video?.published_at ?? fallbackUploadDate,
     contentUrl: watchUrl(videoId),

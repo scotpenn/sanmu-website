@@ -3,17 +3,49 @@ import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/Container";
 import { Button } from "@/components/Button";
-import { getAllEventSlugs, getEventBySlug } from "@/lib/notion";
+import {
+  getAllEventSlugs,
+  getEventBySlug,
+  getPublishedEventLocales,
+} from "@/lib/notion";
 import { videoIdFromUrl } from "@/lib/videos";
 import { VideoJsonLd } from "@/components/VideoJsonLd";
 import { RichText } from "@/components/RichText";
+import {
+  DEFAULT_LOCALE,
+  localizedPath,
+  peopleLabel,
+  textForLocale,
+  type Locale,
+} from "@/lib/i18n";
+import { pageSeo } from "@/lib/seo";
 
 // ISR: 每小时后台刷新. 改了活动内容后详情页自动更新; build 后新增的活动也按需生成.
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  const slugs = await getAllEventSlugs();
+  const slugs = await getAllEventSlugs(DEFAULT_LOCALE);
   return slugs.map((slug) => ({ slug }));
+}
+
+export async function generateEventMetadata(slug: string, locale: Locale) {
+  const event = await getEventBySlug(slug, locale);
+  if (!event) {
+    return pageSeo({
+      title: textForLocale(locale, "活动未找到"),
+      description: textForLocale(locale, "这个活动不存在或尚未发布。"),
+      path: `/events/${slug}`,
+      locale,
+    });
+  }
+  const availableLocales = await getPublishedEventLocales(event.slug);
+  return pageSeo({
+    title: event.title,
+    description: event.summary,
+    path: `/events/${event.slug}`,
+    locale,
+    availableLocales: availableLocales.length ? availableLocales : [locale],
+  });
 }
 
 export async function generateMetadata({
@@ -22,28 +54,27 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const event = await getEventBySlug(slug);
-  if (!event) return { title: "活动未找到 · 三木有话说" };
-  return {
-    title: `${event.title} · 三木有话说`,
-    description: event.summary,
-  };
+  return generateEventMetadata(slug, DEFAULT_LOCALE);
 }
 
-function formatDateLabel(isoDate: string): string {
+function formatDateLabel(isoDate: string, locale: Locale): string {
   if (!isoDate) return "";
   const d = new Date(isoDate);
-  const weekdays = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
+  const weekdays =
+    locale === "zh-Hant"
+      ? ["週日", "週一", "週二", "週三", "週四", "週五", "週六"]
+      : ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
   return `${d.getFullYear()} 年 ${d.getMonth() + 1} 月 ${d.getDate()} 日（${weekdays[d.getDay()]}）`;
 }
 
-export default async function EventDetailPage({
-  params,
+export async function EventDetail({
+  slug,
+  locale = DEFAULT_LOCALE,
 }: {
-  params: Promise<{ slug: string }>;
+  slug: string;
+  locale?: Locale;
 }) {
-  const { slug } = await params;
-  const event = await getEventBySlug(slug);
+  const event = await getEventBySlug(slug, locale);
   if (!event) notFound();
 
   const isPast = event.status === "已举办";
@@ -83,7 +114,7 @@ export default async function EventDetailPage({
                 Date
               </dt>
               <dd>
-                <time dateTime={event.date}>{formatDateLabel(event.date)}</time>
+                <time dateTime={event.date}>{formatDateLabel(event.date, locale)}</time>
               </dd>
             </div>
             {event.location && (
@@ -99,7 +130,7 @@ export default async function EventDetailPage({
                 <dt className="font-en uppercase tracking-wide opacity-50 w-20 shrink-0 text-sm pt-1">
                   Scale
                 </dt>
-                <dd>{event.attendees} 人参与</dd>
+                <dd>{peopleLabel(event.attendees, locale)}</dd>
               </div>
             )}
           </dl>
@@ -113,10 +144,10 @@ export default async function EventDetailPage({
           {isUpcoming && event.signupUrl && (
             <div className="flex flex-wrap gap-4">
               <Button variant="primary" href={event.signupUrl}>
-                立即报名 →
+                {textForLocale(locale, "立即报名 →")}
               </Button>
               <Button variant="secondary" href="mailto:info@sanmu.ca">
-                ✉️ 写信咨询
+                ✉️ {textForLocale(locale, "写信咨询")}
               </Button>
             </div>
           )}
@@ -128,7 +159,7 @@ export default async function EventDetailPage({
         <section className="border-b border-rule">
           <Container width="reading" className="py-12 md:py-16">
             <div className="text-sm font-en uppercase tracking-wider text-brand-navy/70 mb-6 font-medium border-b border-rule pb-3">
-              活动详情 · About
+              {textForLocale(locale, "活动详情")} · About
             </div>
             <div className="space-y-5">
               {event.blocks.map((block, idx) => {
@@ -172,6 +203,7 @@ export default async function EventDetailPage({
                         fallbackName={event.title}
                         description={event.summary}
                         fallbackUploadDate={event.date}
+                        locale={locale}
                       />
                       <iframe
                         src={`https://www.youtube.com/embed/${block.videoId}`}
@@ -195,7 +227,7 @@ export default async function EventDetailPage({
         <section className="border-b border-rule">
           <Container width="card" className="py-12 md:py-16">
             <div className="text-sm font-en uppercase tracking-wider text-brand-navy/70 mb-6 font-medium border-b border-rule pb-3">
-              活动现场 · Photos
+              {textForLocale(locale, "活动现场")} · Photos
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
               {event.photos.map((photo, idx) => (
@@ -225,15 +257,16 @@ export default async function EventDetailPage({
         <section className="border-b border-rule">
           <Container width="reading" className="py-12 md:py-16">
             <div className="text-sm font-en uppercase tracking-wider text-brand-navy/70 mb-6 font-medium border-b border-rule pb-3">
-              现场回顾 · Recap Video
+              {textForLocale(locale, "现场回顾")} · Recap Video
             </div>
             <div className="aspect-video">
               {videoIdFromUrl(event.videoReviewUrl) && (
                 <VideoJsonLd
                   videoId={videoIdFromUrl(event.videoReviewUrl)!}
-                  fallbackName={`${event.title} · 现场回顾`}
+                  fallbackName={`${event.title} · ${textForLocale(locale, "现场回顾")}`}
                   description={event.summary}
                   fallbackUploadDate={event.date}
+                  locale={locale}
                 />
               )}
               <iframe
@@ -256,17 +289,26 @@ export default async function EventDetailPage({
         <Container width="reading" className="py-12 md:py-16">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <Link
-              href="/events"
+              href={localizedPath("/events", locale)}
               className="text-sm font-medium text-brand-navy hover:opacity-80 transition-opacity"
             >
-              ← 返回活动列表
+              {textForLocale(locale, "← 返回活动列表")}
             </Link>
             <Button variant="secondary" href="mailto:info@sanmu.ca">
-              ✉️ 写信咨询 / 通知我下一场
+              ✉️ {textForLocale(locale, "写信咨询 / 通知我下一场")}
             </Button>
           </div>
         </Container>
       </section>
     </>
   );
+}
+
+export default async function EventDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  return <EventDetail slug={slug} locale={DEFAULT_LOCALE} />;
 }

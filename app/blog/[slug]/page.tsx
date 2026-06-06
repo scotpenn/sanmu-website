@@ -2,18 +2,52 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Container } from "@/components/Container";
 import { Button } from "@/components/Button";
-import { getAllSlugs, getPostBySlug, getRelatedPosts } from "@/lib/notion";
+import {
+  getAllSlugs,
+  getPostBySlug,
+  getPublishedPostLocales,
+  getRelatedPosts,
+} from "@/lib/notion";
 import { VideoJsonLd } from "@/components/VideoJsonLd";
 import { RichText } from "@/components/RichText";
 import { RelatedPosts } from "@/components/RelatedPosts";
+import {
+  DEFAULT_LOCALE,
+  localizedPath,
+  minutesLabel,
+  textForLocale,
+  type Locale,
+} from "@/lib/i18n";
+import { pageSeo } from "@/lib/seo";
 
 // ISR: 每小时后台刷新. 改了文章内容后详情页自动更新; build 后新增的文章
 // (不在 generateStaticParams 里) 也会在首次访问时按需生成.
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  const slugs = await getAllSlugs();
+  const slugs = await getAllSlugs(DEFAULT_LOCALE);
   return slugs.map((slug) => ({ slug }));
+}
+
+export async function generatePostMetadata(slug: string, locale: Locale) {
+  const post = await getPostBySlug(slug, locale);
+  if (!post) {
+    return pageSeo({
+      title: textForLocale(locale, "文章未找到"),
+      description: textForLocale(locale, "这篇文章不存在或尚未发布。"),
+      path: `/blog/${slug}`,
+      locale,
+    });
+  }
+  const availableLocales = await getPublishedPostLocales(post.slug);
+  return pageSeo({
+    title: post.title,
+    description: post.subtitle,
+    path: `/blog/${post.slug}`,
+    locale,
+    type: "article",
+    availableLocales: availableLocales.length ? availableLocales : [locale],
+  });
 }
 
 export async function generateMetadata({
@@ -22,23 +56,19 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = await getPostBySlug(slug);
-  if (!post) return { title: "文章未找到 · 三木有话说" };
-  return {
-    title: `${post.title} · 三木有话说`,
-    description: post.subtitle,
-  };
+  return generatePostMetadata(slug, DEFAULT_LOCALE);
 }
 
-export default async function PostPage({
-  params,
+export async function BlogPostPage({
+  slug,
+  locale = DEFAULT_LOCALE,
 }: {
-  params: Promise<{ slug: string }>;
+  slug: string;
+  locale?: Locale;
 }) {
-  const { slug } = await params;
-  const post = await getPostBySlug(slug);
+  const post = await getPostBySlug(slug, locale);
   if (!post) notFound();
-  const related = await getRelatedPosts(slug, 3);
+  const related = await getRelatedPosts(slug, 3, locale);
 
   return (
     <>
@@ -64,7 +94,7 @@ export default async function PostPage({
           <div className="text-sm opacity-60 font-en flex flex-wrap gap-x-3">
             <time dateTime={post.date}>{post.date}</time>
             <span>·</span>
-            <span>{post.readMinutes} 分钟</span>
+            <span>{minutesLabel(post.readMinutes, locale)}</span>
             <span>·</span>
             <span>三木</span>
           </div>
@@ -93,6 +123,21 @@ export default async function PostPage({
                   </blockquote>
                 );
               }
+              if (block.type === "heading") {
+                const Tag = block.level === 2 ? "h2" : "h3";
+                return (
+                  <Tag
+                    key={idx}
+                    className={
+                      block.level === 2
+                        ? "text-2xl md:text-3xl mt-12 mb-4"
+                        : "text-xl md:text-2xl mt-10 mb-3"
+                    }
+                  >
+                    {block.text}
+                  </Tag>
+                );
+              }
               if (block.type === "video") {
                 return (
                   <div key={idx} className="my-10">
@@ -101,9 +146,10 @@ export default async function PostPage({
                       fallbackName={post.title}
                       description={post.subtitle}
                       fallbackUploadDate={post.date}
+                      locale={locale}
                     />
                     <div className="text-sm font-en uppercase tracking-wider text-brand-navy/70 mb-3 font-medium">
-                      Watch on YouTube
+                      {textForLocale(locale, "Watch on YouTube")}
                     </div>
                     <div className="aspect-video">
                       <iframe
@@ -127,7 +173,7 @@ export default async function PostPage({
       {related.length > 0 && (
         <section className="border-t border-rule">
           <Container width="reading" className="py-16 md:py-20">
-            <RelatedPosts posts={related} />
+            <RelatedPosts posts={related} locale={locale} />
           </Container>
         </section>
       )}
@@ -140,12 +186,20 @@ export default async function PostPage({
             <div className="text-sm font-en uppercase tracking-wider text-brand-navy/70 mb-3 font-medium">
               Free Handbook
             </div>
-            <h3 className="text-2xl mb-3">想读完这篇之后能直接用的清单？</h3>
+            <h3 className="text-2xl mb-3">
+              {textForLocale(locale, "想读完这篇之后能直接用的清单？")}
+            </h3>
             <p className="opacity-80 mb-5 leading-relaxed">
-              我整理了一份《身后事安心手册》v2.7，包含遗嘱模板、政府福利申请清单、家人身故必处理 87 件事。留邮箱免费领。
+              {textForLocale(
+                locale,
+                "我整理了一份《身后事安心手册》v2.7，包含遗嘱模板、政府福利申请清单、家人身故必处理 87 件事。留邮箱免费领。",
+              )}
             </p>
-            <Button variant="primary" href="/resources/handbook">
-              申请索取《身后事安心手册》
+            <Button
+              variant="primary"
+              href={localizedPath("/resources/handbook", locale)}
+            >
+              {textForLocale(locale, "申请索取《身后事安心手册》")}
             </Button>
           </div>
 
@@ -154,9 +208,14 @@ export default async function PostPage({
             <div className="text-sm font-en uppercase tracking-wider text-brand-navy/70 mb-3 font-medium">
               Write to me
             </div>
-            <h3 className="text-2xl mb-3">写信给三木</h3>
+            <h3 className="text-2xl mb-3">
+              {textForLocale(locale, "写信给三木")}
+            </h3>
             <p className="opacity-80 mb-5 leading-relaxed">
-              你对这篇有想法？或者你身边有类似的故事？写信给我，我会亲自看。
+              {textForLocale(
+                locale,
+                "你对这篇有想法？或者你身边有类似的故事？写信给我，我会亲自看。",
+              )}
             </p>
             <Button variant="secondary" href="mailto:info@sanmu.ca">
               ✉️ info@sanmu.ca
@@ -166,23 +225,32 @@ export default async function PostPage({
           {/* 3 · 转发邀请 */}
           <div className="border-t border-rule pt-12">
             <p className="text-base opacity-80 leading-relaxed">
-              如果你身边正有人需要这些信息，欢迎转发给他们。
+              {textForLocale(locale, "如果你身边正有人需要这些信息，欢迎转发给他们。", "如果你身邊正有人需要這些資訊，歡迎轉發給他們。")}
               <br />
-              这件事，谁都早一点知道好一点。
+              {textForLocale(locale, "这件事，谁都早一点知道好一点。")}
             </p>
           </div>
 
           {/* 4 · 返回博客列表 */}
           <div className="border-t border-rule pt-12">
             <Link
-              href="/blog"
+              href={localizedPath("/blog", locale)}
               className="text-sm font-medium text-brand-navy hover:opacity-80 transition-opacity"
             >
-              ← 查看更多文章
+              {textForLocale(locale, "← 查看更多文章")}
             </Link>
           </div>
         </Container>
       </section>
     </>
   );
+}
+
+export default async function PostPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  return <BlogPostPage slug={slug} locale={DEFAULT_LOCALE} />;
 }

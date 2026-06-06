@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "refresh:videos": "node --env-file=../.env scripts/refresh-video-index.mjs",
-    "media:upload": "node --env-file=../.env scripts/upload-event-media.mjs"
+    "media:upload": "node --env-file=../.env scripts/upload-event-media.mjs",
+    "verify:i18n-contract": "node scripts/verify-i18n-contract.mjs"
   },
   "dependencies": {
     "@notionhq/client": "^5.22.0",

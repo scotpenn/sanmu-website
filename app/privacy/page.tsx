@@ -1,11 +1,15 @@
 import { Container } from "@/components/Container";
 import { SectionTitle } from "@/components/SectionTitle";
+import { DEFAULT_LOCALE } from "@/lib/i18n";
+import { pageSeo } from "@/lib/seo";
 
-export const metadata = {
-  title: "隐私政策 · 三木有话说",
+export const metadata = pageSeo({
+  title: "隐私政策",
   description:
     "sanmu.ca 网站隐私政策 · 收集什么数据 / 如何使用 / 你的权利.",
-};
+  path: "/privacy",
+  locale: DEFAULT_LOCALE,
+});
 
 export default function PrivacyPage() {
   return (
@@ -23,7 +27,7 @@ export default function PrivacyPage() {
         <Container width="reading" className="py-12 md:py-16">
           <div className="space-y-8 text-base leading-[1.85]">
             <p>
-              sanmu.ca（以下简称"本网站"）由三木个人运营，致力于以最少的方式收集你最少的数据。本页告诉你具体我们收集什么、为什么、你能怎么处理。
+              sanmu.ca（以下简称「本网站」）由三木个人运营，致力于以最少的方式收集你最少的数据。本页告诉你具体我们收集什么、为什么、你能怎么处理。
             </p>
 
             <h2 className="text-2xl mt-12 mb-3">一、本网站收集的数据</h2>
@@ -54,7 +58,7 @@ export default function PrivacyPage() {
               <strong>· Google Analytics 4 (GA4)</strong> —— 衡量 ID <code className="font-en text-sm bg-rule px-1 rounded">G-V4MB01ZJ32</code>，记录：
             </p>
             <ul className="space-y-2 list-disc pl-6">
-              <li>页面浏览量、滚动深度、出站点击、视频互动等"增强型衡量"事件</li>
+              <li>页面浏览量、滚动深度、出站点击、视频互动等「增强型衡量」事件</li>
               <li>会话时长、用户路径、流量来源（自然搜索 / 直接访问 / YouTube 等）</li>
               <li>大致地理位置、设备 / 浏览器 / 操作系统</li>
             </ul>
@@ -165,7 +169,7 @@ export default function PrivacyPage() {
 
             <h2 className="text-2xl mt-12 mb-3">六、政策更新</h2>
             <p>
-              本政策可能在以下情况更新：增加新的第三方服务、变更数据保留期、应法律要求。更新时本页底部"最后更新"日期会变。重大变更会在网站显眼位置提醒，并通过邮件通知已经报名活动的用户。
+              本政策可能在以下情况更新：增加新的第三方服务、变更数据保留期、应法律要求。更新时本页底部「最后更新」日期会变。重大变更会在网站显眼位置提醒，并通过邮件通知已经报名活动的用户。
             </p>
 
             <h2 className="text-2xl mt-12 mb-3">七、联系方式</h2>

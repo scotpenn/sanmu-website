@@ -223,12 +223,23 @@ export default async function TraditionalHomePage() {
           <p className="text-base opacity-80 mb-10 max-w-[560px] mx-auto leading-relaxed">
             它不能替你做所有決定，但能讓你比大多數家庭少踩很多坑。
           </p>
-          <Button
-            variant="primary"
-            href={localizedPath("/resources/handbook", TRADITIONAL_LOCALE)}
-          >
-            先看完整介紹 →
-          </Button>
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <Link
+              href={`${localizedPath("/resources/handbook", TRADITIONAL_LOCALE)}#get`}
+              className="inline-block px-7 py-3 bg-brand-yellow text-brand-navy font-medium hover:opacity-90 transition-opacity"
+            >
+              ✉️ 免費索取手冊
+            </Link>
+            <Link
+              href={localizedPath("/resources/handbook", TRADITIONAL_LOCALE)}
+              className="inline-block px-7 py-3 border border-paper/40 text-paper hover:bg-paper/10 transition-colors"
+            >
+              先看完整介紹 →
+            </Link>
+          </div>
+          <p className="mt-8 text-xs opacity-50">
+            填一下信箱和稱呼 · 手冊自動寄到你信箱 · 含 PDF 附件
+          </p>
         </Container>
       </section>
     </>

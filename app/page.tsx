@@ -295,12 +295,12 @@ export default async function HomePage() {
             整理 1 年。迭代 7 版。它不会让你看完就死无牵挂，但能让你比 90% 的家庭少踩很多坑。
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
-            <a
-              href={`mailto:info@sanmu.ca?subject=${encodeURIComponent("申请《身后事安心手册》v2.7")}`}
+            <Link
+              href="/resources/handbook#get"
               className="inline-block px-7 py-3 bg-brand-yellow text-brand-navy font-medium hover:opacity-90 transition-opacity"
             >
-              ✉️ 来信索取
-            </a>
+              ✉️ 免费索取手册
+            </Link>
             <Link
               href="/resources/handbook"
               className="inline-block px-7 py-3 border border-paper/40 text-paper hover:bg-paper/10 transition-colors"
@@ -309,7 +309,7 @@ export default async function HomePage() {
             </Link>
           </div>
           <p className="mt-8 text-xs opacity-50">
-            写信到 info@sanmu.ca · 三木亲自看 · 工作日内 24 小时回信
+            填一下邮箱和称呼 · 手册自动发到你邮箱 · 含 PDF 附件
           </p>
         </Container>
       </section>

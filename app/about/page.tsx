@@ -32,12 +32,6 @@ const WORKS = [
     href: "/events",
     cta: "查看线下活动",
   },
-  {
-    label: "媒体",
-    desc: "（暂留空，未来填入媒体采访）",
-    href: null,
-    cta: null,
-  },
 ];
 
 export default function AboutPage() {
@@ -76,7 +70,7 @@ export default function AboutPage() {
         </Container>
       </section>
 
-      {/* 屏 2 · 我是谁（占位短版） */}
+      {/* 屏 2 · 我是谁 */}
       <section className="border-b border-rule bg-brand-yellow/[0.05]">
         <Container width="reading" className="py-20 md:py-24">
           <SectionTitle>我是谁</SectionTitle>
@@ -87,9 +81,6 @@ export default function AboutPage() {
             </p>
             <p>这个频道叫《三木有话说》。你怕的事，我都聊。</p>
           </div>
-          <p className="mt-10 text-sm italic opacity-50">
-            （这是占位版，完整版本由三木亲笔撰写中）
-          </p>
         </Container>
       </section>
 
@@ -101,7 +92,7 @@ export default function AboutPage() {
             不是「资历」，是「整理了什么有用的东西」。
           </p>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+          <div className="grid md:grid-cols-3 gap-6 md:gap-8">
             {WORKS.map((work) => {
               const inner = (
                 <>

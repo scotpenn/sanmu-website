@@ -29,9 +29,9 @@ export async function sendHandbook(
     return { ok: false, error: "请填写称呼。" };
   }
 
-  // 主路径: 邮件必须成功
+  // 主路径: 邮件必须成功(繁体页提交发繁体邮件)
   try {
-    await sendHandbookEmail({ to: email, name });
+    await sendHandbookEmail({ to: email, name, locale });
   } catch (e) {
     console.error("[handbook] 邮件发送失败:", e);
     return {

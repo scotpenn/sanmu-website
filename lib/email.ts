@@ -1,12 +1,23 @@
 import { Resend } from "resend";
 import { readFile } from "fs/promises";
 import path from "path";
+import { TRADITIONAL_LOCALE, type Locale } from "@/lib/i18n";
 
 // 从已在 Resend 验证的子域名 updates.sanmu.ca 发信(根域名 sanmu.ca 未验证);
 // 回信地址仍是 info@sanmu.ca(Reply-To 无需域名验证)。
-const FROM = "三木有话说 <shouhou@updates.sanmu.ca>";
 const REPLY_TO = "info@sanmu.ca";
 const PDF_PATH = path.join(process.cwd(), "private", "handbook-v2.7.pdf");
+
+// 发件人显示名 + 主题随语言;繁体页提交发繁体邮件,附件(PDF)两者共用同一份。
+const FROM = {
+  "zh-Hans": "三木有话说 <shouhou@updates.sanmu.ca>",
+  "zh-Hant": "三木有話說 <shouhou@updates.sanmu.ca>",
+} as const;
+
+const SUBJECT = {
+  "zh-Hans": "您的《身后事安心手册》v2.7 来了",
+  "zh-Hant": "您的《身後事安心手冊》v2.7 來了",
+} as const;
 
 function getResend(): Resend {
   const key = process.env.RESEND_API_KEY;
@@ -14,7 +25,7 @@ function getResend(): Resend {
   return new Resend(key);
 }
 
-function emailText(name: string): string {
+function emailTextHans(name: string): string {
   return `${name}，您好：
 
 我是三木有话说频道的小助理 Sunny，感谢您观看我们的 YouTube 视频！很高兴我们的内容对您有帮助。
@@ -44,18 +55,50 @@ Sunny · 三木有话说 频道小助理
 温馨提示：以上为官方联系方式，请勿轻信其他渠道，谨防诈骗。`;
 }
 
-/** 发送带 PDF 附件的手册邮件. 失败会抛错(主路径, 由调用方处理). */
+function emailTextHant(name: string): string {
+  return `${name}，您好：
+
+我是三木有話說頻道的小助理 Sunny，感謝您觀看我們的 YouTube 影片！很高興我們的內容對您有幫助。
+
+關於您詢問的身後事規劃，我們為您準備了一份《身後事安心手冊》，裡面包含了遺囑模板、政府福利申請指南等實用資訊，都在附件裡了，請查收。
+
+在您收到《手冊》後，請務必回到影片的留言區裡留言說已收到。因為您在留言區的回覆，會有機會幫助更多需要這份免費《手冊》的人們。
+
+這是一份通用的資料包，但請注意每個人的情況不同，建議您在使用前諮詢專業的法律顧問，確保符合您所在地區的具體法律要求。
+
+如果您覺得我們的內容有價值，也希望您能訂閱我們的頻道並留言支持，這對我們非常重要！
+
+如果您就在大溫地區居住，也可以直接致電三木諮詢，他的手機是 778-828-6881。
+
+請注意：本郵件由系統自動發送，請勿直接回覆本郵件。如需聯絡我們，請發送郵件至 info@sanmu.ca。
+
+祝好！
+
+Sunny · 三木有話說 頻道小助理
+
+📞 電話/Phone: 778-828-6881
+✉️ 郵箱/Email: info@sanmu.ca
+💬 微信/WeChat: yyds3mu
+📱 WhatsApp/LINE: 778-828-6881
+🎥 YouTube: 三木有話說 @yyds3mu
+
+溫馨提示：以上為官方聯絡方式，請勿輕信其他來源，謹防詐騙。`;
+}
+
+/** 发送带 PDF 附件的手册邮件. 繁体页提交发繁体主题+正文, 附件共用. 失败抛错(主路径). */
 export async function sendHandbookEmail(params: {
   to: string;
   name: string;
+  locale: Locale;
 }): Promise<void> {
   const pdf = await readFile(PDF_PATH);
+  const isHant = params.locale === TRADITIONAL_LOCALE;
   const { error } = await getResend().emails.send({
-    from: FROM,
+    from: isHant ? FROM["zh-Hant"] : FROM["zh-Hans"],
     to: [params.to],
     replyTo: REPLY_TO,
-    subject: "您的《身后事安心手册》v2.7 来了",
-    text: emailText(params.name),
+    subject: isHant ? SUBJECT["zh-Hant"] : SUBJECT["zh-Hans"],
+    text: isHant ? emailTextHant(params.name) : emailTextHans(params.name),
     attachments: [{ filename: "身后事安心手册-v2.7.pdf", content: pdf }],
   });
   if (error) throw new Error(`Resend 发送失败: ${error.message}`);

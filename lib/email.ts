@@ -2,7 +2,9 @@ import { Resend } from "resend";
 import { readFile } from "fs/promises";
 import path from "path";
 
-const FROM = "三木有话说 <shouhou@sanmu.ca>";
+// 从已在 Resend 验证的子域名 updates.sanmu.ca 发信(根域名 sanmu.ca 未验证);
+// 回信地址仍是 info@sanmu.ca(Reply-To 无需域名验证)。
+const FROM = "三木有话说 <shouhou@updates.sanmu.ca>";
 const REPLY_TO = "info@sanmu.ca";
 const PDF_PATH = path.join(process.cwd(), "private", "handbook-v2.7.pdf");
 

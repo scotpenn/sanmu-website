@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Container } from "@/components/Container";
 import { SectionTitle } from "@/components/SectionTitle";
 import { Button } from "@/components/Button";
+import { HandbookForm } from "@/components/HandbookForm";
 import { TRADITIONAL_LOCALE } from "@/lib/i18n";
 import { pageSeo } from "@/lib/seo";
 
@@ -12,18 +13,6 @@ export const metadata = pageSeo({
   path: "/resources/handbook",
   locale: TRADITIONAL_LOCALE,
 });
-
-const SUBJECT = "申請《身後事安心手冊》v2.7";
-const BODY = `您好 三木，
-
-我想索取這份手冊。請寄給我。
-
-我的稱呼：
-（如果方便，可以告訴我你的來信原因或想了解的具體話題。）
-
-謝謝
-`;
-const MAILTO_HREF = `mailto:info@sanmu.ca?subject=${encodeURIComponent(SUBJECT)}&body=${encodeURIComponent(BODY)}`;
 
 const DOCUMENTS = [
   "法律遺囑模板（中英雙語）",
@@ -57,8 +46,8 @@ export default function TraditionalHandbookPage() {
               <p className="text-base opacity-75 leading-relaxed mb-10 max-w-[520px]">
                 三木在加拿大做殯葬師 16 年。這本手冊把家屬最容易漏掉、最容易花冤枉錢、最容易錯過時限的事整理成清單、模板和流程。
               </p>
-              <Button variant="primary" href={MAILTO_HREF}>
-                ✉️ 來信索取
+              <Button variant="primary" href="#get">
+                ✉️ 免費索取手冊
               </Button>
             </div>
 
@@ -108,6 +97,28 @@ export default function TraditionalHandbookPage() {
               </article>
             ))}
           </div>
+        </Container>
+      </section>
+
+      {/* 索取(表单) */}
+      <section id="get" className="border-b border-rule scroll-mt-12">
+        <Container width="reading" className="py-20 md:py-24 text-center">
+          <SectionTitle align="center" className="mb-6">
+            填一下，手冊馬上寄到你信箱
+          </SectionTitle>
+          <p className="text-lg opacity-85 leading-relaxed mb-10">
+            留下信箱和稱呼，PDF 會自動寄給你。
+            <br />
+            <span className="text-base opacity-70">
+              不強制留電話、不訂閱也能隨時退。
+            </span>
+          </p>
+
+          <HandbookForm locale={TRADITIONAL_LOCALE} />
+
+          <p className="text-sm opacity-60 mt-6 max-w-[480px] mx-auto leading-relaxed">
+            三木會親自看每一封回信。如果幾分鐘內沒收到手冊，請檢查垃圾郵件，或寫信到 info@sanmu.ca。
+          </p>
         </Container>
       </section>
     </>

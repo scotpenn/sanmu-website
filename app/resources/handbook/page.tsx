@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Container } from "@/components/Container";
 import { SectionTitle } from "@/components/SectionTitle";
 import { Button } from "@/components/Button";
+import { HandbookForm } from "@/components/HandbookForm";
 import { DEFAULT_LOCALE } from "@/lib/i18n";
 import { pageSeo } from "@/lib/seo";
 
@@ -12,18 +13,6 @@ export const metadata = pageSeo({
   path: "/resources/handbook",
   locale: DEFAULT_LOCALE,
 });
-
-const SUBJECT = "申请《身后事安心手册》v2.7";
-const BODY = `您好 三木，
-
-我想索取这份手册。请寄给我。
-
-我的称呼：
-（如何方便，可以告诉我你的来信原因或想了解的具体话题，会有助我未来选题。）
-
-谢谢
-`;
-const MAILTO_HREF = `mailto:info@sanmu.ca?subject=${encodeURIComponent(SUBJECT)}&body=${encodeURIComponent(BODY)}`;
 
 type HandbookDoc = {
   num: string;
@@ -126,8 +115,8 @@ export default function HandbookPage() {
                 这本手册是他看到家属反复踩的坑、被错误信息坑过的钱、错过的政府福利窗口期，整理成的清单、模板和流程图。
               </p>
               <div className="flex flex-wrap gap-4">
-                <Button variant="primary" href={MAILTO_HREF}>
-                  ✉️ 来信索取
+                <Button variant="primary" href="#get">
+                  ✉️ 免费索取手册
                 </Button>
                 <a
                   href="#contents"
@@ -215,45 +204,24 @@ export default function HandbookPage() {
         </Container>
       </section>
 
-      {/* 屏 4 · 如何索取 */}
-      <section className="border-b border-rule">
+      {/* 屏 4 · 如何索取(表单) */}
+      <section id="get" className="border-b border-rule scroll-mt-12">
         <Container width="reading" className="py-20 md:py-24 text-center">
           <SectionTitle align="center" className="mb-6">
-            怎么拿到这份手册
+            填一下，手册马上发到你邮箱
           </SectionTitle>
           <p className="text-lg opacity-85 leading-relaxed mb-10">
-            现阶段我们用最朴素的方式 —— <strong>你给我们写一封信，我们手动回信，附带 PDF</strong>。
+            留下邮箱和称呼，PDF 会自动发给你。
             <br />
             <span className="text-base opacity-70">
-              不需要注册、不需要订阅、不强制留电话。
+              不强制留电话、不订阅也能随时退。
             </span>
           </p>
 
-          <div className="border border-rule bg-paper p-8 md:p-10 mb-8 text-left max-w-[520px] mx-auto">
-            <div className="text-xs font-en uppercase tracking-widest text-brand-navy/70 mb-3 font-medium">
-              Send to
-            </div>
-            <div className="text-2xl md:text-3xl font-extrabold text-brand-navy mb-4 tracking-[-0.01em]">
-              info@sanmu.ca
-            </div>
-            <div className="text-xs font-en uppercase tracking-widest text-brand-navy/70 mb-2 font-medium mt-6">
-              Subject
-            </div>
-            <div className="text-base mb-4 font-medium">{SUBJECT}</div>
-            <div className="text-xs font-en uppercase tracking-widest text-brand-navy/70 mb-2 font-medium">
-              Body（可选）
-            </div>
-            <p className="text-sm opacity-70 leading-relaxed">
-              简单说一下你的称呼，如果方便可以告诉我们你的来信原因或想了解的具体话题 —— 这能帮三木未来选题。
-            </p>
-          </div>
-
-          <Button variant="primary" href={MAILTO_HREF}>
-            ✉️ 现在写信
-          </Button>
+          <HandbookForm locale={DEFAULT_LOCALE} />
 
           <p className="text-sm opacity-60 mt-6 max-w-[480px] mx-auto leading-relaxed">
-            三木会亲自看每一封信。工作日内 24 小时回复，周末可能延后到周一。如果 48 小时还没收到，请检查垃圾邮件 / 来信再问一次。
+            三木会亲自看每一封回信。如果几分钟内没收到手册，请检查垃圾邮件，或写信到 info@sanmu.ca。
           </p>
         </Container>
       </section>

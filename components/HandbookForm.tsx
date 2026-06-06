@@ -23,9 +23,23 @@ export function HandbookForm({
   if (state.ok) {
     return (
       <div className="border border-rule bg-paper p-8 md:p-10 max-w-[520px] mx-auto text-center">
-        <div className="text-2xl mb-3">✅ 已发送</div>
+        <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-brand-navy">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2.5}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-7 w-7 text-paper"
+            aria-hidden="true"
+          >
+            <path d="M20 6 9 17l-5-5" />
+          </svg>
+        </div>
+        <div className="text-xl font-medium text-brand-navy mb-2">已发送</div>
         <p className="opacity-80 leading-relaxed">
-          手册已发到你的邮箱（含 PDF 附件）。如果几分钟内没收到，请检查垃圾邮件，或写信到 info@sanmu.ca。
+          手册已发到你的邮箱，含 PDF 附件，请查收。
         </p>
       </div>
     );

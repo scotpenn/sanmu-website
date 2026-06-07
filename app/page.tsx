@@ -4,6 +4,7 @@ import { Container } from "@/components/Container";
 import { Button } from "@/components/Button";
 import { SectionTitle } from "@/components/SectionTitle";
 import { getAllPosts } from "@/lib/notion";
+import { SiteJsonLd } from "@/components/SiteJsonLd";
 import { DEFAULT_LOCALE } from "@/lib/i18n";
 import { pageSeo } from "@/lib/seo";
 import {
@@ -60,6 +61,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <SiteJsonLd locale={DEFAULT_LOCALE} />
       {/* 屏 1 · Hero */}
       <section className="border-b border-rule">
         <Container width="card" className="py-20 md:py-28">

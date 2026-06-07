@@ -27,7 +27,7 @@ export default function PrivacyPage() {
         <Container width="reading" className="py-12 md:py-16">
           <div className="space-y-8 text-base leading-[1.85]">
             <p>
-              sanmu.ca（以下简称「本网站」）由三木个人运营，致力于以最少的方式收集你最少的数据。本页告诉你具体我们收集什么、为什么、你能怎么处理。
+              sanmu.ca（以下简称「本网站」）由 Sanmu Media Inc. 运营，致力于以最少的方式收集你最少的数据。本页告诉你具体我们收集什么、为什么、你能怎么处理。
             </p>
 
             <h2 className="text-2xl mt-12 mb-3">一、本网站收集的数据</h2>

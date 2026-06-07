@@ -27,7 +27,7 @@ export default function TraditionalPrivacyPage() {
         <Container width="reading" className="py-12 md:py-16">
           <div className="space-y-8 text-base leading-[1.85]">
             <p>
-              sanmu.ca（以下簡稱「本網站」）由三木個人營運，致力於以最少的方式收集你最少的資料。本頁告訴你具體我們收集什麼、為什麼、你能怎麼處理。
+              sanmu.ca（以下簡稱「本網站」）由 Sanmu Media Inc. 營運，致力於以最少的方式收集你最少的資料。本頁告訴你具體我們收集什麼、為什麼、你能怎麼處理。
             </p>
 
             <h2 className="text-2xl mt-12 mb-3">一、本網站收集的資料</h2>

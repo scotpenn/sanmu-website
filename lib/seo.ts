@@ -60,6 +60,36 @@ export function localizedAlternates(
   };
 }
 
+// 官方社交主页, 用于 schema.org 的 sameAs (帮 Google 建立实体识别)
+export const SOCIAL_PROFILES = [
+  "https://www.youtube.com/@yyds3mu",
+  "https://xhslink.com/m/51jimi2BVtR",
+];
+
+/** schema.org Person 节点(三木), 用作文章 author. */
+export function personSchema(locale: Locale) {
+  return {
+    "@type": "Person",
+    name: "三木",
+    url: localeUrl("/about", locale),
+    image: absoluteUrl("/portrait.jpg"),
+    jobTitle: locale === DEFAULT_LOCALE ? "殡葬师" : "殯葬師",
+    sameAs: SOCIAL_PROFILES,
+  };
+}
+
+/** schema.org Organization 节点(品牌), 用作文章 publisher. */
+export function organizationSchema(locale: Locale) {
+  return {
+    "@type": "Organization",
+    name: siteName[locale],
+    legalName: "Sanmu Media Inc.",
+    url: localeUrl("/", locale),
+    logo: absoluteUrl("/portrait.jpg"),
+    sameAs: SOCIAL_PROFILES,
+  };
+}
+
 export function pageSeo({
   title,
   description,

@@ -10,6 +10,7 @@ import {
 } from "@/lib/notion";
 import { videoIdFromUrl } from "@/lib/videos";
 import { VideoJsonLd } from "@/components/VideoJsonLd";
+import { EventJsonLd } from "@/components/EventJsonLd";
 import { RichText } from "@/components/RichText";
 import {
   DEFAULT_LOCALE,
@@ -82,6 +83,7 @@ export async function EventDetail({
 
   return (
     <>
+      <EventJsonLd event={event} locale={locale} />
       {/* Hero · 封面图 (如有) */}
       {event.coverImageUrl && (
         <section className="border-b border-rule">

@@ -10,6 +10,7 @@ import {
   minutesLabel,
 } from "@/lib/i18n";
 import { pageSeo } from "@/lib/seo";
+import { SiteJsonLd } from "@/components/SiteJsonLd";
 import {
   getTopVideos,
   formatViewCount,
@@ -40,6 +41,7 @@ export default async function TraditionalHomePage() {
 
   return (
     <>
+      <SiteJsonLd locale={TRADITIONAL_LOCALE} />
       <section className="border-b border-rule">
         <Container width="card" className="py-20 md:py-28">
           <div className="grid md:grid-cols-12 gap-10 md:gap-16 items-center">

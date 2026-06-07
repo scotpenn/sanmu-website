@@ -9,6 +9,7 @@ import {
   getRelatedPosts,
 } from "@/lib/notion";
 import { VideoJsonLd } from "@/components/VideoJsonLd";
+import { ArticleJsonLd } from "@/components/ArticleJsonLd";
 import { RichText } from "@/components/RichText";
 import { RelatedPosts } from "@/components/RelatedPosts";
 import {
@@ -72,6 +73,7 @@ export async function BlogPostPage({
 
   return (
     <>
+      <ArticleJsonLd post={post} locale={locale} />
       {/* 文章头 */}
       <section className="border-b border-rule">
         <Container width="reading" className="py-16 md:py-20">

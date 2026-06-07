@@ -145,8 +145,7 @@ export function Footer() {
         {/* 底部 · 版权行 */}
         <div className="flex flex-wrap justify-between gap-3 text-xs opacity-60">
           <div>
-            © 2026 {siteName[locale]} ·{" "}
-            {isTraditional ? "由三木個人營運" : "由三木个人运营"} · sanmu.ca
+            © 2026 Sanmu Media Inc. · {siteName[locale]} · sanmu.ca
           </div>
           <div className="flex flex-wrap gap-x-4 gap-y-1">
             <Link

@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/Container";
 import { SectionTitle } from "@/components/SectionTitle";
@@ -51,19 +50,6 @@ function UpcomingCard({ event, locale }: { event: EventItem; locale: Locale }) {
   const href = localizedPath(`/events/${event.slug}`, locale);
   return (
     <article className="border border-rule bg-brand-yellow/10 overflow-hidden">
-      <Link href={href} className="block hover:opacity-95 transition-opacity">
-        {event.coverImageUrl && (
-          <div className="aspect-[16/9] relative bg-rule">
-            <Image
-              src={event.coverImageUrl}
-              alt={event.title}
-              fill
-              sizes="(min-width: 768px) 1080px, 100vw"
-              className="object-cover"
-            />
-          </div>
-        )}
-      </Link>
       <div className="p-8 md:p-10">
       <div className="text-xs font-en uppercase tracking-widest text-brand-navy/70 mb-4 font-medium">
         {event.status} · Upcoming
@@ -115,19 +101,6 @@ function PastCard({ event, locale }: { event: EventItem; locale: Locale }) {
   const href = localizedPath(`/events/${event.slug}`, locale);
   return (
     <article className="border border-rule overflow-hidden">
-      <Link href={href} className="block hover:opacity-95 transition-opacity">
-        {event.coverImageUrl && (
-          <div className="aspect-[16/9] relative bg-rule">
-            <Image
-              src={event.coverImageUrl}
-              alt={event.title}
-              fill
-              sizes="(min-width: 768px) 540px, 100vw"
-              className="object-cover"
-            />
-          </div>
-        )}
-      </Link>
       <div className="p-8 md:p-10">
       <div className="text-xs font-en uppercase tracking-widest opacity-50 mb-4">
         Past Event

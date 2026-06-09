@@ -83,11 +83,9 @@ function UpcomingCard({ event, locale }: { event: EventItem; locale: Locale }) {
       </dl>
 
       <div className="flex flex-wrap gap-4">
-        {event.signupUrl && (
-          <Button variant="primary" href={event.signupUrl}>
-            {textForLocale(locale, "立即报名 →")}
-          </Button>
-        )}
+        <Button variant="primary" href={href}>
+          {textForLocale(locale, "查看详情 →", "查看詳情 →")}
+        </Button>
         <Button variant="secondary" href="mailto:info@sanmu.ca">
           ✉️ {textForLocale(locale, "写信咨询")}
         </Button>

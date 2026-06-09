@@ -1,0 +1,39 @@
+import { Client } from "@notionhq/client";
+import type { Locale } from "@/lib/i18n";
+
+export type Registration = {
+  eventPageId: string;
+  name: string;
+  email: string;
+  phone: string;
+  partySize: number;
+  message: string;
+  locale: Locale;
+};
+
+/** 写入 Notion「活动报名」库. 失败抛错, 由调用方决定是否吞掉. */
+export async function saveRegistration(reg: Registration): Promise<void> {
+  const token = process.env.NOTION_TOKEN;
+  const dataSourceId = process.env.NOTION_REGISTRATIONS_DS_ID;
+  if (!token || !dataSourceId) {
+    throw new Error("NOTION_TOKEN 或 NOTION_REGISTRATIONS_DS_ID 未设置");
+  }
+  const notion = new Client({ auth: token });
+  await notion.pages.create({
+    parent: { type: "data_source_id", data_source_id: dataSourceId },
+    properties: {
+      姓名: { title: [{ type: "text", text: { content: reg.name } }] },
+      邮箱: { email: reg.email },
+      电话: { phone_number: reg.phone || null },
+      参加人数: { number: reg.partySize },
+      留言: {
+        rich_text: reg.message
+          ? [{ type: "text", text: { content: reg.message } }]
+          : [],
+      },
+      活动: { relation: [{ id: reg.eventPageId }] },
+      状态: { select: { name: "已报名" } },
+      来源语言: { select: { name: reg.locale } },
+    },
+  });
+}

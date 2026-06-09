@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Container } from "@/components/Container";
 import { Button } from "@/components/Button";
 import { SectionTitle } from "@/components/SectionTitle";
-import { getAllPosts } from "@/lib/notion";
+import { getAllPosts, getUpcomingEvents } from "@/lib/notion";
 import {
   TRADITIONAL_LOCALE,
   localizedPath,
@@ -37,6 +37,7 @@ const TRUST_STATS = [
 
 export default async function TraditionalHomePage() {
   const latestPosts = (await getAllPosts(TRADITIONAL_LOCALE)).slice(0, 3);
+  const upcomingEvents = (await getUpcomingEvents(TRADITIONAL_LOCALE)).slice(0, 3);
   const topVideos = getTopVideos(3);
 
   return (
@@ -213,6 +214,42 @@ export default async function TraditionalHomePage() {
           </div>
         </Container>
       </section>
+
+      {/* 線下活動 */}
+      {upcomingEvents.length > 0 && (
+        <section className="border-b border-rule">
+          <Container width="card" className="py-20 md:py-24">
+            <SectionTitle align="center">最近的線下活動</SectionTitle>
+            <div className="max-w-2xl mx-auto mt-8 space-y-4">
+              {upcomingEvents.map((event) => (
+                <Link
+                  key={event.slug}
+                  href={localizedPath(`/events/${event.slug}`, TRADITIONAL_LOCALE)}
+                  className="block border border-rule bg-brand-yellow/10 p-6 md:p-7 hover:border-brand-navy transition-colors group"
+                >
+                  <div className="text-xs font-en uppercase tracking-widest text-brand-navy/70 mb-2 font-medium">
+                    即將舉辦 · Upcoming
+                  </div>
+                  <h3 className="text-lg md:text-xl mb-2 group-hover:text-brand-navy transition-colors">
+                    {event.title}
+                  </h3>
+                  <p className="text-sm opacity-75 leading-relaxed line-clamp-2">
+                    {event.summary}
+                  </p>
+                </Link>
+              ))}
+              <div className="text-center pt-2">
+                <Link
+                  href={localizedPath("/events", TRADITIONAL_LOCALE)}
+                  className="text-sm font-medium text-brand-navy hover:opacity-80 transition-opacity"
+                >
+                  查看全部活動 →
+                </Link>
+              </div>
+            </div>
+          </Container>
+        </section>
+      )}
 
       <section className="bg-brand-navy text-paper">
         <Container width="reading" className="py-20 md:py-24 text-center">

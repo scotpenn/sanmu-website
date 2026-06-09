@@ -84,18 +84,20 @@ export async function EventDetail({
   return (
     <>
       <EventJsonLd event={event} locale={locale} />
-      {/* Hero · 封面图 (如有) */}
+      {/* Hero · 封面图 / 海报 (如有, 完整不裁切) */}
       {event.coverImageUrl && (
-        <section className="border-b border-rule">
-          <div className="relative w-full aspect-[21/9] bg-rule">
-            <Image
-              src={event.coverImageUrl}
-              alt={event.title}
-              fill
-              sizes="100vw"
-              className="object-cover"
-              priority
-            />
+        <section className="border-b border-rule bg-rule/30">
+          <div className="mx-auto max-w-[600px] px-6 py-8 md:py-12">
+            <div className="relative w-full aspect-[3/4]">
+              <Image
+                src={event.coverImageUrl}
+                alt={event.title}
+                fill
+                sizes="(min-width: 768px) 600px, 100vw"
+                className="object-contain"
+                priority
+              />
+            </div>
           </div>
         </section>
       )}

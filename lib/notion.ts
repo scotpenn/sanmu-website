@@ -475,7 +475,19 @@ function parseEventProperties(page: PageObjectResponse): EventItem | null {
 }
 
 /**
- * 获取即将举办 / 报名中的活动 (按日期升序, 最近的在前).
+ * 活动是否已过期: 活动日期早于「今天」(以温哥华时区计) 即视为已结束.
+ * 配合页面 ISR 每小时重刷, 日期过后约 1 小时内自动从「即将」转「已结束」, 无需手动改状态.
+ */
+export function isEventPast(dateISO: string): boolean {
+  if (!dateISO) return false;
+  const today = new Date().toLocaleDateString("en-CA", {
+    timeZone: "America/Vancouver",
+  }); // "YYYY-MM-DD"
+  return dateISO.slice(0, 10) < today;
+}
+
+/**
+ * 获取即将举办 / 报名中、且日期未过的活动 (按日期升序, 最近的在前).
  */
 export async function getUpcomingEvents(
   locale: Locale = DEFAULT_LOCALE,
@@ -502,7 +514,8 @@ export async function getUpcomingEvents(
   for (const page of response.results) {
     if (!("properties" in page)) continue;
     const event = parseEventProperties(page as PageObjectResponse);
-    if (event) events.push(event);
+    // 日期已过的(即使状态还没手动改)自动排除出「即将举办」.
+    if (event && !isEventPast(event.date)) events.push(event);
   }
   return events;
 }
@@ -590,8 +603,14 @@ export async function getPastEvents(
     data_source_id: EVENTS_DATA_SOURCE_ID,
     filter: {
       and: [
-        { property: "状态", select: { equals: "已举办" } },
         { property: "语言版本", select: { equals: locale } },
+        {
+          or: [
+            { property: "状态", select: { equals: "即将举办" } },
+            { property: "状态", select: { equals: "报名中" } },
+            { property: "状态", select: { equals: "已举办" } },
+          ],
+        },
       ],
     },
     sorts: [{ property: "日期", direction: "descending" }],
@@ -602,7 +621,10 @@ export async function getPastEvents(
   for (const page of response.results) {
     if (!("properties" in page)) continue;
     const event = parseEventProperties(page as PageObjectResponse);
-    if (event) events.push(event);
+    // 日期已过, 或手动标记已举办 → 归入「已结束」.
+    if (event && (isEventPast(event.date) || event.status === "已举办")) {
+      events.push(event);
+    }
   }
   return events;
 }

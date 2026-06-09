@@ -35,15 +35,16 @@ export const metadata = generateEventsIndexMetadata(DEFAULT_LOCALE);
 
 function formatDateLabel(isoDate: string, locale: Locale): string {
   if (!isoDate) return "";
+  // 纯日历日期: 用 UTC 取值, 避免被运行环境时区(如温哥华)偏移一天.
   const d = new Date(isoDate);
-  const year = d.getFullYear();
-  const month = d.getMonth() + 1;
-  const day = d.getDate();
+  const year = d.getUTCFullYear();
+  const month = d.getUTCMonth() + 1;
+  const day = d.getUTCDate();
   const weekdays =
     locale === "zh-Hant"
       ? ["週日", "週一", "週二", "週三", "週四", "週五", "週六"]
       : ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
-  return `${year} 年 ${month} 月 ${day} 日（${weekdays[d.getDay()]}）`;
+  return `${year} 年 ${month} 月 ${day} 日（${weekdays[d.getUTCDay()]}）`;
 }
 
 function UpcomingCard({ event, locale }: { event: EventItem; locale: Locale }) {

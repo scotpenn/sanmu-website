@@ -8,6 +8,7 @@ import {
   getAllEventSlugs,
   getEventBySlug,
   getPublishedEventLocales,
+  isEventPast,
 } from "@/lib/notion";
 import { videoIdFromUrl } from "@/lib/videos";
 import { VideoJsonLd } from "@/components/VideoJsonLd";
@@ -61,12 +62,13 @@ export async function generateMetadata({
 
 function formatDateLabel(isoDate: string, locale: Locale): string {
   if (!isoDate) return "";
+  // 纯日历日期: 用 UTC 取值, 避免被运行环境时区(如温哥华)偏移一天.
   const d = new Date(isoDate);
   const weekdays =
     locale === "zh-Hant"
       ? ["週日", "週一", "週二", "週三", "週四", "週五", "週六"]
       : ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
-  return `${d.getFullYear()} 年 ${d.getMonth() + 1} 月 ${d.getDate()} 日（${weekdays[d.getDay()]}）`;
+  return `${d.getUTCFullYear()} 年 ${d.getUTCMonth() + 1} 月 ${d.getUTCDate()} 日（${weekdays[d.getUTCDay()]}）`;
 }
 
 export async function EventDetail({
@@ -79,7 +81,8 @@ export async function EventDetail({
   const event = await getEventBySlug(slug, locale);
   if (!event) notFound();
 
-  const isPast = event.status === "已举办";
+  // 日期已过(温哥华时区)或手动标记已举办 → 已结束. 日期驱动, 无需手动改状态.
+  const isPast = isEventPast(event.date) || event.status === "已举办";
   const isUpcoming = !isPast;
 
   return (
@@ -107,7 +110,9 @@ export async function EventDetail({
       <section className="border-b border-rule">
         <Container width="reading" className="py-12 md:py-16">
           <div className="text-xs font-en uppercase tracking-widest text-brand-navy/70 mb-4 font-medium">
-            {isPast ? "Past Event" : `${event.status} · Upcoming`}
+            {isPast
+              ? `${textForLocale(locale, "活动已结束", "活動已結束")} · Ended`
+              : `${event.status} · Upcoming`}
           </div>
           <h1 className="text-3xl md:text-4xl lg:text-5xl leading-tight mb-8">
             {event.title}
@@ -293,6 +298,24 @@ export async function EventDetail({
                 className="w-full h-full border-0"
               />
             </div>
+          </Container>
+        </section>
+      )}
+
+      {/* 已结束但还没上传回顾内容 → 占位 (后续手动补照片/视频后自动替换) */}
+      {isPast && event.photos.length === 0 && !event.videoReviewUrl && (
+        <section className="border-b border-rule">
+          <Container width="reading" className="py-16 md:py-20 text-center">
+            <p className="text-lg text-brand-navy font-medium mb-2">
+              {textForLocale(locale, "活动回顾整理中", "活動回顧整理中")}
+            </p>
+            <p className="text-sm opacity-70">
+              {textForLocale(
+                locale,
+                "现场照片与回顾视频稍后补上，敬请期待。",
+                "現場照片與回顧影片稍後補上，敬請期待。",
+              )}
+            </p>
           </Container>
         </section>
       )}

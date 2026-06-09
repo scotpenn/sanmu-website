@@ -373,6 +373,8 @@ export async function getRelatedPosts(
 
 export type EventStatus = "草稿" | "即将举办" | "报名中" | "已举办";
 
+export type SignupMethod = "网页表单" | "外部链接" | "无需报名";
+
 export type EventItem = {
   slug: string;
   locale: Locale;
@@ -386,6 +388,8 @@ export type EventItem = {
   videoReviewUrl: string | null;
   coverImageUrl: string | null;
   photos: string[];
+  signupMethod: SignupMethod;
+  pageId: string;
 };
 
 export type EventDetail = EventItem & {
@@ -462,6 +466,11 @@ function parseEventProperties(page: PageObjectResponse): EventItem | null {
       videoReviewProp?.type === "url" ? videoReviewProp.url || null : null,
     coverImageUrl: coverImages[0] ?? null,
     photos: parseExternalFiles(photosProp),
+    pageId: page.id,
+    signupMethod:
+      props["报名方式"]?.type === "select" && props["报名方式"].select
+        ? (props["报名方式"].select.name as SignupMethod)
+        : "外部链接", // 空 → 外部链接(等于现状, 不影响已有活动)
   };
 }
 

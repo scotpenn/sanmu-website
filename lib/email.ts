@@ -103,3 +103,73 @@ export async function sendHandbookEmail(params: {
   });
   if (error) throw new Error(`Resend 发送失败: ${error.message}`);
 }
+
+type EventInfo = { title: string; summary: string; location: string | null };
+
+function eventTextHans(name: string, e: EventInfo): string {
+  return `${name}，您好：
+
+您已成功报名「${e.title}」。
+
+📅 ${e.summary}${e.location ? `\n📍 ${e.location}` : ""}
+
+请准时参加。如活动有变动，我们会通过邮件通知您。
+
+请注意：本邮件由系统自动发送，请勿直接回复本邮件。如需联系我们，请发送邮件至 info@sanmu.ca。
+
+祝好！
+
+Sunny · 三木有话说 频道小助理
+
+📞 电话/Phone: 778-828-6881
+✉️ 邮箱/Email: info@sanmu.ca
+💬 微信/WeChat: yyds3mu
+📱 WhatsApp/LINE: 778-828-6881
+🎥 YouTube: 三木有话说 @yyds3mu
+
+温馨提示：以上为官方联系方式，请勿轻信其他渠道，谨防诈骗。`;
+}
+
+function eventTextHant(name: string, e: EventInfo): string {
+  return `${name}，您好：
+
+您已成功報名「${e.title}」。
+
+📅 ${e.summary}${e.location ? `\n📍 ${e.location}` : ""}
+
+請準時參加。如活動有變動，我們會透過郵件通知您。
+
+請注意：本郵件由系統自動發送，請勿直接回覆本郵件。如需聯絡我們，請發送郵件至 info@sanmu.ca。
+
+祝好！
+
+Sunny · 三木有話說 頻道小助理
+
+📞 電話/Phone: 778-828-6881
+✉️ 郵箱/Email: info@sanmu.ca
+💬 微信/WeChat: yyds3mu
+📱 WhatsApp/LINE: 778-828-6881
+🎥 YouTube: 三木有話說 @yyds3mu
+
+溫馨提示：以上為官方聯絡方式，請勿輕信其他來源，謹防詐騙。`;
+}
+
+/** 发送活动「报名成功」确认邮件(无附件, 随 locale). 失败抛错(主路径). */
+export async function sendEventConfirmationEmail(params: {
+  to: string;
+  name: string;
+  locale: Locale;
+  event: EventInfo;
+}): Promise<void> {
+  const isHant = params.locale === TRADITIONAL_LOCALE;
+  const { error } = await getResend().emails.send({
+    from: isHant ? FROM["zh-Hant"] : FROM["zh-Hans"],
+    to: [params.to],
+    replyTo: REPLY_TO,
+    subject: `${isHant ? "【報名成功】" : "【报名成功】"}${params.event.title}`,
+    text: isHant
+      ? eventTextHant(params.name, params.event)
+      : eventTextHans(params.name, params.event),
+  });
+  if (error) throw new Error(`Resend 发送失败: ${error.message}`);
+}

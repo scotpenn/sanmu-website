@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/Container";
 import { Button } from "@/components/Button";
+import { EventRegistrationForm } from "@/components/EventRegistrationForm";
 import {
   getAllEventSlugs,
   getEventBySlug,
@@ -145,7 +146,15 @@ export async function EventDetail({
             </p>
           )}
 
-          {isUpcoming && event.signupUrl && (
+          {isUpcoming && event.signupMethod === "网页表单" && (
+            <EventRegistrationForm eventSlug={event.slug} locale={locale} />
+          )}
+          {isUpcoming && event.signupMethod === "无需报名" && (
+            <p className="text-base text-brand-navy font-medium">
+              {textForLocale(locale, "免费参与，无需报名。", "免費參與，無需報名。")}
+            </p>
+          )}
+          {isUpcoming && event.signupMethod === "外部链接" && event.signupUrl && (
             <div className="flex flex-wrap gap-4">
               <Button variant="primary" href={event.signupUrl}>
                 {textForLocale(locale, "立即报名 →")}

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Container } from "@/components/Container";
 import { Button } from "@/components/Button";
 import { SectionTitle } from "@/components/SectionTitle";
-import { getAllPosts, getUpcomingEvents } from "@/lib/notion";
+import { getAllPosts, getUpcomingEvents, getVideoCuration } from "@/lib/notion";
 import {
   TRADITIONAL_LOCALE,
   localizedPath,
@@ -12,7 +12,7 @@ import {
 import { pageSeo } from "@/lib/seo";
 import { SiteJsonLd } from "@/components/SiteJsonLd";
 import {
-  getTopVideos,
+  homepageVideos,
   formatViewCount,
   thumbnailUrl,
   watchUrl,
@@ -38,7 +38,8 @@ const TRUST_STATS = [
 export default async function TraditionalHomePage() {
   const latestPosts = (await getAllPosts(TRADITIONAL_LOCALE)).slice(0, 3);
   const upcomingEvents = (await getUpcomingEvents(TRADITIONAL_LOCALE)).slice(0, 3);
-  const topVideos = getTopVideos(3);
+  const curation = await getVideoCuration();
+  const topVideos = homepageVideos(curation, 3);
 
   return (
     <>
@@ -150,14 +151,14 @@ export default async function TraditionalHomePage() {
                   <div className="aspect-video relative overflow-hidden bg-rule mb-4">
                     <Image
                       src={thumbnailUrl(video.video_id)}
-                      alt={localizeVideoTitle(video.title, TRADITIONAL_LOCALE, video.video_id)}
+                      alt={localizeVideoTitle(video.title, TRADITIONAL_LOCALE, curation.get(video.video_id)?.titleHant)}
                       fill
                       sizes="(min-width: 768px) 320px, 100vw"
                       className="object-cover transition-transform duration-300 group-hover:scale-105"
                     />
                   </div>
                   <h3 className="text-base md:text-lg font-medium leading-snug mb-2 group-hover:text-brand-navy transition-colors">
-                    {localizeVideoTitle(video.title, TRADITIONAL_LOCALE, video.video_id)}
+                    {localizeVideoTitle(video.title, TRADITIONAL_LOCALE, curation.get(video.video_id)?.titleHant)}
                   </h3>
                   <div className="text-xs opacity-50 font-en">
                     {formatViewCount(video.view_count, TRADITIONAL_LOCALE)} views ·{" "}

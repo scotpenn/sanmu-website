@@ -3,12 +3,12 @@ import Link from "next/link";
 import { Container } from "@/components/Container";
 import { Button } from "@/components/Button";
 import { SectionTitle } from "@/components/SectionTitle";
-import { getAllPosts, getUpcomingEvents } from "@/lib/notion";
+import { getAllPosts, getUpcomingEvents, getVideoCuration } from "@/lib/notion";
 import { SiteJsonLd } from "@/components/SiteJsonLd";
 import { DEFAULT_LOCALE } from "@/lib/i18n";
 import { pageSeo } from "@/lib/seo";
 import {
-  getTopVideos,
+  homepageVideos,
   formatViewCount,
   thumbnailUrl,
   watchUrl,
@@ -58,7 +58,8 @@ const TOPIC_CATEGORIES = [
 export default async function HomePage() {
   const latestPosts = (await getAllPosts()).slice(0, 3);
   const upcomingEvents = (await getUpcomingEvents()).slice(0, 3);
-  const topVideos = getTopVideos(3);
+  const curation = await getVideoCuration();
+  const topVideos = homepageVideos(curation, 3);
 
   return (
     <>

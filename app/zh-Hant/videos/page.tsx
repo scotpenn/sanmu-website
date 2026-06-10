@@ -3,8 +3,8 @@ import { Container } from "@/components/Container";
 import { SectionTitle } from "@/components/SectionTitle";
 import {
   getAllPlaylists,
-  getPlaylistVideos,
-  getOrphanVideos,
+  visiblePlaylistVideos,
+  visibleOrphanVideos,
   formatViewCount,
   thumbnailUrl,
   watchUrl,
@@ -16,6 +16,8 @@ import {
 import { VideoJsonLd } from "@/components/VideoJsonLd";
 import { TRADITIONAL_LOCALE } from "@/lib/i18n";
 import { pageSeo } from "@/lib/seo";
+import { getVideoCuration } from "@/lib/notion";
+import type { VideoCuration } from "@/lib/notion";
 
 export const metadata = pageSeo({
   title: "影片內容",
@@ -25,7 +27,7 @@ export const metadata = pageSeo({
   locale: TRADITIONAL_LOCALE,
 });
 
-function VideoCard({ video }: { video: Video }) {
+function VideoCard({ video, curation }: { video: Video; curation: Map<string, VideoCuration> }) {
   return (
     <a
       href={watchUrl(video.video_id)}
@@ -43,14 +45,14 @@ function VideoCard({ video }: { video: Video }) {
       <div className="aspect-video relative overflow-hidden bg-rule mb-3">
         <Image
           src={thumbnailUrl(video.video_id)}
-          alt={localizeVideoTitle(video.title, TRADITIONAL_LOCALE, video.video_id)}
+          alt={localizeVideoTitle(video.title, TRADITIONAL_LOCALE, curation.get(video.video_id)?.titleHant)}
           fill
           sizes="(min-width: 1024px) 320px, (min-width: 640px) 50vw, 100vw"
           className="object-cover transition-transform duration-300 group-hover:scale-105"
         />
       </div>
       <h3 className="text-sm md:text-base font-medium leading-snug mb-1 group-hover:text-brand-navy transition-colors">
-        {localizeVideoTitle(video.title, TRADITIONAL_LOCALE, video.video_id)}
+        {localizeVideoTitle(video.title, TRADITIONAL_LOCALE, curation.get(video.video_id)?.titleHant)}
       </h3>
       <div className="text-xs opacity-60 font-en">
         {formatViewCount(video.view_count, TRADITIONAL_LOCALE)} views · {video.published_at.slice(0, 10)}
@@ -59,8 +61,8 @@ function VideoCard({ video }: { video: Video }) {
   );
 }
 
-function PlaylistSection({ playlist }: { playlist: Playlist }) {
-  const videos = getPlaylistVideos(playlist.id, { sortBy: "views" });
+function PlaylistSection({ playlist, curation }: { playlist: Playlist; curation: Map<string, VideoCuration> }) {
+  const videos = visiblePlaylistVideos(playlist.id, curation, { sortBy: "views" });
   if (videos.length === 0) return null;
 
   return (
@@ -83,7 +85,7 @@ function PlaylistSection({ playlist }: { playlist: Playlist }) {
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6">
           {videos.map((v) => (
-            <VideoCard key={v.video_id} video={v} />
+            <VideoCard key={v.video_id} video={v} curation={curation} />
           ))}
         </div>
       </Container>
@@ -91,9 +93,10 @@ function PlaylistSection({ playlist }: { playlist: Playlist }) {
   );
 }
 
-export default function TraditionalVideosPage() {
+export default async function TraditionalVideosPage() {
+  const curation = await getVideoCuration();
   const playlists = getAllPlaylists().slice().sort((a, b) => b.item_count - a.item_count);
-  const orphans = getOrphanVideos({ sortBy: "views" });
+  const orphans = visibleOrphanVideos(curation, { sortBy: "views" });
 
   return (
     <>
@@ -110,7 +113,7 @@ export default function TraditionalVideosPage() {
       </section>
 
       {playlists.map((pl) => (
-        <PlaylistSection key={pl.id} playlist={pl} />
+        <PlaylistSection key={pl.id} playlist={pl} curation={curation} />
       ))}
 
       {orphans.length > 0 && (
@@ -129,7 +132,7 @@ export default function TraditionalVideosPage() {
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6">
               {orphans.map((v) => (
-                <VideoCard key={v.video_id} video={v} />
+                <VideoCard key={v.video_id} video={v} curation={curation} />
               ))}
             </div>
           </Container>

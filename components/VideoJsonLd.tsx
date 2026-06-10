@@ -42,7 +42,7 @@ export function VideoJsonLd({
   // 繁体页: 标题走覆盖表+机器转繁, 简介机器转繁 (已是繁体的入参转换是幂等的),
   // 保证结构化数据与页面可见文字同语言.
   const name = video
-    ? localizeVideoTitle(video.title, locale, video.video_id)
+    ? localizeVideoTitle(video.title, locale)
     : localizeText(fallbackName, locale);
 
   const jsonLd: Record<string, unknown> = {

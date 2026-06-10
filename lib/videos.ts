@@ -5,7 +5,7 @@ import {
   toTraditional,
   type Locale,
 } from "./i18n";
-import { VIDEO_TITLE_OVERRIDES } from "./video-title-overrides";
+import type { VideoCuration } from "./notion";
 
 // ============ Types ============
 
@@ -55,16 +55,14 @@ export function localizeText(text: string, locale: Locale): string {
   return locale === TRADITIONAL_LOCALE ? toTraditional(text) : text;
 }
 
-/** 繁体化视频标题: 优先人工覆盖表, 否则机器转繁. */
+/** 繁体化视频标题: customHant(来自 Notion 策展)非空则用它, 否则机器转繁. */
 export function localizeVideoTitle(
   title: string,
   locale: Locale,
-  videoId?: string,
+  customHant?: string | null,
 ): string {
   if (locale !== TRADITIONAL_LOCALE) return title;
-  if (videoId && VIDEO_TITLE_OVERRIDES[videoId]) {
-    return VIDEO_TITLE_OVERRIDES[videoId];
-  }
+  if (customHant) return customHant;
   return toTraditional(title);
 }
 
@@ -134,6 +132,41 @@ export function getTopVideos(n: number): Video[] {
     .slice()
     .sort((a, b) => b.view_count - a.view_count)
     .slice(0, n);
+}
+
+/** 首页视频: 先剔除隐藏; 有「首页精选」则用精选(按播放量), 否则回退播放量前 count. */
+export function homepageVideos(
+  curation: Map<string, VideoCuration>,
+  count = 3,
+): Video[] {
+  const visible = rawData.videos
+    .filter(isLongVideo)
+    .filter((v) => !curation.get(v.video_id)?.hidden);
+  const featured = visible.filter((v) => curation.get(v.video_id)?.featured);
+  const pool = featured.length > 0 ? featured : visible;
+  return pool
+    .slice()
+    .sort((a, b) => b.view_count - a.view_count)
+    .slice(0, count);
+}
+
+/** 某 playlist 的可见视频(剔除隐藏). */
+export function visiblePlaylistVideos(
+  playlistId: string,
+  curation: Map<string, VideoCuration>,
+  opts?: { sortBy?: "views" | "date" | "playlist_order" },
+): Video[] {
+  return getPlaylistVideos(playlistId, opts).filter(
+    (v) => !curation.get(v.video_id)?.hidden,
+  );
+}
+
+/** 未归类视频的可见部分(剔除隐藏). */
+export function visibleOrphanVideos(
+  curation: Map<string, VideoCuration>,
+  opts?: { sortBy?: "views" | "date" },
+): Video[] {
+  return getOrphanVideos(opts).filter((v) => !curation.get(v.video_id)?.hidden);
 }
 
 // ============ Formatters ============

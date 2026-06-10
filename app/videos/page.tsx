@@ -3,8 +3,8 @@ import { Container } from "@/components/Container";
 import { SectionTitle } from "@/components/SectionTitle";
 import {
   getAllPlaylists,
-  getPlaylistVideos,
-  getOrphanVideos,
+  visiblePlaylistVideos,
+  visibleOrphanVideos,
   formatViewCount,
   thumbnailUrl,
   watchUrl,
@@ -14,6 +14,8 @@ import {
 import { VideoJsonLd } from "@/components/VideoJsonLd";
 import { DEFAULT_LOCALE } from "@/lib/i18n";
 import { pageSeo } from "@/lib/seo";
+import { getVideoCuration } from "@/lib/notion";
+import type { VideoCuration } from "@/lib/notion";
 
 export const metadata = pageSeo({
   title: "视频内容",
@@ -56,8 +58,8 @@ function VideoCard({ video }: { video: Video }) {
   );
 }
 
-function PlaylistSection({ playlist }: { playlist: Playlist }) {
-  const videos = getPlaylistVideos(playlist.id, { sortBy: "views" });
+function PlaylistSection({ playlist, curation }: { playlist: Playlist; curation: Map<string, VideoCuration> }) {
+  const videos = visiblePlaylistVideos(playlist.id, curation, { sortBy: "views" });
   if (videos.length === 0) return null;
 
   return (
@@ -91,9 +93,10 @@ function sortPlaylists(playlists: Playlist[]): Playlist[] {
   return playlists.slice().sort((a, b) => b.item_count - a.item_count);
 }
 
-export default function VideosPage() {
+export default async function VideosPage() {
+  const curation = await getVideoCuration();
   const playlists = sortPlaylists(getAllPlaylists());
-  const orphans = getOrphanVideos({ sortBy: "views" });
+  const orphans = visibleOrphanVideos(curation, { sortBy: "views" });
 
   return (
     <>
@@ -112,7 +115,7 @@ export default function VideosPage() {
 
       {/* 5 个 playlist sections */}
       {playlists.map((pl) => (
-        <PlaylistSection key={pl.id} playlist={pl} />
+        <PlaylistSection key={pl.id} playlist={pl} curation={curation} />
       ))}
 
       {/* 其他视频 · 未归入主题系列的零散内容 */}

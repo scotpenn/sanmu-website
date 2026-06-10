@@ -1,0 +1,34 @@
+name: Refresh videos (weekly)
+on:
+  schedule:
+    - cron: "0 16 * * 1"   # 每周一 16:00 UTC (≈ 温哥华周一上午)
+  workflow_dispatch: {}
+permissions:
+  contents: write
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm ci
+      - run: node scripts/refresh-video-index.mjs
+        env:
+          YOUTUBE_API_KEY_1: ${{ secrets.YOUTUBE_API_KEY_1 }}
+          YOUTUBE_API_KEY_2: ${{ secrets.YOUTUBE_API_KEY_2 }}
+          YOUTUBE_API_KEY_3: ${{ secrets.YOUTUBE_API_KEY_3 }}
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_VIDEO_CURATION_DS_ID: ${{ secrets.NOTION_VIDEO_CURATION_DS_ID }}
+      - name: Commit & push if changed
+        run: |
+          if ! git diff --quiet -- lib/data/videos.json; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add lib/data/videos.json
+            git commit -m "chore(videos): weekly auto-refresh from YouTube"
+            git push
+          else
+            echo "videos.json 无变化, 不提交"
+          fi

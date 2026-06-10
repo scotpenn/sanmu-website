@@ -192,6 +192,46 @@ function summarizeDelta(prev, curr) {
   }
 }
 
+// ── 同步新视频到 Notion 视频策展库(尽力而为) ──
+async function syncCurationRows(videos) {
+  const token = process.env.NOTION_TOKEN;
+  const ds = process.env.NOTION_VIDEO_CURATION_DS_ID;
+  if (!token || !ds) {
+    console.log("跳过策展库同步(未设 NOTION_TOKEN / NOTION_VIDEO_CURATION_DS_ID)");
+    return;
+  }
+  const { Client } = await import("@notionhq/client");
+  const notion = new Client({ auth: token });
+  const existing = new Set();
+  let cursor;
+  do {
+    const r = await notion.dataSources.query({
+      data_source_id: ds,
+      page_size: 100,
+      start_cursor: cursor,
+    });
+    for (const p of r.results) {
+      const t = p.properties?.video_id?.title;
+      const id = Array.isArray(t) ? t.map((x) => x.plain_text).join("").trim() : "";
+      if (id) existing.add(id);
+    }
+    cursor = r.has_more ? r.next_cursor : undefined;
+  } while (cursor);
+  let created = 0;
+  for (const v of videos) {
+    if (existing.has(v.video_id)) continue;
+    await notion.pages.create({
+      parent: { type: "data_source_id", data_source_id: ds },
+      properties: {
+        video_id: { title: [{ type: "text", text: { content: v.video_id } }] },
+        视频标题: { rich_text: [{ type: "text", text: { content: (v.title || "").slice(0, 2000) } }] },
+      },
+    });
+    created++;
+  }
+  console.log(`策展库同步: 新建 ${created} 行(已存在 ${existing.size})`);
+}
+
 (async () => {
   console.log("→ 拉取频道全部 videoId...");
   const ids = await getAllVideoIds();
@@ -234,6 +274,8 @@ function summarizeDelta(prev, curr) {
   console.log(`✓ 写入 ${PROJECT_OUTPUT_PATH} (Next.js build 读取)`);
 
   summarizeDelta(prev, videos);
+
+  await syncCurationRows(videos);
 
   // 频道汇总
   const totalViews = videos.reduce((s, v) => s + v.view_count, 0);

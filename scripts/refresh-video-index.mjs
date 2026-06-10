@@ -16,8 +16,8 @@
  *   - generated_at 改为完整 ISO 时间戳
  */
 
-import { writeFileSync, readFileSync } from "fs";
-import { resolve } from "path";
+import { writeFileSync, readFileSync, mkdirSync } from "fs";
+import { resolve, dirname } from "path";
 
 const CHANNEL_ID = "UCMhsp4Iyvgc_rCNfkaSNh0Q"; // 三木有话说 @yyds3mu
 // 项目根 data/ 目录 (2026-05-31 整理后)
@@ -268,6 +268,9 @@ async function syncCurationRows(videos) {
   };
 
   const json = JSON.stringify(output, null, 2);
+  // 写前确保目录存在(CI 里仓库外的 ../data 目录可能不存在).
+  mkdirSync(dirname(OUTPUT_PATH), { recursive: true });
+  mkdirSync(dirname(PROJECT_OUTPUT_PATH), { recursive: true });
   writeFileSync(OUTPUT_PATH, json);
   console.log(`✓ 写入 ${OUTPUT_PATH}`);
   writeFileSync(PROJECT_OUTPUT_PATH, json);

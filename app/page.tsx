@@ -39,19 +39,19 @@ const TOPIC_CATEGORIES = [
   {
     title: "实用指南",
     description:
-      "葬礼避坑、遗嘱填坑、骨灰运输、政府福利申请 —— 一份能直接用的清单。",
-    href: "/blog",
+      "葬礼避坑、遗嘱填坑、政府福利、家庭档案规划 —— 一份能直接用的清单。",
+    href: "/blog#guides",
   },
   {
     title: "精神疗愈",
     description:
-      "精神内耗、中年危机、终局思维 —— 从殡仪馆内的视角，看清你的纠结。",
-    href: "/blog",
+      "中年焦虑、失去亲人、终局视角 —— 从殡仪馆内的视角，看清你正在经历的处境。",
+    href: "/blog#healing",
   },
   {
     title: "关系重塑",
-    description: "婚姻、原生家庭、无效社交 —— 殡仪馆里看到的真实关系。",
-    href: "/blog",
+    description: "原生家庭、跟父母告别、跟逝者的思念 —— 殡仪馆里看到的真实关系。",
+    href: "/blog#relationships",
   },
 ];
 

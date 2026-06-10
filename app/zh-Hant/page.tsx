@@ -35,6 +35,26 @@ const TRUST_STATS = [
   { value: "6", label: "年頻道營運" },
 ];
 
+const TOPIC_CATEGORIES = [
+  {
+    title: "實用指南",
+    description:
+      "葬禮避坑、遺囑填坑、政府福利、家庭檔案規劃 —— 一份能直接用的清單。",
+    anchor: "guides",
+  },
+  {
+    title: "精神療癒",
+    description:
+      "中年焦慮、失去親人、終局視角 —— 從殯儀館內的視角，看清你正在經歷的處境。",
+    anchor: "healing",
+  },
+  {
+    title: "關係重塑",
+    description: "原生家庭、跟父母告別、跟逝者的思念 —— 殯儀館裡看到的真實關係。",
+    anchor: "relationships",
+  },
+];
+
 export default async function TraditionalHomePage() {
   const latestPosts = (await getAllPosts(TRADITIONAL_LOCALE)).slice(0, 3);
   const upcomingEvents = (await getUpcomingEvents(TRADITIONAL_LOCALE)).slice(0, 3);
@@ -118,6 +138,31 @@ export default async function TraditionalHomePage() {
           >
             了解更多關於我 <span aria-hidden>→</span>
           </Link>
+        </Container>
+      </section>
+
+      {/* 我聊三類話題 */}
+      <section className="border-b border-rule">
+        <Container width="card" className="py-20 md:py-24">
+          <SectionTitle align="center">我聊三類話題</SectionTitle>
+
+          <div className="grid md:grid-cols-3 gap-6 md:gap-8 mt-12">
+            {TOPIC_CATEGORIES.map((cat) => (
+              <Link
+                key={cat.title}
+                href={`${localizedPath("/blog", TRADITIONAL_LOCALE)}#${cat.anchor}`}
+                className="block border border-rule p-8 hover:border-brand-navy hover:bg-brand-navy/[0.02] transition-colors"
+              >
+                <h3 className="text-xl md:text-2xl mb-4">{cat.title}</h3>
+                <p className="text-sm leading-relaxed opacity-80 mb-6">
+                  {cat.description}
+                </p>
+                <span className="text-sm font-medium text-brand-navy">
+                  查看相關內容 →
+                </span>
+              </Link>
+            ))}
+          </div>
         </Container>
       </section>
 

@@ -663,3 +663,53 @@ export async function getPostBySlug(
   const blocks = await fetchAllBlocks(notion, page.id);
   return { ...meta, blocks: parseBlocks(blocks) };
 }
+
+// ============ 视频策展 ============
+
+export type VideoCuration = {
+  featured: boolean;
+  titleHant: string | null;
+  hidden: boolean;
+};
+
+/**
+ * 读 Notion「视频策展」库, 以 video_id 为 key. 未配置 / 失败 → 空 Map(全部回退默认).
+ * 用于: 首页 / videos 页渲染时合并策展(隐藏 / 首页精选 / 繁体标题).
+ */
+export async function getVideoCuration(): Promise<Map<string, VideoCuration>> {
+  const map = new Map<string, VideoCuration>();
+  const dataSourceId = process.env.NOTION_VIDEO_CURATION_DS_ID;
+  if (!dataSourceId) return map;
+  try {
+    const notion = getNotionClient();
+    const response = await notion.dataSources.query({
+      data_source_id: dataSourceId,
+      page_size: 100,
+    });
+    for (const page of response.results) {
+      if (!("properties" in page)) continue;
+      const props = (page as PageObjectResponse).properties;
+      const idProp = props["video_id"];
+      const videoId =
+        idProp?.type === "title" ? richTextToPlainText(idProp.title).trim() : "";
+      if (!videoId) continue;
+      const hantProp = props["繁体标题"];
+      const titleHant =
+        hantProp?.type === "rich_text"
+          ? richTextToPlainText(hantProp.rich_text).trim()
+          : "";
+      map.set(videoId, {
+        featured:
+          props["首页精选"]?.type === "checkbox"
+            ? props["首页精选"].checkbox
+            : false,
+        hidden:
+          props["隐藏"]?.type === "checkbox" ? props["隐藏"].checkbox : false,
+        titleHant: titleHant || null,
+      });
+    }
+  } catch (e) {
+    console.error("[video-curation] 读取失败, 回退默认:", e);
+  }
+  return map;
+}

@@ -115,9 +115,12 @@ export async function importOne(file, { force } = {}) {
   if (ex.results.length) {
     const id = ex.results[0].id;
     await clearChildren(id);
-    await notion.pages.update({ page_id: id, properties: notionProps });
+    // 繁体 body-only 且记录已存在: 保留现有属性(上线时 s2twp 已校好的标题/摘要), 只更新正文
+    if (!bodyOnly) {
+      await notion.pages.update({ page_id: id, properties: notionProps });
+    }
     await chunkAppend(id, blocks);
-    console.log(`✓ 更新 ${slug} [${locale}]`);
+    console.log(`✓ 更新 ${slug} [${locale}]${bodyOnly ? " (仅正文, 属性保留)" : ""}`);
   } else {
     const page = await notion.pages.create({
       parent: { type: "data_source_id", data_source_id: BLOG },

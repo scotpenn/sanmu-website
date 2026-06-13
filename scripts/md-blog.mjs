@@ -13,7 +13,8 @@ const FIELD_ALIASES = {
   "视频链接": "videoUrl",
 };
 
-/** 解析一篇博客 MD. 文件名决定 slug + locale;内容分「属性段」「正文段」. */
+/** 解析一篇博客 MD. 文件名决定 slug + locale;内容分「属性段」「正文段」.
+ *  繁体文件常为 body-only(无属性段/正文段标记)→ 整文件当正文, bodyOnly=true, 属性留空(导入时从简体取). */
 export function parseBlogMd(filePath) {
   const raw = readFileSync(filePath, "utf8");
   const file = basename(filePath);
@@ -24,6 +25,7 @@ export function parseBlogMd(filePath) {
 
   const propStart = raw.indexOf("## Notion 页面属性");
   const bodyStart = raw.indexOf("## Page Body");
+  const bodyOnly = locale === "zh-Hant" && propStart < 0 && bodyStart < 0;
 
   const propSection =
     propStart >= 0
@@ -38,8 +40,9 @@ export function parseBlogMd(filePath) {
     props[key] = fm[2].trim().replace(/^`|`$/g, "").trim();
   }
 
-  const body =
-    bodyStart >= 0
+  const body = bodyOnly
+    ? raw.trim()
+    : bodyStart >= 0
       ? raw.slice(bodyStart + "## Page Body".length).trim()
       : "";
 
@@ -50,5 +53,6 @@ export function parseBlogMd(filePath) {
     body,
     hasPropSection: propStart >= 0,
     hasBodySection: bodyStart >= 0,
+    bodyOnly,
   };
 }

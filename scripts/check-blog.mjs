@@ -1,6 +1,6 @@
-import { readFileSync } from "fs";
+import { readFileSync, existsSync } from "fs";
 import { fileURLToPath } from "url";
-import { resolve } from "path";
+import { resolve, basename } from "path";
 import { parseBlogMd } from "./md-blog.mjs";
 
 const COMMON = new Set(
@@ -34,19 +34,30 @@ const CJK = (s) => [...s].filter((c) => /[一-鿿]/.test(c));
 /** 核对一篇 MD. 返回 { reds(必修), yellows(建议) }. */
 export function checkMd(filePath) {
   const reds = [], yellows = [];
-  const { locale, props, body, hasPropSection, hasBodySection } = parseBlogMd(filePath);
+  const { locale, props, body, hasPropSection, hasBodySection, bodyOnly } = parseBlogMd(filePath);
 
-  if (!hasPropSection) reds.push("缺少『## Notion 页面属性』段");
-  if (!hasBodySection) reds.push("缺少『## Page Body』段");
-  for (const f of ["title", "slug", "subtitle", "status"]) {
-    if (!props[f]) reds.push(`必填字段缺失: ${f}`);
+  if (bodyOnly) {
+    // 繁体 body-only: 属性导入时从简体取, 这里只核对正文; 确认简体兄弟文件存在
+    const sib = filePath.replace(/_zh-Hant\.md$/, ".md");
+    if (!existsSync(sib)) reds.push(`找不到对应简体 MD(繁体导入需从它取属性): ${basename(sib)}`);
+  } else {
+    if (!hasPropSection) reds.push("缺少『## Notion 页面属性』段");
+    if (!hasBodySection) reds.push("缺少『## Page Body』段");
+    for (const f of ["title", "slug", "subtitle", "status"]) {
+      if (!props[f]) reds.push(`必填字段缺失: ${f}`);
+    }
+    if (props.slug && !/^[a-z0-9-]+$/.test(props.slug)) reds.push(`Slug 非英文小写连字符: ${props.slug}`);
+    if (props.videoUrl && !YOUTUBE_RE.test(props.videoUrl)) yellows.push(`视频链接不是 YouTube: ${props.videoUrl}`);
+    if (props.readMinutes && !/^\d+$/.test(props.readMinutes)) yellows.push(`阅读时长不是数字: ${props.readMinutes}`);
+    if (props.subtitle) {
+      const n = CJK(props.subtitle).length;
+      if (n < 80 || n > 160) yellows.push(`摘要 ${n} 字(建议 80-160)`);
+    }
   }
-  if (props.slug && !/^[a-z0-9-]+$/.test(props.slug)) reds.push(`Slug 非英文小写连字符: ${props.slug}`);
-  if (props.videoUrl && !YOUTUBE_RE.test(props.videoUrl)) yellows.push(`视频链接不是 YouTube: ${props.videoUrl}`);
-  if (props.readMinutes && !/^\d+$/.test(props.readMinutes)) yellows.push(`阅读时长不是数字: ${props.readMinutes}`);
-  if (props.subtitle) {
-    const n = CJK(props.subtitle).length;
-    if (n < 80 || n > 160) yellows.push(`摘要 ${n} 字(建议 80-160)`);
+
+  // 正文内 <video> 链接校验(简繁都查, 视频很关键)
+  for (const vm of body.matchAll(/<video\s+src="([^"]+)"/gi)) {
+    if (!YOUTUBE_RE.test(vm[1])) yellows.push(`正文 video 链接不是 YouTube: ${vm[1]}`);
   }
 
   const rare = [...new Set(CJK(body).filter((c) => !COMMON.has(c)))];

@@ -12,10 +12,12 @@
   --color-ink: #3F3D3A;
   --color-rule: #E5E0D8;
 
-  /* 字体栈（变量由 layout.tsx 注入） */
-  --font-serif: var(--font-noto-serif-sc), Georgia, "Times New Roman", serif;
-  --font-sans: var(--font-noto-sans-sc), -apple-system, BlinkMacSystemFont,
-    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  /* 字体栈：中文用系统字体(零下载、首屏快)，英文/数字用 Inter。
+     正文 = 苹方(Apple)/ 微软雅黑(Win)/ 系统黑体；引言 = 宋体系。 */
+  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --font-serif: Georgia, "Songti SC", "STSong", "Noto Serif SC", "SimSun",
+    serif;
   --font-en: var(--font-inter), system-ui, sans-serif;
 
   /* 字号梯度（基准 18px，中老年友好） */

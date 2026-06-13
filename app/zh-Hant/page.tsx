@@ -104,6 +104,7 @@ export default async function TraditionalHomePage() {
                   width={1414}
                   height={2000}
                   priority
+                  sizes="(min-width: 1024px) 300px, (min-width: 768px) 280px, 240px"
                   className="w-[240px] md:w-[280px] lg:w-[300px] h-auto shadow-xl border border-rule"
                 />
               </Link>

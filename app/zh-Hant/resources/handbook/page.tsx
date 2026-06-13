@@ -58,6 +58,7 @@ export default function TraditionalHandbookPage() {
                 width={1414}
                 height={2000}
                 priority
+                sizes="(min-width: 1024px) 340px, (min-width: 768px) 320px, 280px"
                 className="w-[280px] md:w-[320px] lg:w-[340px] h-auto shadow-xl border border-rule"
               />
             </div>

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Noto_Serif_SC, Noto_Sans_SC, Inter } from "next/font/google";
+import { Inter } from "next/font/google";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -9,18 +9,8 @@ import "./globals.css";
 
 const GA_MEASUREMENT_ID = "G-V4MB01ZJ32";
 
-const notoSerifSC = Noto_Serif_SC({
-  subsets: ["latin"],
-  variable: "--font-noto-serif-sc",
-  display: "swap",
-});
-
-const notoSansSC = Noto_Sans_SC({
-  subsets: ["latin"],
-  variable: "--font-noto-sans-sc",
-  display: "swap",
-});
-
+// 中文走系统字体(零下载,见 globals.css 的 --font-sans/--font-serif);
+// 只保留 Inter 给英文/数字(轻量 Latin 字体)。
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
@@ -87,7 +77,7 @@ export default function RootLayout({
   return (
     <html
       lang="zh"
-      className={`${notoSerifSC.variable} ${notoSansSC.variable} ${inter.variable} h-full antialiased`}
+      className={`${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <Header />

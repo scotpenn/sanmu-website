@@ -1,11 +1,12 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import {
   sendHandbook,
   type HandbookState,
 } from "@/app/resources/handbook/actions";
 import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n";
+import { trackConversion } from "@/lib/analytics";
 
 const INITIAL: HandbookState = { ok: false };
 
@@ -19,6 +20,16 @@ export function HandbookForm({
   locale?: Locale;
 }) {
   const [state, action, pending] = useActionState(sendHandbook, INITIAL);
+
+  // 提交成功 → 触发转化事件(GA4 generate_lead + Vercel Analytics).
+  useEffect(() => {
+    if (state.ok) {
+      trackConversion("generate_lead", {
+        method: "handbook_form",
+        page_locale: locale,
+      });
+    }
+  }, [state.ok, locale]);
 
   if (state.ok) {
     return (

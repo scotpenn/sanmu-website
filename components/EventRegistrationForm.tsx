@@ -1,11 +1,12 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import {
   registerForEvent,
   type RegistrationState,
 } from "@/app/events/[slug]/actions";
 import { DEFAULT_LOCALE, textForLocale, type Locale } from "@/lib/i18n";
+import { trackConversion } from "@/lib/analytics";
 
 const INITIAL: RegistrationState = { ok: false };
 
@@ -17,6 +18,17 @@ export function EventRegistrationForm({
   locale?: Locale;
 }) {
   const [state, action, pending] = useActionState(registerForEvent, INITIAL);
+
+  // 报名成功 → 触发转化事件(GA4 generate_lead + Vercel Analytics).
+  useEffect(() => {
+    if (state.ok) {
+      trackConversion("generate_lead", {
+        method: "event_registration",
+        event_slug: eventSlug,
+        page_locale: locale,
+      });
+    }
+  }, [state.ok, eventSlug, locale]);
 
   if (state.ok) {
     return (

@@ -34,14 +34,19 @@ const CJK = (s) => [...s].filter((c) => /[一-鿿]/.test(c));
 /** 核对一篇 MD. 返回 { reds(必修), yellows(建议) }. */
 export function checkMd(filePath) {
   const reds = [], yellows = [];
-  const { locale, props, body, hasPropSection, hasBodySection, bodyOnly } = parseBlogMd(filePath);
+  const { locale, props, body, hasPropSection, hasBodySection, bodyOnly, isYaml, isStub } = parseBlogMd(filePath);
+
+  if (isStub) {
+    reds.push("正文是占位符空壳(真内容只在 Notion), 不可从 MD 导入");
+    return { reds, yellows };
+  }
 
   if (bodyOnly) {
     // 繁体 body-only: 属性导入时从简体取, 这里只核对正文; 确认简体兄弟文件存在
     const sib = filePath.replace(/_zh-Hant\.md$/, ".md");
     if (!existsSync(sib)) reds.push(`找不到对应简体 MD(繁体导入需从它取属性): ${basename(sib)}`);
   } else {
-    if (!hasPropSection) reds.push("缺少『## Notion 页面属性』段");
+    if (!isYaml && !hasPropSection) reds.push("缺少『## Notion 页面属性』段");
     if (!hasBodySection) reds.push("缺少『## Page Body』段");
     for (const f of ["title", "slug", "subtitle", "status"]) {
       if (!props[f]) reds.push(`必填字段缺失: ${f}`);

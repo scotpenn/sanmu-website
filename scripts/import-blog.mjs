@@ -74,13 +74,20 @@ async function clearChildren(pageId) {
   let cursor;
   do {
     const r = await notion.blocks.children.list({ block_id: pageId, start_cursor: cursor, page_size: 100 });
-    for (const b of r.results) await notion.blocks.delete({ block_id: b.id });
+    for (const b of r.results) {
+      if (b.archived) continue; // 已归档的块跳过(不能再删)
+      await notion.blocks.delete({ block_id: b.id });
+    }
     cursor = r.has_more ? r.next_cursor : undefined;
   } while (cursor);
 }
 
 export async function importOne(file, { force } = {}) {
   const parsed = parseBlogMd(file);
+  if (parsed.isStub) {
+    console.log(`⛔ ${file} 正文是占位符空壳(真内容在 Notion), 拒绝导入以防覆盖`);
+    return false;
+  }
   const { slug, locale, body, bodyOnly } = parsed;
   let props = parsed.props;
 

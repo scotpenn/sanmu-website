@@ -88,7 +88,9 @@ export type PostBlock =
   | { type: "paragraph"; segments: RichSegment[] }
   | { type: "quote"; text: string }
   | { type: "heading"; level: 2 | 3; text: string }
-  | { type: "video"; videoId: string };
+  | { type: "video"; videoId: string }
+  | { type: "list"; ordered: boolean; items: RichSegment[][] }
+  | { type: "table"; hasColumnHeader: boolean; rows: RichSegment[][][] };
 
 export type PostCategory = "实用指南" | "精神疗愈" | "关系重塑";
 
@@ -169,12 +171,57 @@ function parseProperties(page: PageObjectResponse): PostMeta | null {
   };
 }
 
-function parseBlocks(blocks: BlockObjectResponse[]): PostBlock[] {
+async function parseBlocks(
+  blocks: BlockObjectResponse[],
+  notion: Client,
+): Promise<PostBlock[]> {
   const result: PostBlock[] = [];
+  let listBuffer: { ordered: boolean; items: RichSegment[][] } | null = null;
+
+  const flushList = () => {
+    if (listBuffer && listBuffer.items.length) {
+      result.push({ type: "list", ordered: listBuffer.ordered, items: listBuffer.items });
+    }
+    listBuffer = null;
+  };
+  const toSegments = (rt: { plain_text: string; href: string | null }[]): RichSegment[] =>
+    rt.map((t) => ({ text: t.plain_text, href: t.href ?? undefined }));
 
   for (const b of blocks) {
+    // 连续列表项归组
+    if (b.type === "bulleted_list_item" || b.type === "numbered_list_item") {
+      const ordered = b.type === "numbered_list_item";
+      const seg = toSegments(
+        b.type === "numbered_list_item"
+          ? b.numbered_list_item.rich_text
+          : b.bulleted_list_item.rich_text,
+      );
+      if (!listBuffer || listBuffer.ordered !== ordered) {
+        flushList();
+        listBuffer = { ordered, items: [] };
+      }
+      if (seg.some((s) => s.text.trim())) listBuffer.items.push(seg);
+      // 嵌套子项: 展平追加(不丢内容)
+      if (b.has_children) {
+        const kids = await fetchAllBlocks(notion, b.id);
+        for (const k of kids) {
+          if (k.type === "bulleted_list_item" || k.type === "numbered_list_item") {
+            const ks = toSegments(
+              k.type === "numbered_list_item"
+                ? k.numbered_list_item.rich_text
+                : k.bulleted_list_item.rich_text,
+            );
+            if (ks.some((s) => s.text.trim())) listBuffer.items.push(ks);
+          }
+        }
+      }
+      continue;
+    }
+    flushList();
+
     switch (b.type) {
       case "paragraph": {
+        // —— 与原实现一致 ——
         const segments: RichSegment[] = b.paragraph.rich_text.map((rt) => ({
           text: rt.plain_text,
           href: rt.href ?? undefined,
@@ -200,17 +247,27 @@ function parseBlocks(blocks: BlockObjectResponse[]): PostBlock[] {
         break;
       }
       case "video": {
-        const url =
-          b.video.type === "external" ? b.video.external.url : null;
+        const url = b.video.type === "external" ? b.video.external.url : null;
         const videoId = extractVideoId(url);
         if (videoId) result.push({ type: "video", videoId });
         break;
       }
-      // 其他 block 类型 (bullet/divider/image 等) Phase 2.1 先忽略,
-      // Phase 2.2 视实际使用情况按需添加
+      case "table": {
+        const rowBlocks = await fetchAllBlocks(notion, b.id);
+        const rows: RichSegment[][][] = [];
+        for (const rb of rowBlocks) {
+          if (rb.type === "table_row") {
+            rows.push(rb.table_row.cells.map((cell) => toSegments(cell)));
+          }
+        }
+        if (rows.length) {
+          result.push({ type: "table", hasColumnHeader: b.table.has_column_header, rows });
+        }
+        break;
+      }
     }
   }
-
+  flushList();
   return result;
 }
 
@@ -589,7 +646,7 @@ export async function getEventBySlug(
   if (!event) return null;
 
   const blocks = await fetchAllBlocks(notion, page.id);
-  return { ...event, blocks: parseBlocks(blocks) };
+  return { ...event, blocks: await parseBlocks(blocks, notion) };
 }
 
 /**
@@ -661,7 +718,7 @@ export async function getPostBySlug(
   if (!meta) return null;
 
   const blocks = await fetchAllBlocks(notion, page.id);
-  return { ...meta, blocks: parseBlocks(blocks) };
+  return { ...meta, blocks: await parseBlocks(blocks, notion) };
 }
 
 // ============ 视频策展 ============

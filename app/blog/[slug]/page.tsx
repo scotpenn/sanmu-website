@@ -165,6 +165,47 @@ export async function BlogPostPage({
                   </div>
                 );
               }
+              if (block.type === "list") {
+                const ListTag = block.ordered ? "ol" : "ul";
+                return (
+                  <ListTag
+                    key={idx}
+                    className={`pl-6 space-y-2 text-lg leading-[1.85] ${block.ordered ? "list-decimal" : "list-disc"}`}
+                  >
+                    {block.items.map((item, i) => (
+                      <li key={i}>
+                        <RichText segments={item} />
+                      </li>
+                    ))}
+                  </ListTag>
+                );
+              }
+              if (block.type === "table") {
+                return (
+                  <div key={idx} className="my-8 overflow-x-auto">
+                    <table className="w-full border-collapse text-base">
+                      <tbody>
+                        {block.rows.map((row, ri) => (
+                          <tr key={ri} className="border-b border-rule">
+                            {row.map((cell, ci) => {
+                              const isHeader = block.hasColumnHeader && ri === 0;
+                              const Cell = isHeader ? "th" : "td";
+                              return (
+                                <Cell
+                                  key={ci}
+                                  className={`px-4 py-2 align-top border border-rule ${isHeader ? "font-semibold text-left bg-brand-yellow/[0.06]" : ""}`}
+                                >
+                                  <RichText segments={cell} />
+                                </Cell>
+                              );
+                            })}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                );
+              }
               return null;
             })}
           </div>

@@ -171,6 +171,27 @@ function parseProperties(page: PageObjectResponse): PostMeta | null {
   };
 }
 
+// 递归收集嵌套列表项(任意层级, 展平; 不丢内容, 但不保留多级缩进)
+async function collectNestedListItems(
+  notion: Client,
+  blockId: string,
+): Promise<RichSegment[][]> {
+  const out: RichSegment[][] = [];
+  const kids = await fetchAllBlocks(notion, blockId);
+  for (const k of kids) {
+    if (k.type === "bulleted_list_item" || k.type === "numbered_list_item") {
+      const rt =
+        k.type === "numbered_list_item"
+          ? k.numbered_list_item.rich_text
+          : k.bulleted_list_item.rich_text;
+      const seg = rt.map((t) => ({ text: t.plain_text, href: t.href ?? undefined }));
+      if (seg.some((s) => s.text.trim())) out.push(seg);
+      if (k.has_children) out.push(...(await collectNestedListItems(notion, k.id)));
+    }
+  }
+  return out;
+}
+
 async function parseBlocks(
   blocks: BlockObjectResponse[],
   notion: Client,
@@ -201,18 +222,10 @@ async function parseBlocks(
         listBuffer = { ordered, items: [] };
       }
       if (seg.some((s) => s.text.trim())) listBuffer.items.push(seg);
-      // 嵌套子项: 展平追加(不丢内容)
+      // 嵌套子项: 递归展平追加(任意层级, 不丢内容)
       if (b.has_children) {
-        const kids = await fetchAllBlocks(notion, b.id);
-        for (const k of kids) {
-          if (k.type === "bulleted_list_item" || k.type === "numbered_list_item") {
-            const ks = toSegments(
-              k.type === "numbered_list_item"
-                ? k.numbered_list_item.rich_text
-                : k.bulleted_list_item.rich_text,
-            );
-            if (ks.some((s) => s.text.trim())) listBuffer.items.push(ks);
-          }
+        for (const it of await collectNestedListItems(notion, b.id)) {
+          listBuffer.items.push(it);
         }
       }
       continue;

@@ -9,7 +9,7 @@ import { checkMd } from "./check-blog.mjs";
 const BLOG = "319407d1-e400-4aed-8e36-dfa0ab19e6ea";
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
 // 网站 parseBlocks 目前能渲染的块(含 video——文章对应视频, 很关键)
-const RENDERABLE = ["paragraph", "quote", "heading_2", "heading_3", "video"];
+const RENDERABLE = ["paragraph", "quote", "heading_2", "heading_3", "video", "bulleted_list_item", "numbered_list_item", "table"];
 
 // 简→繁 字符映射(取自 lib/i18n.ts 的 S2T_MAP), 用于繁体标题/摘要转繁
 function makeToTrad() {
@@ -110,6 +110,12 @@ export async function importOne(file, { force } = {}) {
     return false;
   }
   const blocks = bodyToBlocks(body);
+  // 空正文硬拒绝: body 为空或没有可写入的块时, 无论 --force 都不更新已有页面,
+  // 否则会先清空旧 blocks 再 append 空数组 = 把线上正文清掉(缺 ## Page Body / 空 YAML 的文件即属此类).
+  if (!body.trim() || blocks.length === 0) {
+    console.log(`⛔ ${file} 正文为空(无可写入的块), 拒绝导入以防清空已有正文(--force 也不行)`);
+    return false;
+  }
   const unsupported = [...new Set(blocks.map((b) => b.type))].filter((t) => !RENDERABLE.includes(t));
   if (unsupported.length) console.log(`   ⚠️ ${slug}: 含网站暂不渲染的块类型: ${unsupported.join(", ")}`);
   const notionProps = buildProps(props, slug, locale);
@@ -126,7 +132,8 @@ export async function importOne(file, { force } = {}) {
     if (!bodyOnly) {
       // 状态 是 Notion 管理的工作流字段(MD 里的可能过期), 更新已存在文章时绝不覆盖,
       // 否则会把线上「已发布」文章误打回「待发布」=下线。新建时才用 MD 的状态(见下方 create).
-      const { 状态: _omitStatus, ...updateProps } = notionProps;
+      const updateProps = { ...notionProps };
+      delete updateProps["状态"];
       await notion.pages.update({ page_id: id, properties: updateProps });
     }
     await chunkAppend(id, blocks);

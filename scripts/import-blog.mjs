@@ -124,7 +124,10 @@ export async function importOne(file, { force } = {}) {
     await clearChildren(id);
     // 繁体 body-only 且记录已存在: 保留现有属性(上线时 s2twp 已校好的标题/摘要), 只更新正文
     if (!bodyOnly) {
-      await notion.pages.update({ page_id: id, properties: notionProps });
+      // 状态 是 Notion 管理的工作流字段(MD 里的可能过期), 更新已存在文章时绝不覆盖,
+      // 否则会把线上「已发布」文章误打回「待发布」=下线。新建时才用 MD 的状态(见下方 create).
+      const { 状态: _omitStatus, ...updateProps } = notionProps;
+      await notion.pages.update({ page_id: id, properties: updateProps });
     }
     await chunkAppend(id, blocks);
     console.log(`✓ 更新 ${slug} [${locale}]${bodyOnly ? " (仅正文, 属性保留)" : ""}`);

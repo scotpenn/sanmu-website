@@ -118,17 +118,16 @@ export default async function HandbookPage() {
                 <br />
                 这本手册是他看到家属反复踩的坑、被错误信息坑过的钱、错过的政府福利窗口期，整理成的清单、模板和流程图。
               </p>
-              <div className="flex flex-wrap gap-4">
-                <Button variant="primary" href="#get">
-                  ✉️ 免费索取手册
-                </Button>
-                <a
-                  href="#contents"
-                  className="inline-flex items-center text-base font-medium text-brand-navy hover:opacity-80 transition-opacity px-4 py-3"
-                >
-                  先看包含什么 ↓
-                </a>
+              <div className="inline-flex items-center gap-2 mb-8">
+                <span className="text-base opacity-75">已有</span>
+                <span className="font-en font-extrabold text-2xl md:text-3xl text-brand-navy bg-brand-yellow px-2 py-0.5 leading-none">
+                  {count.toLocaleString("en-US")}
+                </span>
+                <span className="text-base opacity-75">个家庭领取</span>
               </div>
+              <Button variant="primary" href="#get">
+                ✉️ 免费索取手册
+              </Button>
             </div>
 
             {/* 右 · 手册封面 (真实 PDF 第一页) */}
@@ -148,7 +147,7 @@ export default async function HandbookPage() {
       </section>
 
       {/* 屏 2 · 手册包含什么 · 8 份文档 */}
-      <section id="contents" className="border-b border-rule scroll-mt-12">
+      <section className="border-b border-rule">
         <Container width="card" className="py-20 md:py-24">
           <SectionTitle align="center">手册包含什么</SectionTitle>
           <p className="text-center opacity-70 mb-12 max-w-[560px] mx-auto">
@@ -224,11 +223,8 @@ export default async function HandbookPage() {
           <SectionTitle align="center" className="mb-6">
             填一下，手册马上发到你邮箱
           </SectionTitle>
-          <p className="text-lg opacity-85 leading-relaxed mb-4">
+          <p className="text-lg opacity-85 leading-relaxed mb-10">
             留下邮箱和称呼，PDF 会自动发给你。
-          </p>
-          <p className="text-base text-brand-navy/80 mb-10">
-            已有 <span className="font-en font-bold">{count.toLocaleString("en-US")}</span> 个家庭领取了这份手册
           </p>
 
           <HandbookForm locale={DEFAULT_LOCALE} />

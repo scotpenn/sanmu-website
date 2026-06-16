@@ -112,8 +112,17 @@ export default async function TraditionalHandbookPage() {
                 《身後事安心手冊》—— 8 份文件 / 80+ 頁 / 加拿大場景。
               </p>
               <p className="text-base opacity-75 leading-relaxed mb-10 max-w-[520px]">
-                三木在加拿大做殯葬師 16 年。這本手冊把家屬最容易漏掉、最容易花冤枉錢、最容易錯過時限的事整理成清單、模板和流程。
+                三木在加拿大做殯葬師 16 年。送過 1000+ 個家庭。頻道 6 年。
+                <br />
+                這本手冊是他看到家屬反覆踩的坑、被錯誤資訊坑過的錢、錯過的政府福利窗口期，整理成的清單、範本和流程圖。
               </p>
+              <div className="inline-flex items-center gap-2 mb-8">
+                <span className="text-base opacity-75">已有</span>
+                <span className="font-en font-extrabold text-2xl md:text-3xl text-brand-navy bg-brand-yellow px-2 py-0.5 leading-none">
+                  {count.toLocaleString("en-US")}
+                </span>
+                <span className="text-base opacity-75">個家庭領取</span>
+              </div>
               <Button variant="primary" href="#get">
                 ✉️ 免費索取手冊
               </Button>
@@ -137,7 +146,10 @@ export default async function TraditionalHandbookPage() {
       <section className="border-b border-rule">
         <Container width="card" className="py-20 md:py-24">
           <SectionTitle align="center">手冊包含什麼</SectionTitle>
-          <div className="grid md:grid-cols-2 gap-6 md:gap-8 mt-12">
+          <p className="text-center opacity-70 mb-12 max-w-[560px] mx-auto">
+            8 份獨立文件，按「事發緊急程度」和「使用場景」組織。可以單獨列印某一份，也可以整本存檔。
+          </p>
+          <div className="grid md:grid-cols-2 gap-6 md:gap-8">
             {DOCUMENTS.map((doc) => (
               <article key={doc.num} className="border border-rule p-7 md:p-8">
                 <div className="flex items-baseline gap-3 mb-3">
@@ -196,17 +208,30 @@ export default async function TraditionalHandbookPage() {
           <SectionTitle align="center" className="mb-6">
             填一下，手冊馬上寄到你信箱
           </SectionTitle>
-          <p className="text-lg opacity-85 leading-relaxed mb-4">
+          <p className="text-lg opacity-85 leading-relaxed mb-10">
             留下信箱和稱呼，PDF 會自動寄給你。
-          </p>
-          <p className="text-base text-brand-navy/80 mb-10">
-            已有 <span className="font-en font-bold">{count.toLocaleString("en-US")}</span> 個家庭領取了這份手冊
           </p>
 
           <HandbookForm locale={TRADITIONAL_LOCALE} />
 
           <p className="text-sm opacity-60 mt-6 max-w-[480px] mx-auto leading-relaxed">
             三木會親自看每一封回信。如果幾分鐘內沒收到手冊，請檢查垃圾郵件，或寫信到 info@sanmu.ca。
+          </p>
+        </Container>
+      </section>
+
+      {/* 免責提示 */}
+      <section>
+        <Container width="reading" className="py-12 md:py-16 text-center">
+          <p className="text-sm opacity-70 leading-relaxed max-w-[560px] mx-auto">
+            ⚠️ 手冊內容來自三木 16 年北美殯葬實務經驗整理，<strong>僅供參考</strong>，不構成法律 / 醫療 / 金融建議。具體事務請諮詢持牌律師 / 醫生 / 金融顧問。詳見{" "}
+            <a
+              href="/zh-Hant/disclaimer"
+              className="text-brand-navy hover:opacity-80 transition-opacity font-medium"
+            >
+              免責聲明
+            </a>
+            。
           </p>
         </Container>
       </section>

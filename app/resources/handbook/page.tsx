@@ -5,6 +5,7 @@ import { Button } from "@/components/Button";
 import { HandbookForm } from "@/components/HandbookForm";
 import { DEFAULT_LOCALE } from "@/lib/i18n";
 import { pageSeo } from "@/lib/seo";
+import { getHandbookCount } from "@/lib/handbook-count";
 
 export const metadata = pageSeo({
   title: "《身后事安心手册》v2.7 · 免费索取",
@@ -13,6 +14,8 @@ export const metadata = pageSeo({
   path: "/resources/handbook",
   locale: DEFAULT_LOCALE,
 });
+
+export const revalidate = 3600;
 
 type HandbookDoc = {
   num: string;
@@ -89,7 +92,8 @@ const DOCUMENTS: HandbookDoc[] = [
   },
 ];
 
-export default function HandbookPage() {
+export default async function HandbookPage() {
+  const count = await getHandbookCount();
   return (
     <>
       {/* Hero */}
@@ -143,29 +147,7 @@ export default function HandbookPage() {
         </Container>
       </section>
 
-      {/* 屏 2 · 为什么免费 (暖黄淡底, 与首页屏 2 视觉呼应) */}
-      <section className="border-b border-rule bg-brand-yellow/[0.05]">
-        <Container width="reading" className="py-20 md:py-24 text-center">
-          <SectionTitle align="center" className="mb-6">
-            为什么免费
-          </SectionTitle>
-          <div className="space-y-5 text-lg leading-relaxed opacity-90">
-            <p>
-              这份手册不是营销赠品，也不是付费门槛。
-            </p>
-            <p>
-              是我看到太多家庭在亲人离世后手忙脚乱、被错误信息坑钱坑感情，所以整理出来。
-            </p>
-            <p className="font-serif text-xl md:text-2xl text-brand-navy mt-8 leading-relaxed">
-              我希望你永远用不到它。
-              <br />
-              但当你需要它的时候，它已经在你抽屉里了。
-            </p>
-          </div>
-        </Container>
-      </section>
-
-      {/* 屏 3 · 手册包含什么 · 8 份文档 */}
+      {/* 屏 2 · 手册包含什么 · 8 份文档 */}
       <section id="contents" className="border-b border-rule scroll-mt-12">
         <Container width="card" className="py-20 md:py-24">
           <SectionTitle align="center">手册包含什么</SectionTitle>
@@ -205,18 +187,48 @@ export default function HandbookPage() {
         </Container>
       </section>
 
+      {/* CTA · 看完文档顺势索取 */}
+      <section className="border-b border-rule">
+        <Container width="reading" className="py-14 md:py-16 text-center">
+          <Button variant="primary" href="#get">
+            ✉️ 免费索取手册
+          </Button>
+        </Container>
+      </section>
+
+      {/* 屏 3 · 为什么免费 (暖黄淡底, 与首页屏 2 视觉呼应) */}
+      <section className="border-b border-rule bg-brand-yellow/[0.05]">
+        <Container width="reading" className="py-20 md:py-24 text-center">
+          <SectionTitle align="center" className="mb-6">
+            为什么免费
+          </SectionTitle>
+          <div className="space-y-5 text-lg leading-relaxed opacity-90">
+            <p>
+              这份手册不是营销赠品，也不是付费门槛。
+            </p>
+            <p>
+              是我看到太多家庭在亲人离世后手忙脚乱、被错误信息坑钱坑感情，所以整理出来。
+            </p>
+            <p className="font-serif text-xl md:text-2xl text-brand-navy mt-8 leading-relaxed">
+              我希望你永远用不到它。
+              <br />
+              但当你需要它的时候，它已经在你抽屉里了。
+            </p>
+          </div>
+        </Container>
+      </section>
+
       {/* 屏 4 · 如何索取(表单) */}
       <section id="get" className="border-b border-rule scroll-mt-12">
         <Container width="reading" className="py-20 md:py-24 text-center">
           <SectionTitle align="center" className="mb-6">
             填一下，手册马上发到你邮箱
           </SectionTitle>
-          <p className="text-lg opacity-85 leading-relaxed mb-10">
+          <p className="text-lg opacity-85 leading-relaxed mb-4">
             留下邮箱和称呼，PDF 会自动发给你。
-            <br />
-            <span className="text-base opacity-70">
-              不强制留电话、不订阅也能随时退。
-            </span>
+          </p>
+          <p className="text-base text-brand-navy/80 mb-10">
+            已有 <span className="font-en font-bold">{count.toLocaleString("en-US")}</span> 个家庭领取了这份手册
           </p>
 
           <HandbookForm locale={DEFAULT_LOCALE} />

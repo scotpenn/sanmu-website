@@ -118,7 +118,7 @@ export default async function HandbookPage() {
                 <br />
                 这本手册是他看到家属反复踩的坑、被错误信息坑过的钱、错过的政府福利窗口期，整理成的清单、模板和流程图。
               </p>
-              <div className="inline-flex items-center gap-2 mb-8">
+              <div className="flex items-center gap-2 mb-8">
                 <span className="text-base opacity-75">已有</span>
                 <span className="font-en font-extrabold text-2xl md:text-3xl text-brand-navy bg-brand-yellow px-2 py-0.5 leading-none">
                   {count.toLocaleString("en-US")}

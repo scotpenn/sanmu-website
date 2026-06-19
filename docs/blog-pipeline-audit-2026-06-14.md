@@ -73,8 +73,8 @@ git diff origin/main..HEAD -- lib/notion.ts   # 确认 parseBlocks 只增 list/t
 npm run build                                 # 应编译成功
 
 # B. 工具行为(需 .env.local 里的 NOTION_TOKEN)
-npm run check:blog -- ../SEO/output/blog_canada-will-4-things-before-lawyer_zh-Hant.md   # 干净繁体应 exit 0
-npm run check:blog -- ../SEO/output/blog_ten-good-years-after-70_zh-Hant.md              # 空壳应报红「占位符」
+npm run check:blog -- ../Blog-SEO/output/blog_canada-will-4-things-before-lawyer_zh-Hant.md   # 干净繁体应 exit 0
+npm run check:blog -- ../Blog-SEO/output/blog_ten-good-years-after-70_zh-Hant.md              # 空壳应报红「占位符」
 
 # C. Notion 状态(关键: 确认无误下线)
 #   查 Blog 库「语言版本=zh-Hans 且 状态=已发布」应为 26 篇(含已上线的 who-fears)
@@ -93,7 +93,7 @@ npm run dev    # 然后浏览器看:
 - **2 篇空壳繁体**(ten-good-years_zh-Hant、who-fears_zh-Hant)真内容只在 Notion、无 MD 源 → 它们的繁体正文若有变异**未修**。要修需对应简体跑 `build_new_zh_hant.py` 补出繁体 MD。
 - **9 篇有繁体 Notion 记录但无繁体 MD** 的文章:繁体正文未重导(无源),变异未修。同上,补 MD 后可纳管。
 - **check 的「残留简体字」对多义字会误报**:划(划算)、里(公里)在繁体合法,会被标红;复查时凭上下文判断(本次已人工确认 4 篇「划算」是误报、will-only 的「耳機里→裡」是真错并已修)。
-- **`SEO/BLOG_WRITING_WORKFLOW.md`** 的「七、后端处理」章节改动在磁盘,但 SEO/ 在 sanmu-website git repo 外,未纳入版本管理。
+- **`Blog-SEO/BLOG_WRITING_WORKFLOW.md`** 的「七、后端处理」章节改动在磁盘,但 Blog-SEO/ 在 sanmu-website git repo 外,未纳入版本管理。
 - **多级列表**:嵌套列表项现为**递归展平**(任意层级都抓取,不丢内容,但不保留多级缩进的视觉层次)。当前语料只有一层嵌套。
 
 ## 8. 部署建议

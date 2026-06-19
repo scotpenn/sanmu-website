@@ -11,7 +11,8 @@
     "media:upload": "node --env-file=../.env scripts/upload-event-media.mjs",
     "verify:i18n-contract": "node scripts/verify-i18n-contract.mjs",
     "check:blog": "node scripts/check-blog.mjs",
-    "import:blog": "node --env-file=.env.local scripts/import-blog.mjs"
+    "import:blog": "node --env-file=.env.local scripts/import-blog.mjs",
+    "fetch:blog": "node --env-file=.env.local scripts/fetch-blog.mjs"
   },
   "dependencies": {
     "@notionhq/client": "^5.22.0",

@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync, readdirSync } from "fs";
 import { fileURLToPath } from "url";
 
-const outDir = fileURLToPath(new URL("../../SEO/output/", import.meta.url));
+const outDir = fileURLToPath(new URL("../../Blog-SEO/output/", import.meta.url));
 const chars = new Set();
 for (const f of readdirSync(outDir)) {
   if (!/^blog_.+\.md$/.test(f)) continue;

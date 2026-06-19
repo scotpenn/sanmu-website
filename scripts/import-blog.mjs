@@ -154,7 +154,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1
   const args = process.argv.slice(2);
   const force = args.includes("--force");
   if (args.includes("--all")) {
-    const dir = fileURLToPath(new URL("../../SEO/output/", import.meta.url));
+    const dir = fileURLToPath(new URL("../../Blog-SEO/output/", import.meta.url));
     const files = readdirSync(dir).filter((f) => /^blog_.+\.md$/.test(f));
     let ok = 0;
     for (const f of files) if (await importOne(dir + f, { force })) ok++;

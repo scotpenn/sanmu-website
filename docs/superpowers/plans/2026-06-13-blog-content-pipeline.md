@@ -18,7 +18,7 @@
 - `scripts/check-blog.mjs`(新建):导出 `checkMd(filePath)` → `{ reds, yellows }`;直接运行时作 CLI。
 - `scripts/import-blog.mjs`(新建):单篇 / `--all` 导入,upsert,保留非 MD 字段,导入前 check。
 - `package.json`(改):加 `check:blog` / `import:blog` 脚本。
-- `SEO/BLOG_WRITING_WORKFLOW.md`(改):追加「后端处理」一节。
+- `Blog-SEO/BLOG_WRITING_WORKFLOW.md`(改):追加「后端处理」一节。
 
 ---
 
@@ -143,7 +143,7 @@ git commit -m "feat(blog-pipeline): md-blog 解析器(属性段+正文段+文件
 
 **Files:** Create `scripts/gen-common-chars.mjs`; Create `scripts/data/common-chars.txt`
 
-> 原理:现有 `SEO/output/blog_*.md` 是**干净源稿**(变异只在 Notion、不在 MD,已验证)。取语料里所有汉字做白名单;新文章里**没在语料出现过的字** = 怪字候选(人工确认)。自维护、无外部依赖。
+> 原理:现有 `Blog-SEO/output/blog_*.md` 是**干净源稿**(变异只在 Notion、不在 MD,已验证)。取语料里所有汉字做白名单;新文章里**没在语料出现过的字** = 怪字候选(人工确认)。自维护、无外部依赖。
 
 - [ ] **Step 1: 写 `scripts/gen-common-chars.mjs`**
 
@@ -151,7 +151,7 @@ git commit -m "feat(blog-pipeline): md-blog 解析器(属性段+正文段+文件
 import { readFileSync, writeFileSync, readdirSync } from "fs";
 import { fileURLToPath } from "url";
 
-const outDir = fileURLToPath(new URL("../../SEO/output/", import.meta.url));
+const outDir = fileURLToPath(new URL("../../Blog-SEO/output/", import.meta.url));
 const chars = new Set();
 for (const f of readdirSync(outDir)) {
   if (!/^blog_.+\.md$/.test(f)) continue;
@@ -389,7 +389,7 @@ export async function importOne(file, { force } = {}) {
 const args = process.argv.slice(2);
 const force = args.includes("--force");
 if (args.includes("--all")) {
-  const dir = fileURLToPath(new URL("../../SEO/output/", import.meta.url));
+  const dir = fileURLToPath(new URL("../../Blog-SEO/output/", import.meta.url));
   const files = readdirSync(dir).filter((f) => /^blog_.+\.md$/.test(f));
   let ok = 0;
   for (const f of files) if (await importOne(dir + f, { force })) ok++;
@@ -444,7 +444,7 @@ git commit -m "feat(blog-pipeline): import-blog 用 martian+SDK 忠实导入(ups
 
 ## Task 5: package.json 脚本 + 工作流文档
 
-**Files:** Modify `package.json`; Modify `SEO/BLOG_WRITING_WORKFLOW.md`
+**Files:** Modify `package.json`; Modify `Blog-SEO/BLOG_WRITING_WORKFLOW.md`
 
 - [ ] **Step 1: package.json 加脚本**
 
@@ -459,7 +459,7 @@ git commit -m "feat(blog-pipeline): import-blog 用 martian+SDK 忠实导入(ups
 Run: `cd sanmu-website && node --check scripts/check-blog.mjs && node --check scripts/import-blog.mjs && node --check scripts/md-blog.mjs && echo OK`
 Expected: `OK`。
 
-- [ ] **Step 3: `SEO/BLOG_WRITING_WORKFLOW.md` 追加「后端处理」一节**
+- [ ] **Step 3: `Blog-SEO/BLOG_WRITING_WORKFLOW.md` 追加「后端处理」一节**
 
 在文件末尾追加:
 ```markdown
@@ -470,12 +470,12 @@ Expected: `OK`。
 
 > ⚠️ **导入 Notion 一律用 `import:blog`,不要用 MCP 的 markdown 导入(会把生僻字变异)。**
 
-1. **核对简体**:`cd sanmu-website && npm run check:blog -- ../SEO/output/blog_<slug>.md`
+1. **核对简体**:`cd sanmu-website && npm run check:blog -- ../Blog-SEO/output/blog_<slug>.md`
    - 🔴 必修(格式/必填字段/Slug);🟡 建议(怪字/摘要字数)。修到无红。
-2. **翻译**:`cat ../SEO/output/blog_<slug>.md | python3 scripts/zh_hant/build_new_zh_hant.py > ../SEO/output/blog_<slug>_zh-Hant.md`(在 SEO/ 下跑)
-3. **核对繁体**:`npm run check:blog -- ../SEO/output/blog_<slug>_zh-Hant.md`
+2. **翻译**:`cat ../Blog-SEO/output/blog_<slug>.md | python3 scripts/zh_hant/build_new_zh_hant.py > ../Blog-SEO/output/blog_<slug>_zh-Hant.md`(在 Blog-SEO/ 下跑)
+3. **核对繁体**:`npm run check:blog -- ../Blog-SEO/output/blog_<slug>_zh-Hant.md`
    - 重点看 🔴 残留简体字、🟡 未本地化大陆词,按提示改 MD。
-4. **导入**:`npm run import:blog -- ../SEO/output/blog_<slug>.md` 和 `..._zh-Hant.md`
+4. **导入**:`npm run import:blog -- ../Blog-SEO/output/blog_<slug>.md` 和 `..._zh-Hant.md`
    - 导入前会自动再核对一遍;有 🔴 会被拦(确认无误可加 `-- ... --force`)。
    - 改完重导一次即更新(upsert),封面图/审核勾选不受影响。
 ```
@@ -483,7 +483,7 @@ Expected: `OK`。
 - [ ] **Step 4: 提交**
 
 ```bash
-git add package.json "../SEO/BLOG_WRITING_WORKFLOW.md"
+git add package.json "../Blog-SEO/BLOG_WRITING_WORKFLOW.md"
 git commit -m "feat(blog-pipeline): 加 check:blog/import:blog 脚本 + 工作流文档后端步骤"
 ```
 
@@ -497,7 +497,7 @@ git commit -m "feat(blog-pipeline): 加 check:blog/import:blog 脚本 + 工作�
 
 找出有简体 MD 但无繁体 MD 的 slug,逐个跑翻译:
 ```bash
-cd "/Users/scotpan/Documents/Claude/Projects/Sanmu Media Website/SEO/output" && for f in blog_*.md; do case "$f" in *_zh-Hant.md) continue;; esac; h="${f%.md}_zh-Hant.md"; [ -f "$h" ] || echo "缺繁体: $f"; done
+cd "/Users/scotpan/Documents/Claude/Projects/Sanmu Media Website/Blog-SEO/output" && for f in blog_*.md; do case "$f" in *_zh-Hant.md) continue;; esac; h="${f%.md}_zh-Hant.md"; [ -f "$h" ] || echo "缺繁体: $f"; done
 ```
 对每个「缺繁体」的简体 MD:`cat blog_<slug>.md | python3 ../scripts/zh_hant/build_new_zh_hant.py > blog_<slug>_zh-Hant.md`,再 `npm run check:blog` 看繁体核对。
 

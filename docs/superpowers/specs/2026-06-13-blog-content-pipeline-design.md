@@ -9,8 +9,8 @@
 
 - **完整内容流**:人工口播稿 → 配关键词 → 自动改写成书面博客(简体 MD)→【本次:核对/翻译/校对/导入】→ Notion → 网站(ISR)。
 - **现有资产(复用,不重做)**:
-  - MD 文件:`SEO/output/blog_<slug>.md`(简)/ `blog_<slug>_zh-Hant.md`(繁)。固定格式:`# 标题` → `## Notion 页面属性`(`- **字段**：值` 列表)→ `## Page Body`(正文)。语言版本由文件名 `_zh-Hant` 区分;翻译组ID = slug。简体 29 篇、繁体 12 篇(其余繁体是上线时机器转的、无 MD)。
-  - 翻译:`SEO/scripts/zh_hant/build_new_zh_hant.py`(OpenCC `s2twp` + TW 词汇层),简→繁,质量好。本地 Python。
+  - MD 文件:`Blog-SEO/output/blog_<slug>.md`(简)/ `blog_<slug>_zh-Hant.md`(繁)。固定格式:`# 标题` → `## Notion 页面属性`(`- **字段**：值` 列表)→ `## Page Body`(正文)。语言版本由文件名 `_zh-Hant` 区分;翻译组ID = slug。简体 29 篇、繁体 12 篇(其余繁体是上线时机器转的、无 MD)。
+  - 翻译:`Blog-SEO/scripts/zh_hant/build_new_zh_hant.py`(OpenCC `s2twp` + TW 词汇层),简→繁,质量好。本地 Python。
   - 网站读 Notion:`@notionhq/client`(已装)+ `NOTION_TOKEN`;Blog data_source `319407d1-e400-4aed-8e36-dfa0ab19e6ea`。
 - **痛点**:① 导入用 MCP 的 markdown 路径,内部有"模型转写"环节,把生僻字变异(实测:何鸿燊→栞、危言耸听→耺、抵消→掊,线上挂着错字,且每次错得不一样)。② 转换后没有自动核对,只有规范第六章的人工 checklist。
 - **已验证**:`@tryfabric/martian`(markdown→Notion blocks,纯代码无 LLM)+ `@notionhq/client` 实测 17 个生僻字/emoji **零变异**。martian 已装。
@@ -51,7 +51,7 @@
 - `lib/md-blog.mjs`(新建,被上面两个共用):解析 MD 的 `## Notion 页面属性`(→ 字段对象)和 `## Page Body`(→ 正文字符串);从文件名取 slug + locale。
 - `scripts/data/common-chars.txt`(新建):约 6000 常用汉字表,用于怪字检测(超出表的字判为"怪字候选")。
 - `package.json`(改):加 `check:blog` / `import:blog` / `publish:blog` 脚本。
-- `SEO/BLOG_WRITING_WORKFLOW.md`(改):把后端步骤写进去(导入改用 `import:blog`,别用 MCP)。
+- `Blog-SEO/BLOG_WRITING_WORKFLOW.md`(改):把后端步骤写进去(导入改用 `import:blog`,别用 MCP)。
 
 ## ① 简体核对(check-blog,简体规则)
 
@@ -78,7 +78,7 @@
 - **保留非 MD 字段**:`pages.update` 只设上面列出的字段,**不碰** 封面图、现场照片、繁体人工校对、SEO复核。
 - **导入前自动核对**:先跑 check;有"红" → 打印并退出(除非 `--force`)。
 - **不渲染告警**:martian 若产出 列表/图片/code 等网站 `parseBlocks` 暂不渲染的块,导入仍写入,但**打印一条提醒**列出这些块类型(范围 A:三木主要用 段落/标题/引用/视频)。
-- **批量** `--all`:遍历 `SEO/output/blog_*.md`(简+繁)逐篇 upsert;每篇先 check,红的跳过并汇总报告。
+- **批量** `--all`:遍历 `Blog-SEO/output/blog_*.md`(简+繁)逐篇 upsert;每篇先 check,红的跳过并汇总报告。
 
 ## 环境 / 依赖
 

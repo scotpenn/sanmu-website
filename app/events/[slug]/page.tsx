@@ -162,7 +162,7 @@ export async function EventDetail({
           {isUpcoming && event.signupMethod === "外部链接" && event.signupUrl && (
             <div className="flex flex-wrap gap-4">
               <Button variant="primary" href={event.signupUrl}>
-                {textForLocale(locale, "立即报名 →")}
+                {textForLocale(locale, "前往观看 →", "前往觀看 →")}
               </Button>
               <Button variant="secondary" href="mailto:info@sanmu.ca">
                 ✉️ {textForLocale(locale, "写信咨询")}

@@ -61,9 +61,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"];
   }>;
 
+  // 静态页 / 活动页没有内容层面的「修改时间」, 用 sitemap 生成时间(每小时 ISR 刷新)兜底, 给爬虫一个新鲜度信号。
+  const now = new Date();
   const staticRoutes: MetadataRoute.Sitemap = staticPaths.flatMap((route) => [
-    sitemapEntry({ ...route, locale: DEFAULT_LOCALE }),
-    sitemapEntry({ ...route, locale: TRADITIONAL_LOCALE }),
+    sitemapEntry({ ...route, locale: DEFAULT_LOCALE, lastModified: now }),
+    sitemapEntry({ ...route, locale: TRADITIONAL_LOCALE, lastModified: now }),
   ]);
 
   // 动态拉博客 + 活动 (从 Notion)
@@ -114,6 +116,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       sitemapEntry({
         path: `/events/${slug}`,
         locale: DEFAULT_LOCALE,
+        lastModified: now,
         priority: 0.6,
         changeFrequency: "monthly",
         availableLocales: localesFor(slug, hansEventSet, hantEventSet),
@@ -123,6 +126,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       sitemapEntry({
         path: `/events/${slug}`,
         locale: TRADITIONAL_LOCALE,
+        lastModified: now,
         priority: 0.6,
         changeFrequency: "monthly",
         availableLocales: localesFor(slug, hansEventSet, hantEventSet),

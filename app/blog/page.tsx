@@ -10,6 +10,7 @@ import {
   type Locale,
 } from "@/lib/i18n";
 import { pageSeo } from "@/lib/seo";
+import { BlogListJsonLd } from "@/components/BlogListJsonLd";
 
 // ISR: 每小时后台刷新, 发新文章后列表自动更新, 无需 redeploy.
 export const revalidate = 3600;
@@ -118,6 +119,7 @@ export async function BlogIndexPage({
 
   return (
     <>
+      <BlogListJsonLd locale={locale ?? DEFAULT_LOCALE} posts={posts} />
       {/* Hero */}
       <section className="border-b border-rule">
         <Container width="card" className="py-16 md:py-20">

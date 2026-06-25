@@ -10,6 +10,5 @@ export default function robots(): MetadataRoute.Robots {
       },
     ],
     sitemap: "https://www.sanmu.ca/sitemap.xml",
-    host: "https://www.sanmu.ca",
   };
 }

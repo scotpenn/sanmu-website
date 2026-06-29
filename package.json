@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test:resend-webhook": "node --test --experimental-strip-types --experimental-default-type=module lib/resend-bounces.test.mts",
     "refresh:videos": "node --env-file=../.env scripts/refresh-video-index.mjs",
     "media:upload": "node --env-file=../.env scripts/upload-event-media.mjs",
     "verify:i18n-contract": "node scripts/verify-i18n-contract.mjs",

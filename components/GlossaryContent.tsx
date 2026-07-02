@@ -7,6 +7,7 @@ import { TRADITIONAL_LOCALE, withLocalePrefix, type Locale } from "@/lib/i18n";
 /**
  * 术语对照表页面主体 (简繁共用).
  * 简繁词条名称与释义在 lib/glossary.ts 里是两套独立文案, 按 locale 取用.
+ * 每条 = 权威定义编译(正文) + 三木白话提示(浅色小字) + 可选相关阅读内链.
  */
 export function GlossaryContent({ locale }: { locale: Locale }) {
   const isHant = locale === TRADITIONAL_LOCALE;
@@ -30,8 +31,8 @@ export function GlossaryContent({ locale }: { locale: Locale }) {
           </p>
           <p className="text-base opacity-75 leading-relaxed">
             {isHant
-              ? "跟殯儀館、律師、政府部門打交道時最常遇到的術語，三木按場景整理成四組，每條配一句白話解釋。建議收藏，需要時直接查。"
-              : "跟殡仪馆、律师、政府部门打交道时最常遇到的术语，三木按场景整理成四组，每条配一句白话解释。建议收藏，需要时直接查。"}
+              ? "跟殯儀館、律師、政府部門打交道時最常遇到的術語，按場景分成四組。每條先給權威定義的中文編譯，再配一句三木的白話提示。建議收藏，需要時直接查。"
+              : "跟殡仪馆、律师、政府部门打交道时最常遇到的术语，按场景分成四组。每条先给权威定义的中文编译，再配一句三木的白话提示。建议收藏，需要时直接查。"}
           </p>
 
           {/* 分组快捷导航 */}
@@ -72,16 +73,35 @@ export function GlossaryContent({ locale }: { locale: Locale }) {
                   key={term.en}
                   className="grid md:grid-cols-12 gap-2 md:gap-8 py-5"
                 >
-                  <dt className="md:col-span-4">
-                    <div className="text-base md:text-lg font-medium leading-snug">
+                  {/* 中英并排 · 同字号 */}
+                  <dt className="md:col-span-4 flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5 content-start">
+                    <span className="text-base md:text-lg font-medium leading-snug">
                       {isHant ? term.hant : term.hans}
-                    </div>
-                    <div className="text-sm font-en opacity-60 mt-0.5">
+                    </span>
+                    <span className="text-base md:text-lg font-en leading-snug opacity-70">
                       {term.en}
-                    </div>
+                    </span>
                   </dt>
-                  <dd className="md:col-span-8 text-sm md:text-base opacity-80 leading-relaxed">
-                    {isHant ? term.defHant : term.defHans}
+                  <dd className="md:col-span-8">
+                    <p className="text-sm md:text-base opacity-85 leading-relaxed">
+                      {isHant ? term.defHant : term.defHans}
+                    </p>
+                    {(isHant ? term.noteHant : term.noteHans) && (
+                      <p className="text-sm opacity-60 leading-relaxed mt-1.5">
+                        {isHant ? term.noteHant : term.noteHans}
+                      </p>
+                    )}
+                    {term.related && (
+                      <p className="text-sm mt-1.5">
+                        <Link
+                          href={withLocalePrefix(term.related.href, locale)}
+                          className="text-brand-navy/70 hover:text-brand-navy transition-colors underline underline-offset-4 decoration-brand-navy/20"
+                        >
+                          {isHant ? "延伸閱讀：" : "延伸阅读："}
+                          {isHant ? term.related.hant : term.related.hans}
+                        </Link>
+                      </p>
+                    )}
                   </dd>
                 </div>
               ))}
@@ -110,15 +130,19 @@ export function GlossaryContent({ locale }: { locale: Locale }) {
         </Container>
       </section>
 
-      {/* 免责提示 */}
+      {/* 定义来源说明 + 免责提示 */}
       <section>
         <Container width="reading" className="py-10 md:py-12 text-center">
+          <p className="text-sm opacity-70 leading-relaxed max-w-[620px] mx-auto mb-4">
+            {isHant
+              ? "本表定義主要編譯自加拿大聯邦政府官方說明（canada.ca）、安大略省殯葬監管局（BAO）官方術語表、BC 省《遺囑、遺產與繼承法》（WESA）框架下的司法定義，以及世界衛生組織（WHO）等權威來源；白話提示為三木 16 年北美殯葬實務經驗補充。"
+              : "本表定义主要编译自加拿大联邦政府官方说明（canada.ca）、安大略省殡葬监管局（BAO）官方术语表、BC 省《遗嘱、遗产与继承法》（WESA）框架下的司法定义，以及世界卫生组织（WHO）等权威来源；白话提示为三木 16 年北美殡葬实务经验补充。"}
+          </p>
           <p className="text-sm opacity-70 leading-relaxed max-w-[560px] mx-auto">
             {isHant ? (
               <>
-                ⚠️ 術語解釋基於三木 16 年北美殯葬實務經驗整理，
-                <strong>僅供參考</strong>
-                ，具體法律、稅務與醫療事項請以官方規定為準並諮詢持牌專業人士。詳見{" "}
+                ⚠️ 內容<strong>僅供參考</strong>
+                ，具體法律、稅務與醫療事項請以官方最新規定為準並諮詢持牌專業人士。詳見{" "}
                 <Link
                   href={withLocalePrefix("/disclaimer", locale)}
                   className="text-brand-navy hover:opacity-80 transition-opacity font-medium"
@@ -129,9 +153,8 @@ export function GlossaryContent({ locale }: { locale: Locale }) {
               </>
             ) : (
               <>
-                ⚠️ 术语解释基于三木 16 年北美殡葬实务经验整理，
-                <strong>仅供参考</strong>
-                ，具体法律、税务与医疗事项请以官方规定为准并咨询持牌专业人士。详见{" "}
+                ⚠️ 内容<strong>仅供参考</strong>
+                ，具体法律、税务与医疗事项请以官方最新规定为准并咨询持牌专业人士。详见{" "}
                 <Link
                   href={withLocalePrefix("/disclaimer", locale)}
                   className="text-brand-navy hover:opacity-80 transition-opacity font-medium"

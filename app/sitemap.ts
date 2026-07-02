@@ -53,6 +53,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
       changeFrequency: "monthly",
     },
+    {
+      path: "/resources/glossary",
+      priority: 0.7,
+      changeFrequency: "monthly",
+    },
     { path: "/disclaimer", priority: 0.3, changeFrequency: "yearly" },
     { path: "/privacy", priority: 0.3, changeFrequency: "yearly" },
   ] satisfies Array<{

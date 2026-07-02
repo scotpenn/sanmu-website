@@ -72,6 +72,7 @@ export const navLabels: Record<Locale, Record<string, string>> = {
     events: "活动",
     about: "关于",
     resources: "资料",
+    glossary: "术语表",
   },
   "zh-Hant": {
     home: "首頁",
@@ -80,6 +81,7 @@ export const navLabels: Record<Locale, Record<string, string>> = {
     events: "活動",
     about: "關於",
     resources: "資料",
+    glossary: "術語表",
   },
 };
 

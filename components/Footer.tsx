@@ -14,6 +14,7 @@ const CONTENT_LINKS = [
   { href: "/videos", key: "videos" },
   { href: "/events", key: "events" },
   { href: "/resources/handbook", key: "resources" },
+  { href: "/resources/glossary", key: "glossary" },
 ] as const;
 
 function YouTubeIcon() {

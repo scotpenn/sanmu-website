@@ -20,9 +20,9 @@ import { getVideoCuration } from "@/lib/notion";
 import type { VideoCuration } from "@/lib/notion";
 
 export const metadata = pageSeo({
-  title: "影片內容",
+  title: "殯葬師三木影片合集：加拿大身後事 · 遺囑 · 喪葬福利 · 人生哲思",
   description:
-    "三木在 YouTube 上聊過的所有事，按主題系列分組：殯葬師手記、人生必修課、給家人的安心說明書、華人家庭遺產避坑。",
+    "溫哥華殯葬師三木的 YouTube 影片合集，按主題分組：加拿大身後事流程、遺囑與喪葬福利避坑、殯葬師手記、人生必修課、給家人的安心說明書。",
   path: "/videos",
   locale: TRADITIONAL_LOCALE,
 });

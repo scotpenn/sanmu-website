@@ -20,6 +20,29 @@ function makeToTrad() {
   return (s) => [...(s || "")].map((c) => map.get(c) || c).join("");
 }
 
+// martian 把 blockquote 文本放在 quote 的 children(paragraph) 里、rich_text 只留一个空段,
+// 而网站渲染器(lib/notion.ts parseBlocks)只读 quote.rich_text → 引用块在网站上隐形。
+// 这里把子段落文本上提为行内 rich_text(多段用换行拼接), 保证引用可渲染。
+function hoistQuoteChildren(blocks) {
+  for (const b of blocks) {
+    if (b.type !== "quote" || !b.quote) continue;
+    const inlineText = (b.quote.rich_text || []).map((t) => t.text?.content || "").join("");
+    const kids = b.quote.children || [];
+    if (inlineText.trim() || !kids.length) continue;
+    if (!kids.every((k) => k.type === "paragraph")) continue; // 混合子块不处理, 保持原样
+    const rt = [];
+    kids.forEach((k, i) => {
+      if (i > 0) rt.push({ type: "text", text: { content: "\n" } });
+      rt.push(...(k.paragraph.rich_text || []));
+    });
+    if (rt.length) {
+      b.quote.rich_text = rt;
+      delete b.quote.children;
+    }
+  }
+  return blocks;
+}
+
 // 正文 → Notion 块: 把 <video src="url">说明</video> 转成 video 块, 其余文字交给 martian
 function bodyToBlocks(body) {
   const re = /<video\s+src="([^"]+)"[^>]*>([\s\S]*?)<\/video>/gi;
@@ -43,7 +66,7 @@ function bodyToBlocks(body) {
   }
   const rest = body.slice(last).trim();
   if (rest) blocks.push(...markdownToBlocks(rest));
-  return blocks;
+  return hoistQuoteChildren(blocks);
 }
 
 function buildProps(p, slug, locale) {

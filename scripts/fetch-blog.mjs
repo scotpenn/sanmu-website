@@ -61,8 +61,18 @@ async function blockToMd(b) {
       return "## " + richTextToMd(b.heading_2.rich_text);
     case "heading_3":
       return "### " + richTextToMd(b.heading_3.rich_text);
-    case "quote":
-      return "> " + richTextToMd(b.quote.rich_text).replace(/\n/g, "\n> ");
+    case "quote": {
+      // 老数据(MCP 时代/未修复的 martian 导入)把引用文本放在 quote 的子段落里, rich_text 为空
+      let txt = richTextToMd(b.quote.rich_text);
+      if (!txt.trim() && b.has_children) {
+        const kids = await listChildren(b.id);
+        txt = kids
+          .filter((k) => k.type === "paragraph")
+          .map((k) => richTextToMd(k.paragraph.rich_text))
+          .join("\n");
+      }
+      return "> " + txt.replace(/\n/g, "\n> ");
+    }
     case "bulleted_list_item":
       return "- " + richTextToMd(b.bulleted_list_item.rich_text);
     case "numbered_list_item":

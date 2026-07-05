@@ -65,6 +65,12 @@ export function checkMd(filePath) {
     if (!YOUTUBE_RE.test(vm[1])) yellows.push(`正文 video 链接不是 YouTube: ${vm[1]}`);
   }
 
+  // 字面量 [video] 占位符(模板残留)会被 martian 当普通段落导入 → 网页原样显示 "[video]"
+  if (/^\s*\[video\]\s*$/m.test(body)) {
+    const cap = locale === "zh-Hant" ? "三木有話說 · 本文對應影片" : "三木有话说 · 本文对应的视频";
+    reds.push(`正文含字面量 [video] 占位符 → 替换成 <video src="${props.videoUrl || "(「视频链接」属性的 YouTube URL)"}">${cap}</video>`);
+  }
+
   const rare = [...new Set(CJK(body).filter((c) => !COMMON.has(c)))];
   if (rare.length) yellows.push(`怪字候选(需人工确认): ${rare.join(" ")}`);
 

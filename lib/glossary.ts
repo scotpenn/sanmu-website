@@ -197,6 +197,55 @@ export const GLOSSARY_SECTIONS: GlossarySection[] = [
     titleHant: "葬禮流程與場所",
     terms: [
       {
+        en: "Final Arrangements / After-Death Affairs",
+        hans: "身后事（后事）",
+        hant: "身後事（後事）",
+        defHans:
+          "泛指一个人身故后需要处理的各项事务——从死亡登记、葬礼安排，到遗产分配、政府福利与证件注销。中文一个词，英文没有单一对应，按场景说 final arrangements（丧葬安排）或 settling the estate（遗产处理）。",
+        defHant:
+          "泛指一個人身故後需要處理的各項事務——從死亡登記、葬禮安排，到遺產分配、政府福利與證件註銷。中文一個詞，英文沒有單一對應，按場景說 final arrangements（喪葬安排）或 settling the estate（遺產處理）。",
+        noteHans: "「办后事」中文里既含葬礼也含遗产手续，跟英文机构沟通时要拆开讲。",
+        noteHant: "「辦後事」中文裡既含葬禮也含遺產手續，跟英文機構溝通時要拆開講。",
+        related: {
+          href: "/blog/golden-24-hours-after-death-canada",
+          hans: "突然离世后的黄金 24 小时",
+          hant: "突然離世後的黃金 24 小時",
+        },
+      },
+      {
+        en: "Claiming the Deceased / Release of Remains",
+        hans: "认领遗体",
+        hant: "認領遺體",
+        defHans:
+          "由最近亲属或授权人向医院、验尸官办公室或殡仪馆确认逝者身份、办理遗体交接的程序。",
+        defHant:
+          "由最近親屬或授權人向醫院、驗屍官辦公室或殯儀館確認逝者身份、辦理遺體交接的程序。",
+        noteHans: "突发或需调查的死亡，遗体要先经 Coroner 才放行，家属别自行到殡仪馆等。",
+        noteHant: "突發或需調查的死亡，遺體要先經 Coroner 才放行，家屬別自行到殯儀館等。",
+      },
+      {
+        en: "Death Notice / Obituary",
+        hans: "讣告（报丧）",
+        hant: "訃告（報喪）",
+        defHans:
+          "公开发布逝者离世消息与告别安排的通告；obituary 通常还含生平追忆。",
+        defHant:
+          "公開發布逝者離世消息與告別安排的通告；obituary 通常還含生平追憶。",
+        noteHans: "常登在报纸或殡仪馆网站，也是正式通知亲友的方式。",
+        noteHant: "常刊於報紙或殯儀館網站，也是正式通知親友的方式。",
+      },
+      {
+        en: "Bereavement",
+        hans: "丧亲（居丧）",
+        hant: "喪親（居喪）",
+        defHans:
+          "因亲近的人离世而经历失去的状态；机构语境里 bereavement 也指相应的丧假、哀伤支持等安排。",
+        defHant:
+          "因親近的人離世而經歷失去的狀態；機構語境裡 bereavement 也指相應的喪假、哀傷支援等安排。",
+        noteHans: "跟雇主请「bereavement leave（丧假）」、向医院要「bereavement support」都用这个词。",
+        noteHant: "跟僱主請「bereavement leave（喪假）」、向醫院要「bereavement support」都用這個詞。",
+      },
+      {
         en: "Funeral Home",
         hans: "殡仪馆",
         hant: "殯儀館",

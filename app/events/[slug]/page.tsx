@@ -354,6 +354,34 @@ export async function EventDetail({
         </section>
       )}
 
+      {/* 手册 CTA · 接住活动页流量转私域 */}
+      <section className="border-b border-rule bg-brand-yellow/[0.05]">
+        <Container width="reading" className="py-16 md:py-20">
+          <div className="text-sm font-en uppercase tracking-wider text-brand-navy/70 mb-3 font-medium">
+            Free Handbook
+          </div>
+          <h3 className="text-2xl mb-3">
+            {textForLocale(
+              locale,
+              "需要一份可以直接照着办的清单？",
+              "需要一份可以直接照著辦的清單？",
+            )}
+          </h3>
+          <p className="opacity-80 mb-5 leading-relaxed">
+            {textForLocale(
+              locale,
+              "我整理了一份《身后事安心手册》v2.7，包含遗嘱模板、政府福利申请清单、家人身故必处理 87 件事。留邮箱免费领。",
+            )}
+          </p>
+          <Button
+            variant="primary"
+            href={localizedPath("/resources/handbook", locale)}
+          >
+            {textForLocale(locale, "✉️ 免费索取手册")}
+          </Button>
+        </Container>
+      </section>
+
       {/* 底部 CTA */}
       <section>
         <Container width="reading" className="py-12 md:py-16">

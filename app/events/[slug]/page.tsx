@@ -16,11 +16,13 @@ import { EventJsonLd } from "@/components/EventJsonLd";
 import { RichText } from "@/components/RichText";
 import {
   DEFAULT_LOCALE,
+  eventStatusLabel,
   localizedPath,
   peopleLabel,
   textForLocale,
   type Locale,
 } from "@/lib/i18n";
+import { formatEventDateLabel } from "@/lib/event-dates";
 import { pageSeo } from "@/lib/seo";
 
 // ISR: 每小时后台刷新. 改了活动内容后详情页自动更新; build 后新增的活动也按需生成.
@@ -60,17 +62,6 @@ export async function generateMetadata({
   return generateEventMetadata(slug, DEFAULT_LOCALE);
 }
 
-function formatDateLabel(isoDate: string, locale: Locale): string {
-  if (!isoDate) return "";
-  // 纯日历日期: 用 UTC 取值, 避免被运行环境时区(如温哥华)偏移一天.
-  const d = new Date(isoDate);
-  const weekdays =
-    locale === "zh-Hant"
-      ? ["週日", "週一", "週二", "週三", "週四", "週五", "週六"]
-      : ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
-  return `${d.getUTCFullYear()} 年 ${d.getUTCMonth() + 1} 月 ${d.getUTCDate()} 日（${weekdays[d.getUTCDay()]}）`;
-}
-
 export async function EventDetail({
   slug,
   locale = DEFAULT_LOCALE,
@@ -82,7 +73,7 @@ export async function EventDetail({
   if (!event) notFound();
 
   // 日期已过(温哥华时区)或手动标记已举办 → 已结束. 日期驱动, 无需手动改状态.
-  const isPast = isEventPast(event.date) || event.status === "已举办";
+  const isPast = isEventPast(event.date, event.dateEnd) || event.status === "已举办";
   const isUpcoming = !isPast;
 
   return (
@@ -112,7 +103,7 @@ export async function EventDetail({
           <div className="text-xs font-en uppercase tracking-widest text-brand-navy/70 mb-4 font-medium">
             {isPast
               ? `${textForLocale(locale, "活动已结束", "活動已結束")} · Ended`
-              : `${event.status} · Upcoming`}
+              : `${eventStatusLabel(event.status, locale)} · Upcoming`}
           </div>
           <h1 className="text-3xl md:text-4xl lg:text-5xl leading-tight mb-8">
             {event.title}
@@ -124,7 +115,9 @@ export async function EventDetail({
                 Date
               </dt>
               <dd>
-                <time dateTime={event.date}>{formatDateLabel(event.date, locale)}</time>
+                <time dateTime={event.date}>
+                  {formatEventDateLabel(event.date, event.dateEnd, locale)}
+                </time>
               </dd>
             </div>
             {event.location && (

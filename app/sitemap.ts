@@ -2,11 +2,12 @@ import type { MetadataRoute } from "next";
 import { getAllPosts, getAllEventSlugs } from "@/lib/notion";
 import {
   DEFAULT_LOCALE,
-  LOCALES,
   TRADITIONAL_LOCALE,
   type Locale,
 } from "@/lib/i18n";
 import { localeUrl, hreflangLanguages } from "@/lib/seo";
+
+const SITEMAP_LOCALES = ["zh-Hans", "zh-Hant"] as const satisfies readonly Locale[];
 
 // ISR: 每小时后台重新查 Notion 一次, 发新文章后无需 redeploy, sitemap 自动更新.
 // 不设则 Next 视为永久静态 (revalidate 无限), 只在 build 时刷新一次.
@@ -18,7 +19,7 @@ function sitemapEntry({
   priority,
   changeFrequency,
   lastModified,
-  availableLocales = LOCALES,
+  availableLocales = SITEMAP_LOCALES,
 }: {
   path: string;
   locale: Locale;
@@ -87,7 +88,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const hansEventSet = new Set(hansEventSlugs);
   const hantEventSet = new Set(hantEventSlugs);
   const localesFor = (slug: string, hans: Set<string>, hant: Set<string>) =>
-    LOCALES.filter(
+    SITEMAP_LOCALES.filter(
       (l) =>
         (l === DEFAULT_LOCALE && hans.has(slug)) ||
         (l === TRADITIONAL_LOCALE && hant.has(slug)),

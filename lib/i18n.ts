@@ -93,6 +93,29 @@ export function peopleLabel(count: number, locale: Locale): string {
   return locale === "zh-Hant" ? `${count} 人參與` : `${count} 人参与`;
 }
 
+const EVENT_STATUS_LABELS: Record<string, Record<Locale, string>> = {
+  草稿: {
+    "zh-Hans": "草稿",
+    "zh-Hant": "草稿",
+  },
+  即将举办: {
+    "zh-Hans": "即将举办",
+    "zh-Hant": "即將舉辦",
+  },
+  报名中: {
+    "zh-Hans": "报名中",
+    "zh-Hant": "報名中",
+  },
+  已举办: {
+    "zh-Hans": "已举办",
+    "zh-Hant": "已舉辦",
+  },
+};
+
+export function eventStatusLabel(status: string, locale: Locale): string {
+  return EVENT_STATUS_LABELS[status]?.[locale] ?? textForLocale(locale, status);
+}
+
 const S2T_MAP: Record<string, string> = {
   万: "萬",
   与: "與",

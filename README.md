@@ -38,6 +38,19 @@ npm run lint        # ESLint 检查
 
 ---
 
+## 活动发布工作流
+
+活动内容以 Notion Events 库为 source of record，不维护本地静态活动数据。发布外部分发时先 dry-run，再真实同步：
+
+```bash
+npm run events:publish -- --slug <event-slug> --dry-run
+npm run events:publish -- --slug <event-slug>
+```
+
+Eventbrite 发布会自动创建一个免费 `免费入场 / RSVP` ticket，因为 Eventbrite live 发布强制要求 ticket。`sanmu.ca` 活动链接会写入 Eventbrite 活动描述和 ticket 描述。详细交接见 `docs/claude-handoff-2026-07-07-event-publishing.md`。
+
+---
+
 ## 目录结构
 
 ```

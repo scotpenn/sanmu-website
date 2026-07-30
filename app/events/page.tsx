@@ -9,11 +9,13 @@ import {
 } from "@/lib/notion";
 import {
   DEFAULT_LOCALE,
+  eventStatusLabel,
   localizedPath,
   peopleLabel,
   textForLocale,
   type Locale,
 } from "@/lib/i18n";
+import { formatEventDateLabel } from "@/lib/event-dates";
 import { pageSeo } from "@/lib/seo";
 
 // ISR: 每小时后台刷新, 活动状态/新活动自动更新, 无需 redeploy.
@@ -33,27 +35,13 @@ export function generateEventsIndexMetadata(locale: Locale) {
 
 export const metadata = generateEventsIndexMetadata(DEFAULT_LOCALE);
 
-function formatDateLabel(isoDate: string, locale: Locale): string {
-  if (!isoDate) return "";
-  // 纯日历日期: 用 UTC 取值, 避免被运行环境时区(如温哥华)偏移一天.
-  const d = new Date(isoDate);
-  const year = d.getUTCFullYear();
-  const month = d.getUTCMonth() + 1;
-  const day = d.getUTCDate();
-  const weekdays =
-    locale === "zh-Hant"
-      ? ["週日", "週一", "週二", "週三", "週四", "週五", "週六"]
-      : ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
-  return `${year} 年 ${month} 月 ${day} 日（${weekdays[d.getUTCDay()]}）`;
-}
-
 function UpcomingCard({ event, locale }: { event: EventItem; locale: Locale }) {
   const href = localizedPath(`/events/${event.slug}`, locale);
   return (
     <article className="border border-rule bg-brand-yellow/10 overflow-hidden">
       <div className="p-8 md:p-10">
       <div className="text-xs font-en uppercase tracking-widest text-brand-navy/70 mb-4 font-medium">
-        {event.status} · Upcoming
+        {eventStatusLabel(event.status, locale)} · Upcoming
       </div>
       <Link href={href} className="block group">
         <h3 className="text-2xl md:text-3xl mb-3 group-hover:text-brand-navy transition-colors">
@@ -70,7 +58,9 @@ function UpcomingCard({ event, locale }: { event: EventItem; locale: Locale }) {
             Date
           </dt>
           <dd>
-            <time dateTime={event.date}>{formatDateLabel(event.date, locale)}</time>
+            <time dateTime={event.date}>
+              {formatEventDateLabel(event.date, event.dateEnd, locale)}
+            </time>
           </dd>
         </div>
         {event.location && (
@@ -116,7 +106,9 @@ function PastCard({ event, locale }: { event: EventItem; locale: Locale }) {
             Date
           </dt>
           <dd>
-            <time dateTime={event.date}>{formatDateLabel(event.date, locale)}</time>
+            <time dateTime={event.date}>
+              {formatEventDateLabel(event.date, event.dateEnd, locale)}
+            </time>
           </dd>
         </div>
         {event.location && (

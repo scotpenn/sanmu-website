@@ -6,6 +6,7 @@ import type {
   RichTextItemResponse,
 } from "@notionhq/client";
 import { DEFAULT_LOCALE, LOCALES, type Locale } from "@/lib/i18n";
+import { isEventPast as isEventDatePast } from "@/lib/event-dates";
 
 // data_source_id of 📝 Blog 博客 (固定 ID, 不会变)
 const BLOG_DATA_SOURCE_ID = "319407d1-e400-4aed-8e36-dfa0ab19e6ea";
@@ -451,6 +452,7 @@ export type EventItem = {
   title: string;
   summary: string;
   date: string;
+  dateEnd: string | null;
   location: string;
   status: EventStatus;
   attendees: number | null;
@@ -511,6 +513,7 @@ function parseEventProperties(page: PageObjectResponse): EventItem | null {
   if (!slug || !title) return null;
 
   const coverImages = parseExternalFiles(coverProp);
+  const eventDate = dateProp.date;
 
   return {
     slug,
@@ -523,7 +526,8 @@ function parseEventProperties(page: PageObjectResponse): EventItem | null {
       summaryProp?.type === "rich_text"
         ? richTextToPlainText(summaryProp.rich_text).trim()
         : "",
-    date: dateProp.date?.start ?? "",
+    date: eventDate?.start ?? "",
+    dateEnd: eventDate?.end ?? null,
     location:
       locationProp?.type === "rich_text"
         ? richTextToPlainText(locationProp.rich_text).trim()
@@ -548,12 +552,8 @@ function parseEventProperties(page: PageObjectResponse): EventItem | null {
  * 活动是否已过期: 活动日期早于「今天」(以温哥华时区计) 即视为已结束.
  * 配合页面 ISR 每小时重刷, 日期过后约 1 小时内自动从「即将」转「已结束」, 无需手动改状态.
  */
-export function isEventPast(dateISO: string): boolean {
-  if (!dateISO) return false;
-  const today = new Date().toLocaleDateString("en-CA", {
-    timeZone: "America/Vancouver",
-  }); // "YYYY-MM-DD"
-  return dateISO.slice(0, 10) < today;
+export function isEventPast(dateISO: string, endDateISO?: string | null): boolean {
+  return isEventDatePast(dateISO, endDateISO);
 }
 
 /**
@@ -585,7 +585,7 @@ export async function getUpcomingEvents(
     if (!("properties" in page)) continue;
     const event = parseEventProperties(page as PageObjectResponse);
     // 日期已过的(即使状态还没手动改)自动排除出「即将举办」.
-    if (event && !isEventPast(event.date)) events.push(event);
+    if (event && !isEventPast(event.date, event.dateEnd)) events.push(event);
   }
   return events;
 }
@@ -692,7 +692,7 @@ export async function getPastEvents(
     if (!("properties" in page)) continue;
     const event = parseEventProperties(page as PageObjectResponse);
     // 日期已过, 或手动标记已举办 → 归入「已结束」.
-    if (event && (isEventPast(event.date) || event.status === "已举办")) {
+    if (event && (isEventPast(event.date, event.dateEnd) || event.status === "已举办")) {
       events.push(event);
     }
   }

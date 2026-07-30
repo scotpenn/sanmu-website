@@ -26,6 +26,7 @@ export function EventJsonLd({
     url,
     image: event.coverImageUrl || absoluteUrl("/portrait.jpg"),
     organizer: organizationSchema(locale),
+    ...(event.dateEnd ? { endDate: event.dateEnd } : {}),
     ...(event.location
       ? { location: { "@type": "Place", name: event.location } }
       : {}),

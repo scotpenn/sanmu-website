@@ -9,6 +9,7 @@
     "lint": "eslint",
     "test:resend-webhook": "node --test --experimental-strip-types --experimental-default-type=module lib/resend-bounces.test.mts",
     "test:event-dates": "node --test --experimental-strip-types --experimental-default-type=module lib/event-dates.test.mts",
+    "test:ics": "node --test --experimental-strip-types --experimental-default-type=module lib/ics.test.mts",
     "test:events-publish": "node --test scripts/events-publish.test.mjs",
     "refresh:videos": "node --env-file=../.env scripts/refresh-video-index.mjs",
     "media:upload": "node --env-file=../.env scripts/upload-event-media.mjs",

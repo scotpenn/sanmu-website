@@ -44,9 +44,12 @@ export async function registerForEvent(
       name,
       locale,
       event: {
+        slug: event.slug,
         title: event.title,
         summary: event.summary,
         location: event.location,
+        start: event.date,
+        end: event.dateEnd,
       },
     });
   } catch (e) {

@@ -2,6 +2,8 @@ import { Resend } from "resend";
 import { readFile } from "fs/promises";
 import path from "path";
 import { TRADITIONAL_LOCALE, type Locale } from "@/lib/i18n";
+import { buildEventIcs } from "@/lib/ics";
+import { SITE_URL } from "@/lib/seo";
 
 // 从已在 Resend 验证的子域名 updates.sanmu.ca 发信(根域名 sanmu.ca 未验证);
 // 回信地址仍是 info@sanmu.ca(Reply-To 无需域名验证)。
@@ -104,7 +106,15 @@ export async function sendHandbookEmail(params: {
   if (error) throw new Error(`Resend 发送失败: ${error.message}`);
 }
 
-type EventInfo = { title: string; summary: string; location: string | null };
+type EventInfo = {
+  slug: string;
+  title: string;
+  summary: string;
+  location: string | null;
+  /** ISO 起止时间, 用于生成 .ics 附件 */
+  start: string;
+  end: string | null;
+};
 
 function eventTextHans(name: string, e: EventInfo): string {
   return `${name}，您好：
@@ -154,7 +164,7 @@ Sunny · 三木有話說 頻道小助理
 溫馨提示：以上為官方聯絡方式，請勿輕信其他來源，謹防詐騙。`;
 }
 
-/** 发送活动「报名成功」确认邮件(无附件, 随 locale). 失败抛错(主路径). */
+/** 发送活动「报名成功」确认邮件(附 .ics 日历文件, 随 locale). 失败抛错(主路径). */
 export async function sendEventConfirmationEmail(params: {
   to: string;
   name: string;
@@ -162,14 +172,31 @@ export async function sendEventConfirmationEmail(params: {
   event: EventInfo;
 }): Promise<void> {
   const isHant = params.locale === TRADITIONAL_LOCALE;
+  const e = params.event;
+  const eventUrl = `${SITE_URL}${isHant ? "/zh-Hant" : ""}/events/${e.slug}`;
+  const ics = buildEventIcs({
+    uid: e.slug,
+    title: e.title,
+    description: `${e.summary}\n${eventUrl}`,
+    location: e.location,
+    url: eventUrl,
+    start: e.start,
+    end: e.end,
+  });
   const { error } = await getResend().emails.send({
     from: isHant ? FROM["zh-Hant"] : FROM["zh-Hans"],
     to: [params.to],
     replyTo: REPLY_TO,
-    subject: `${isHant ? "【報名成功】" : "【报名成功】"}${params.event.title}`,
+    subject: `${isHant ? "【報名成功】" : "【报名成功】"}${e.title}`,
     text: isHant
-      ? eventTextHant(params.name, params.event)
-      : eventTextHans(params.name, params.event),
+      ? eventTextHant(params.name, e)
+      : eventTextHans(params.name, e),
+    attachments: [
+      {
+        filename: isHant ? "活動日程.ics" : "活动日程.ics",
+        content: Buffer.from(ics, "utf8"),
+      },
+    ],
   });
   if (error) throw new Error(`Resend 发送失败: ${error.message}`);
 }

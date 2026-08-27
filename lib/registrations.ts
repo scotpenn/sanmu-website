@@ -11,6 +11,12 @@ export type Registration = {
   locale: Locale;
 };
 
+/**
+ * 报名表同意条款的文案版本. 改动 EventRegistrationForm 里两条同意的措辞时,
+ * 这里必须跟着升版 —— 否则无法区分某位报名者当初同意的是哪一版.
+ */
+const CONSENT_VERSION = "2026-08-v1";
+
 /** 写入 Notion「活动报名」库. 失败抛错, 由调用方决定是否吞掉. */
 export async function saveRegistration(reg: Registration): Promise<void> {
   const token = process.env.NOTION_TOKEN;
@@ -34,6 +40,7 @@ export async function saveRegistration(reg: Registration): Promise<void> {
       活动: { relation: [{ id: reg.eventPageId }] },
       状态: { select: { name: "已报名" } },
       来源语言: { select: { name: reg.locale } },
+      同意版本: { select: { name: CONSENT_VERSION } },
     },
   });
 }

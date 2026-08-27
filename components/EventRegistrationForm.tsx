@@ -5,7 +5,12 @@ import {
   registerForEvent,
   type RegistrationState,
 } from "@/app/events/[slug]/actions";
-import { DEFAULT_LOCALE, textForLocale, type Locale } from "@/lib/i18n";
+import {
+  DEFAULT_LOCALE,
+  textForLocale,
+  withLocalePrefix,
+  type Locale,
+} from "@/lib/i18n";
 import { trackConversion } from "@/lib/analytics";
 
 const INITIAL: RegistrationState = { ok: false };
@@ -107,23 +112,25 @@ export function EventRegistrationForm({
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label htmlFor="ev-phone" className="block text-sm font-medium mb-1">
-            {textForLocale(locale, "电话（选填）", "電話（選填）")}
+            {textForLocale(locale, "电话", "電話")} *
           </label>
           <input
             id="ev-phone"
             name="phone"
             type="tel"
+            required
             className="w-full border border-rule px-3 py-2 bg-white focus:outline-none focus:border-brand-navy"
           />
         </div>
         <div>
           <label htmlFor="ev-size" className="block text-sm font-medium mb-1">
-            {textForLocale(locale, "参加人数", "參加人數")}
+            {textForLocale(locale, "参加人数", "參加人數")} *
           </label>
           <input
             id="ev-size"
             name="partySize"
             type="number"
+            required
             min={1}
             max={20}
             defaultValue={1}
@@ -146,6 +153,49 @@ export function EventRegistrationForm({
 
       {state.error && <p className="text-sm text-red-700">{state.error}</p>}
 
+      <div className="space-y-3">
+        <label className="flex items-start gap-3 text-xs leading-relaxed cursor-pointer">
+          <input
+            type="checkbox"
+            name="consentNotice"
+            required
+            className="mt-0.5 h-4 w-4 shrink-0 accent-brand-navy"
+          />
+          <span className="opacity-80">
+            {textForLocale(
+              locale,
+              "我同意接收本次活动的通知与提醒，并已阅读",
+              "我同意接收本次活動的通知與提醒，並已閱讀",
+            )}
+            <a
+              href={withLocalePrefix("/privacy", locale)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-brand-navy underline underline-offset-2 hover:opacity-80 transition-opacity"
+            >
+              {textForLocale(locale, "《隐私政策》", "《隱私政策》")}
+            </a>
+            {textForLocale(locale, "。", "。")}
+          </span>
+        </label>
+
+        <label className="flex items-start gap-3 text-xs leading-relaxed cursor-pointer">
+          <input
+            type="checkbox"
+            name="consentPortrait"
+            required
+            className="mt-0.5 h-4 w-4 shrink-0 accent-brand-navy"
+          />
+          <span className="opacity-80">
+            {textForLocale(
+              locale,
+              "我理解讲座现场会拍摄照片及视频，可能拍到我的影像，同意三木将其用于活动记录与官网活动回顾，不用于 YouTube 视频或商业广告。",
+              "我理解講座現場會拍攝照片及影片，可能拍到我的影像，同意三木將其用於活動記錄與官網活動回顧，不用於 YouTube 影片或商業廣告。",
+            )}
+          </span>
+        </label>
+      </div>
+
       <button
         type="submit"
         disabled={pending}
@@ -155,14 +205,6 @@ export function EventRegistrationForm({
           ? textForLocale(locale, "提交中…", "提交中…")
           : textForLocale(locale, "✉️ 提交报名", "✉️ 提交報名")}
       </button>
-
-      <p className="text-xs opacity-60 leading-relaxed">
-        {textForLocale(
-          locale,
-          "提交即表示同意接收本次活动的相关通知。",
-          "提交即表示同意接收本次活動的相關通知。",
-        )}
-      </p>
     </form>
   );
 }

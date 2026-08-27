@@ -90,16 +90,7 @@ export default function PrivacyPage() {
             </p>
             <ul className="space-y-2 list-disc pl-6">
               <li>
-                <strong>线下活动报名</strong>：跳转到 Google Form 后，你填的邮箱、称呼等信息存到 Google 服务器（受{" "}
-                <a
-                  href="https://policies.google.com/privacy"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-brand-navy hover:opacity-80 transition-opacity"
-                >
-                  Google 隐私政策
-                </a>
-                {" "}约束）
+                <strong>线下活动报名</strong>：你在活动页填写的称呼、邮箱、电话、参加人数、留言。这些信息用于给你发确认邮件（经 Resend 发送），并存入我们的 Notion 后台。提交前你需要勾选两条同意条款，其中一条涉及现场影像采集（见下文 §1.3）
               </li>
               <li>
                 <strong>来信</strong>：通过{" "}
@@ -110,6 +101,23 @@ export default function PrivacyPage() {
                   info@sanmu.ca
                 </a>
                 {" "}给三木写信，邮件内容由我们的邮件服务商保存（这是邮件本身的工作机制）
+              </li>
+            </ul>
+
+            <h3 className="text-xl mt-8 mb-2">1.3 线下活动现场影像</h3>
+            <p>
+              线下讲座现场我们会拍摄照片和视频，可能拍到参加者的影像。报名时必须勾选同意才能提交。
+            </p>
+            <ul className="space-y-2 list-disc pl-6">
+              <li>
+                <strong>用途</strong>：仅用于活动记录，以及本网站的活动回顾图文。
+                <strong className="text-brand-navy">不会用于 YouTube 视频，也不会用于商业广告。</strong>
+              </li>
+              <li>
+                <strong>存放</strong>：照片托管在 Cloudinary（见下文第四节）
+              </li>
+              <li>
+                <strong>保留与删除</strong>：作为活动记录长期保留。你可以随时来信要求删除涉及你本人的影像，我们在 30 天内处理
               </li>
             </ul>
 
@@ -144,7 +152,7 @@ export default function PrivacyPage() {
                 <strong>要求删除你的数据</strong> —— 同上，30 天内处理
               </li>
               <li>
-                <strong>退订活动通知</strong> —— Google Form 的报名信息会在活动结束后保留半年，半年后自动删除
+                <strong>退订活动通知</strong> —— 来信即可退订。报名信息存在我们的 Notion 后台，活动结束半年后清理
               </li>
               <li>
                 <strong>反对处理</strong> —— 同样邮件即可
@@ -156,10 +164,10 @@ export default function PrivacyPage() {
             <ul className="space-y-2 list-disc pl-6">
               <li><strong>Vercel</strong>（美国）—— 网站部署 / 流量分析 / 性能监控</li>
               <li><strong>Google Analytics 4</strong>（美国）—— 详细流量分析（使用 cookie，见上文 §1.1）</li>
-              <li><strong>Google Forms</strong>（美国）—— 活动报名表（仅你主动填写时使用）</li>
+              <li><strong>Resend</strong>（美国）—— 发送活动确认邮件、手册邮件</li>
               <li><strong>YouTube</strong>（Google 美国）—— 视频嵌入</li>
               <li><strong>Cloudinary</strong>（以色列）—— 活动照片托管</li>
-              <li><strong>Notion</strong>（美国）—— 我们的内容管理后台（你看到的网站内容来源）</li>
+              <li><strong>Notion</strong>（美国）—— 内容管理后台（你看到的网站内容来源），同时存放活动报名记录</li>
             </ul>
 
             <h2 className="text-2xl mt-12 mb-3">五、未成年人</h2>
@@ -185,7 +193,7 @@ export default function PrivacyPage() {
             </p>
 
             <div className="border-t border-rule pt-6 mt-12 text-sm opacity-60">
-              最后更新: 2026-05-31 · 适用范围: sanmu.ca 全部子域名
+              最后更新: 2026-08-26 · 适用范围: sanmu.ca 全部子域名
             </div>
           </div>
         </Container>

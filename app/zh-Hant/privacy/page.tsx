@@ -90,16 +90,7 @@ export default function TraditionalPrivacyPage() {
             </p>
             <ul className="space-y-2 list-disc pl-6">
               <li>
-                <strong>線下活動報名</strong>：跳轉到 Google Form 後，你填的電子信箱、稱呼等資訊存到 Google 伺服器（受{" "}
-                <a
-                  href="https://policies.google.com/privacy"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-brand-navy hover:opacity-80 transition-opacity"
-                >
-                  Google 隱私政策
-                </a>
-                {" "}約束）
+                <strong>線下活動報名</strong>：你在活動頁填寫的稱呼、電子信箱、電話、參加人數、留言。這些資訊用於給你發確認郵件（經 Resend 寄送），並存入我們的 Notion 後台。提交前你需要勾選兩條同意條款，其中一條涉及現場影像採集（見下文 §1.3）
               </li>
               <li>
                 <strong>來信</strong>：透過{" "}
@@ -110,6 +101,23 @@ export default function TraditionalPrivacyPage() {
                   info@sanmu.ca
                 </a>
                 {" "}給三木寫信，郵件內容由我們的郵件服務商保存（這是郵件本身的運作機制）
+              </li>
+            </ul>
+
+            <h3 className="text-xl mt-8 mb-2">1.3 線下活動現場影像</h3>
+            <p>
+              線下講座現場我們會拍攝照片和影片，可能拍到參加者的影像。報名時必須勾選同意才能提交。
+            </p>
+            <ul className="space-y-2 list-disc pl-6">
+              <li>
+                <strong>用途</strong>：僅用於活動紀錄，以及本網站的活動回顧圖文。
+                <strong className="text-brand-navy">不會用於 YouTube 影片，也不會用於商業廣告。</strong>
+              </li>
+              <li>
+                <strong>存放</strong>：照片託管在 Cloudinary（見下文第四節）
+              </li>
+              <li>
+                <strong>保留與刪除</strong>：作為活動紀錄長期保留。你可以隨時來信要求刪除涉及你本人的影像，我們在 30 天內處理
               </li>
             </ul>
 
@@ -144,7 +152,7 @@ export default function TraditionalPrivacyPage() {
                 <strong>要求刪除你的資料</strong> —— 同上，30 天內處理
               </li>
               <li>
-                <strong>退訂活動通知</strong> —— Google Form 的報名資訊會在活動結束後保留半年，半年後自動刪除
+                <strong>退訂活動通知</strong> —— 來信即可退訂。報名資訊存在我們的 Notion 後台，活動結束半年後清理
               </li>
               <li>
                 <strong>反對處理</strong> —— 同樣郵件即可
@@ -156,10 +164,10 @@ export default function TraditionalPrivacyPage() {
             <ul className="space-y-2 list-disc pl-6">
               <li><strong>Vercel</strong>（美國）—— 網站部署 / 流量分析 / 效能監控</li>
               <li><strong>Google Analytics 4</strong>（美國）—— 詳細流量分析（使用 cookie，見上文 §1.1）</li>
-              <li><strong>Google Forms</strong>（美國）—— 活動報名表（僅你主動填寫時使用）</li>
+              <li><strong>Resend</strong>（美國）—— 寄送活動確認郵件、手冊郵件</li>
               <li><strong>YouTube</strong>（Google 美國）—— 影片嵌入</li>
               <li><strong>Cloudinary</strong>（以色列）—— 活動照片託管</li>
-              <li><strong>Notion</strong>（美國）—— 我們的內容管理後台（你看到的網站內容來源）</li>
+              <li><strong>Notion</strong>（美國）—— 內容管理後台（你看到的網站內容來源），同時存放活動報名紀錄</li>
             </ul>
 
             <h2 className="text-2xl mt-12 mb-3">五、未成年人</h2>
@@ -185,7 +193,7 @@ export default function TraditionalPrivacyPage() {
             </p>
 
             <div className="border-t border-rule pt-6 mt-12 text-sm opacity-60">
-              最後更新: 2026-05-31 · 適用範圍: sanmu.ca 全部子網域
+              最後更新: 2026-08-26 · 適用範圍: sanmu.ca 全部子網域
             </div>
           </div>
         </Container>

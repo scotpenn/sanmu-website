@@ -75,7 +75,11 @@ function UpcomingCard({ event, locale }: { event: EventItem; locale: Locale }) {
 
       <div className="flex flex-wrap gap-4">
         <Button variant="primary" href={href}>
-          {textForLocale(locale, "查看详情 →", "查看詳情 →")}
+          {/* 只有站内表单报名的活动才引导「报名」; 无需报名 / 外部链接的活动
+              点进去看不到表单, 仍用「查看详情」避免文案与落地内容不符. */}
+          {event.signupMethod === "网页表单"
+            ? textForLocale(locale, "点击报名 →", "點擊報名 →")
+            : textForLocale(locale, "查看详情 →", "查看詳情 →")}
         </Button>
         <Button variant="secondary" href="mailto:info@sanmu.ca">
           ✉️ {textForLocale(locale, "写信咨询")}

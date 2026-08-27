@@ -117,6 +117,9 @@ export function Header() {
                 }
               >
                 {navLabels[locale][item.key]}
+                {item.key === "events" && (
+                  <span aria-hidden className="ml-0.5">🔥</span>
+                )}
               </Link>
             );
           })}
@@ -194,6 +197,9 @@ export function Header() {
                     }
                   >
                     {navLabels[locale][item.key]}
+                    {item.key === "events" && (
+                      <span aria-hidden className="ml-0.5">🔥</span>
+                    )}
                   </Link>
                 </li>
               );

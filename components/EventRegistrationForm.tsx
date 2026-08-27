@@ -70,7 +70,7 @@ export function EventRegistrationForm({
             "几分钟内没收到？请查看邮箱的「垃圾邮件」或「推广」文件夹。发件人是 ",
             "幾分鐘內沒收到？請查看信箱的「垃圾郵件」或「promotions」資料夾。寄件人是 ",
           )}
-          <span className="font-medium text-brand-navy break-all">{SENDER_EMAIL}</span>
+          <span className="font-medium text-brand-navy whitespace-nowrap">{SENDER_EMAIL}</span>
           {textForLocale(locale, "。", "。")}
         </p>
       </div>

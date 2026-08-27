@@ -15,6 +15,10 @@ import { trackConversion } from "@/lib/analytics";
 
 const INITIAL: RegistrationState = { ok: false };
 
+// 确认信发件地址. 与 lib/email.ts 的 FROM 保持一致 —— 那边是 server-only
+// (依赖 Resend / fs), 无法在客户端组件里引用, 故此处独立一份.
+const SENDER = "shouhou@updates.sanmu.ca";
+
 export function EventRegistrationForm({
   eventSlug,
   locale = DEFAULT_LOCALE,
@@ -58,9 +62,18 @@ export function EventRegistrationForm({
         <p className="opacity-80 leading-relaxed">
           {textForLocale(
             locale,
-            "确认邮件已发到你的邮箱，请查收。届时准时参加。",
-            "確認郵件已寄到你的信箱，請查收。屆時準時參加。",
+            "确认邮件已发到你的邮箱，请查收，届时准时参加。",
+            "確認郵件已寄到你的信箱，請查收，屆時準時參加。",
           )}
+        </p>
+        <p className="mt-5 border-t border-rule pt-5 text-sm opacity-70 leading-relaxed">
+          {textForLocale(
+            locale,
+            "几分钟内没收到？请查看邮箱的「垃圾邮件」或「推广」文件夹。发件人是 ",
+            "幾分鐘內沒收到？請查看信箱的「垃圾郵件」或「promotions」資料夾。寄件人是 ",
+          )}
+          <span className="font-medium text-brand-navy break-all">{SENDER}</span>
+          {textForLocale(locale, "。", "。")}
         </p>
       </div>
     );

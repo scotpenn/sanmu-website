@@ -125,6 +125,8 @@ function eventTextHans(name: string, e: EventInfo): string {
 
 请准时参加。如活动有变动，我们会通过邮件通知您。
 
+为免后续通知被误判为垃圾邮件，建议把本邮件发件地址 shouhou@updates.sanmu.ca 加入您的通讯录。
+
 请注意：本邮件由系统自动发送，请勿直接回复本邮件。如需联系我们，请发送邮件至 info@sanmu.ca。
 
 祝好！
@@ -148,6 +150,8 @@ function eventTextHant(name: string, e: EventInfo): string {
 📅 ${e.summary}${e.location ? `\n📍 ${e.location}` : ""}
 
 請準時參加。如活動有變動，我們會透過郵件通知您。
+
+為免後續通知被誤判為垃圾郵件，建議把本郵件寄件地址 shouhou@updates.sanmu.ca 加入您的通訊錄。
 
 請注意：本郵件由系統自動發送，請勿直接回覆本郵件。如需聯絡我們，請發送郵件至 info@sanmu.ca。
 

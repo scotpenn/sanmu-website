@@ -4,6 +4,7 @@ import path from "path";
 import { TRADITIONAL_LOCALE, type Locale } from "@/lib/i18n";
 import { buildEventIcs } from "@/lib/ics";
 import { SITE_URL } from "@/lib/seo";
+import { SENDER_EMAIL } from "@/lib/sender";
 
 // 从已在 Resend 验证的子域名 updates.sanmu.ca 发信(根域名 sanmu.ca 未验证);
 // 回信地址仍是 info@sanmu.ca(Reply-To 无需域名验证)。
@@ -12,8 +13,8 @@ const PDF_PATH = path.join(process.cwd(), "private", "handbook-v2.7.pdf");
 
 // 发件人显示名 + 主题随语言;繁体页提交发繁体邮件,附件(PDF)两者共用同一份。
 const FROM = {
-  "zh-Hans": "三木有话说 <shouhou@updates.sanmu.ca>",
-  "zh-Hant": "三木有話說 <shouhou@updates.sanmu.ca>",
+  "zh-Hans": `三木有话说 <${SENDER_EMAIL}>`,
+  "zh-Hant": `三木有話說 <${SENDER_EMAIL}>`,
 } as const;
 
 const SUBJECT = {
@@ -125,7 +126,7 @@ function eventTextHans(name: string, e: EventInfo): string {
 
 请准时参加。如活动有变动，我们会通过邮件通知您。
 
-为免后续通知被误判为垃圾邮件，建议把本邮件发件地址 shouhou@updates.sanmu.ca 加入您的通讯录。
+为免后续通知被误判为垃圾邮件，建议把本邮件发件地址 ${SENDER_EMAIL} 加入您的通讯录。
 
 请注意：本邮件由系统自动发送，请勿直接回复本邮件。如需联系我们，请发送邮件至 info@sanmu.ca。
 
@@ -151,7 +152,7 @@ function eventTextHant(name: string, e: EventInfo): string {
 
 請準時參加。如活動有變動，我們會透過郵件通知您。
 
-為免後續通知被誤判為垃圾郵件，建議把本郵件寄件地址 shouhou@updates.sanmu.ca 加入您的通訊錄。
+為免後續通知被誤判為垃圾郵件，建議把本郵件寄件地址 ${SENDER_EMAIL} 加入您的通訊錄。
 
 請注意：本郵件由系統自動發送，請勿直接回覆本郵件。如需聯絡我們，請發送郵件至 info@sanmu.ca。
 

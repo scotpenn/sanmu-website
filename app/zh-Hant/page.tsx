@@ -100,7 +100,7 @@ export default async function TraditionalHomePage() {
               >
                 <Image
                   src="/handbook-cover.png"
-                  alt="《身後事安心手冊》v2.7 · 三木有話說頻道整理"
+                  alt="《身後事安心手冊》v2.8 · 三木有話說頻道整理"
                   width={1414}
                   height={2000}
                   priority
@@ -301,10 +301,10 @@ export default async function TraditionalHomePage() {
       <section className="bg-brand-navy text-paper">
         <Container width="reading" className="py-20 md:py-24 text-center">
           <h2 className="text-3xl md:text-4xl text-paper mb-6 font-extrabold tracking-[-0.01em]">
-            免費索取《身後事安心手冊》v2.7
+            免費索取《身後事安心手冊》v2.8
           </h2>
           <p className="text-lg opacity-90 mb-4 max-w-[560px] mx-auto leading-relaxed">
-            8 份文件 · 80+ 頁 · 加拿大場景
+            8 份文件 · 90+ 頁 · 加拿大場景
           </p>
           <p className="text-base opacity-80 mb-10 max-w-[560px] mx-auto leading-relaxed">
             它不能替你做所有決定，但能讓你比大多數家庭少踩很多坑。

@@ -8,9 +8,9 @@ import { pageSeo } from "@/lib/seo";
 import { getHandbookCount } from "@/lib/handbook-count";
 
 export const metadata = pageSeo({
-  title: "《身后事安心手册》v2.7 · 免费索取",
+  title: "《身后事安心手册》v2.8 · 免费索取",
   description:
-    "温哥华殡葬师三木整理的 8 份加拿大实用文档·遗嘱模板·政府福利申请·87 件事清单·葬礼费用对比·向死而生活法·预立医疗委托·信用记录防盗·80+ 页. 来信免费获取.",
+    "温哥华殡葬师三木整理的 8 份加拿大实用文档·遗嘱模板·政府福利申请·87 件事清单·葬礼费用对比·向死而生活法·预立医疗委托·信用记录防盗·90+ 页. 来信免费获取.",
   path: "/resources/handbook",
   locale: DEFAULT_LOCALE,
 });
@@ -103,7 +103,7 @@ export default async function HandbookPage() {
             {/* 左 · 文字 */}
             <div className="md:col-span-7">
               <div className="text-xs font-en uppercase tracking-widest text-brand-navy/70 mb-4 font-medium">
-                Free Handbook · v2.7
+                Free Handbook · v2.8
               </div>
               <h1 className="text-3xl md:text-4xl lg:text-5xl leading-tight mb-6">
                 希望你永远用不到，
@@ -111,7 +111,7 @@ export default async function HandbookPage() {
                 但需要时它已经在你抽屉里。
               </h1>
               <p className="text-lg md:text-xl opacity-85 leading-relaxed mb-6">
-                《身后事安心手册》—— 8 份文档 / 80+ 页 / 加拿大场景。
+                《身后事安心手册》—— 8 份文档 / 90+ 页 / 加拿大场景。
               </p>
               <p className="text-base opacity-75 leading-relaxed mb-10 max-w-[520px]">
                 三木在加拿大做殡葬师 16 年。送过 1000+ 个家庭。频道 6 年。
@@ -134,7 +134,7 @@ export default async function HandbookPage() {
             <div className="md:col-span-5 flex justify-center md:justify-end">
               <Image
                 src="/handbook-cover.png"
-                alt="《身后事安心手册》v2.7 · 三木有话说频道整理"
+                alt="《身后事安心手册》v2.8 · 三木有话说频道整理"
                 width={1414}
                 height={2000}
                 priority

@@ -9,7 +9,7 @@ import { SENDER_EMAIL } from "@/lib/sender";
 // 从已在 Resend 验证的子域名 updates.sanmu.ca 发信(根域名 sanmu.ca 未验证);
 // 回信地址仍是 info@sanmu.ca(Reply-To 无需域名验证)。
 const REPLY_TO = "info@sanmu.ca";
-const PDF_PATH = path.join(process.cwd(), "private", "handbook-v2.7.pdf");
+const PDF_PATH = path.join(process.cwd(), "private", "handbook-v2.8.pdf");
 
 // 发件人显示名 + 主题随语言;繁体页提交发繁体邮件,附件(PDF)两者共用同一份。
 const FROM = {
@@ -18,8 +18,8 @@ const FROM = {
 } as const;
 
 const SUBJECT = {
-  "zh-Hans": "您的《身后事安心手册》v2.7 来了",
-  "zh-Hant": "您的《身後事安心手冊》v2.7 來了",
+  "zh-Hans": "您的《身后事安心手册》v2.8 来了",
+  "zh-Hant": "您的《身後事安心手冊》v2.8 來了",
 } as const;
 
 function getResend(): Resend {
@@ -102,7 +102,7 @@ export async function sendHandbookEmail(params: {
     replyTo: REPLY_TO,
     subject: isHant ? SUBJECT["zh-Hant"] : SUBJECT["zh-Hans"],
     text: isHant ? emailTextHant(params.name) : emailTextHans(params.name),
-    attachments: [{ filename: "身后事安心手册-v2.7.pdf", content: pdf }],
+    attachments: [{ filename: "身后事安心手册-v2.8.pdf", content: pdf }],
   });
   if (error) throw new Error(`Resend 发送失败: ${error.message}`);
 }

@@ -235,7 +235,7 @@ export async function BlogPostPage({
             <p className="opacity-80 mb-5 leading-relaxed">
               {textForLocale(
                 locale,
-                "我整理了一份《身后事安心手册》v2.7，包含遗嘱模板、政府福利申请清单、家人身故必处理 87 件事。留邮箱免费领。",
+                "我整理了一份《身后事安心手册》v2.8，包含遗嘱模板、政府福利申请清单、家人身故必处理 87 件事。留邮箱免费领。",
               )}
             </p>
             <Button

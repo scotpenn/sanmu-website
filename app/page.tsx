@@ -97,7 +97,7 @@ export default async function HomePage() {
               >
                 <Image
                   src="/handbook-cover.png"
-                  alt="《身后事安心手册》v2.7 · 三木有话说频道整理"
+                  alt="《身后事安心手册》v2.8 · 三木有话说频道整理"
                   width={1414}
                   height={2000}
                   priority
@@ -321,13 +321,13 @@ export default async function HomePage() {
       <section className="bg-brand-navy text-paper">
         <Container width="reading" className="py-20 md:py-24 text-center">
           <h2 className="text-3xl md:text-4xl text-paper mb-6 font-extrabold tracking-[-0.01em]">
-            免费索取《身后事安心手册》v2.7
+            免费索取《身后事安心手册》v2.8
           </h2>
           <p className="text-lg opacity-90 mb-4 max-w-[560px] mx-auto leading-relaxed">
-            8 份文档 · 80+ 页 · 加拿大场景
+            8 份文档 · 90+ 页 · 加拿大场景
           </p>
           <p className="text-base opacity-80 mb-10 max-w-[560px] mx-auto leading-relaxed">
-            整理 1 年。迭代 7 版。它不会让你看完就死无牵挂，但能让你比 90% 的家庭少踩很多坑。
+            整理 1 年。迭代 8 版。它不会让你看完就死无牵挂，但能让你比 90% 的家庭少踩很多坑。
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
             <Link

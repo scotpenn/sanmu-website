@@ -22,7 +22,7 @@ const WORKS = [
   },
   {
     label: "手册",
-    desc: "《身后事安心手册》v2.7，累计迭代 7 次",
+    desc: "《身后事安心手册》v2.8，累计迭代 8 次",
     href: "/resources/handbook",
     cta: "申请索取",
   },

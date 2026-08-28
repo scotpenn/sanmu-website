@@ -8,7 +8,7 @@ import { pageSeo } from "@/lib/seo";
 import { getHandbookCount } from "@/lib/handbook-count";
 
 export const metadata = pageSeo({
-  title: "《身後事安心手冊》v2.7 · 免費索取",
+  title: "《身後事安心手冊》v2.8 · 免費索取",
   description:
     "溫哥華殯葬師三木整理的加拿大身後事實用文件，包含遺囑模板、政府福利申請、87 件事清單、葬禮費用對比與家庭檔案冊。",
   path: "/resources/handbook",
@@ -101,7 +101,7 @@ export default async function TraditionalHandbookPage() {
           <div className="grid md:grid-cols-12 gap-10 md:gap-16 items-center">
             <div className="md:col-span-7">
               <div className="text-xs font-en uppercase tracking-widest text-brand-navy/70 mb-4 font-medium">
-                Free Handbook · v2.7
+                Free Handbook · v2.8
               </div>
               <h1 className="text-3xl md:text-4xl lg:text-5xl leading-tight mb-6">
                 希望你永遠用不到，
@@ -109,7 +109,7 @@ export default async function TraditionalHandbookPage() {
                 但需要時它已經在你抽屜裡。
               </h1>
               <p className="text-lg md:text-xl opacity-85 leading-relaxed mb-6">
-                《身後事安心手冊》—— 8 份文件 / 80+ 頁 / 加拿大場景。
+                《身後事安心手冊》—— 8 份文件 / 90+ 頁 / 加拿大場景。
               </p>
               <p className="text-base opacity-75 leading-relaxed mb-10 max-w-[520px]">
                 三木在加拿大做殯葬師 16 年。送過 1000+ 個家庭。頻道 6 年。
@@ -131,7 +131,7 @@ export default async function TraditionalHandbookPage() {
             <div className="md:col-span-5 flex justify-center md:justify-end">
               <Image
                 src="/handbook-cover.png"
-                alt="《身後事安心手冊》v2.7 · 三木有話說頻道整理"
+                alt="《身後事安心手冊》v2.8 · 三木有話說頻道整理"
                 width={1414}
                 height={2000}
                 priority

@@ -4,6 +4,7 @@ import { sendEventConfirmationEmail } from "@/lib/email";
 import { saveRegistration } from "@/lib/registrations";
 import { getEventBySlug } from "@/lib/notion";
 import { DEFAULT_LOCALE, isLocale } from "@/lib/i18n";
+import { isReferralSource } from "@/lib/referral-sources";
 
 export type RegistrationState = { ok: boolean; error?: string };
 
@@ -24,6 +25,8 @@ export async function registerForEvent(
   const email = String(formData.get("email") ?? "").trim();
   const phone = String(formData.get("phone") ?? "").trim().slice(0, 50);
   const message = String(formData.get("message") ?? "").trim().slice(0, 1000);
+  const referralSource = String(formData.get("referralSource") ?? "").trim();
+  const referralOther = String(formData.get("referralOther") ?? "").trim().slice(0, 200);
   const sizeRaw = parseInt(String(formData.get("partySize") ?? ""), 10);
   const partySize = Math.min(Math.max(sizeRaw, 1), 20);
 
@@ -34,6 +37,12 @@ export async function registerForEvent(
   if (!phone) return { ok: false, error: "请填写电话。" };
   if (!Number.isFinite(sizeRaw)) {
     return { ok: false, error: "请填写参加人数。" };
+  }
+  if (!isReferralSource(referralSource)) {
+    return { ok: false, error: "请选择您从哪里得知这次活动。" };
+  }
+  if (referralSource === "other" && !referralOther) {
+    return { ok: false, error: "请说明您从哪里得知这次活动。" };
   }
   // 两条同意都是必勾, 浏览器已拦一道; 这里防绕过前端直接提交
   if (!formData.get("consentNotice")) {
@@ -78,6 +87,8 @@ export async function registerForEvent(
       phone,
       partySize,
       message,
+      referralSource,
+      referralOther,
       locale,
     });
   } catch (e) {

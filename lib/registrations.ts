@@ -1,5 +1,9 @@
 import { Client } from "@notionhq/client";
 import type { Locale } from "@/lib/i18n";
+import {
+  REFERRAL_SOURCE_NOTION_LABELS,
+  type ReferralSource,
+} from "@/lib/referral-sources";
 
 export type Registration = {
   eventPageId: string;
@@ -8,6 +12,8 @@ export type Registration = {
   phone: string;
   partySize: number;
   message: string;
+  referralSource: ReferralSource;
+  referralOther: string;
   locale: Locale;
 };
 
@@ -40,6 +46,14 @@ export async function saveRegistration(reg: Registration): Promise<void> {
       活动: { relation: [{ id: reg.eventPageId }] },
       状态: { select: { name: "已报名" } },
       来源语言: { select: { name: reg.locale } },
+      获知渠道: {
+        select: { name: REFERRAL_SOURCE_NOTION_LABELS[reg.referralSource] },
+      },
+      其他来源说明: {
+        rich_text: reg.referralOther
+          ? [{ type: "text", text: { content: reg.referralOther } }]
+          : [],
+      },
       同意版本: { select: { name: CONSENT_VERSION } },
     },
   });

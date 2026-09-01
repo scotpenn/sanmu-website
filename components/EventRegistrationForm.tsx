@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import {
   registerForEvent,
   type RegistrationState,
@@ -13,6 +13,7 @@ import {
 } from "@/lib/i18n";
 import { trackConversion } from "@/lib/analytics";
 import { SENDER_EMAIL } from "@/lib/sender";
+import { REFERRAL_SOURCES, type ReferralSource } from "@/lib/referral-sources";
 
 const INITIAL: RegistrationState = { ok: false };
 
@@ -25,6 +26,7 @@ export function EventRegistrationForm({
   locale?: Locale;
 }) {
   const [state, action, pending] = useActionState(registerForEvent, INITIAL);
+  const [referralSource, setReferralSource] = useState<ReferralSource | "">("");
 
   // 报名成功 → 触发转化事件(GA4 generate_lead + Vercel Analytics).
   useEffect(() => {
@@ -151,6 +153,51 @@ export function EventRegistrationForm({
       </div>
 
       <div>
+        <label htmlFor="ev-referral-source" className="block text-sm font-medium mb-1">
+          {textForLocale(locale, "您从哪里得知这次活动？", "您從哪裡得知這次活動？")} *
+        </label>
+        <select
+          id="ev-referral-source"
+          name="referralSource"
+          required
+          value={referralSource}
+          onChange={(event) =>
+            setReferralSource(event.target.value as ReferralSource | "")
+          }
+          className="w-full border border-rule px-3 py-2 bg-white focus:outline-none focus:border-brand-navy"
+        >
+          <option value="" disabled>
+            {textForLocale(locale, "请选择", "請選擇")}
+          </option>
+          {REFERRAL_SOURCES.map((source) => (
+            <option key={source} value={source}>
+              {referralSourceLabel(source, locale)}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {referralSource === "other" && (
+        <div>
+          <label htmlFor="ev-referral-other" className="block text-sm font-medium mb-1">
+            {textForLocale(locale, "请说明", "請說明")} *
+          </label>
+          <input
+            id="ev-referral-other"
+            name="referralOther"
+            required
+            maxLength={200}
+            placeholder={textForLocale(
+              locale,
+              "请简单说明是从哪里得知的",
+              "請簡單說明是從哪裡得知的",
+            )}
+            className="w-full border border-rule px-3 py-2 bg-white focus:outline-none focus:border-brand-navy"
+          />
+        </div>
+      )}
+
+      <div>
         <label htmlFor="ev-msg" className="block text-sm font-medium mb-1">
           {textForLocale(locale, "留言 / 想了解的问题（选填）", "留言 / 想了解的問題（選填）")}
         </label>
@@ -218,4 +265,18 @@ export function EventRegistrationForm({
       </button>
     </form>
   );
+}
+
+function referralSourceLabel(source: ReferralSource, locale: Locale): string {
+  const labels: Record<ReferralSource, [string, string]> = {
+    youtube: ["YouTube", "YouTube"],
+    xiaohongshu: ["小红书", "小紅書"],
+    douyin: ["抖音", "抖音"],
+    other_social_media: ["其他自媒体", "其他自媒體"],
+    google: ["Google", "Google"],
+    website: ["网站", "網站"],
+    friend_referral: ["朋友介绍", "朋友介紹"],
+    other: ["其他（请填写）", "其他（請填寫）"],
+  };
+  return textForLocale(locale, ...labels[source]);
 }

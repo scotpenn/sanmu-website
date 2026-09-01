@@ -90,7 +90,7 @@ export default function TraditionalPrivacyPage() {
             </p>
             <ul className="space-y-2 list-disc pl-6">
               <li>
-                <strong>線下活動報名</strong>：你在活動頁填寫的稱呼、電子信箱、電話、參加人數、留言。這些資訊用於給你發確認郵件（經 Resend 寄送），並存入我們的 Notion 後台。提交前你需要勾選兩條同意條款，其中一條涉及現場影像採集（見下文 §1.3）
+                <strong>線下活動報名</strong>：你在活動頁填寫的稱呼、電子信箱、電話、參加人數、得知管道、留言。這些資訊用於給你發確認郵件（經 Resend 寄送），並存入我們的 Notion 後台。提交前你需要勾選兩條同意條款，其中一條涉及現場影像採集（見下文 §1.3）
               </li>
               <li>
                 <strong>來信</strong>：透過{" "}

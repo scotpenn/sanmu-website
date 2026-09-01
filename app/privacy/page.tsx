@@ -90,7 +90,7 @@ export default function PrivacyPage() {
             </p>
             <ul className="space-y-2 list-disc pl-6">
               <li>
-                <strong>线下活动报名</strong>：你在活动页填写的称呼、邮箱、电话、参加人数、留言。这些信息用于给你发确认邮件（经 Resend 发送），并存入我们的 Notion 后台。提交前你需要勾选两条同意条款，其中一条涉及现场影像采集（见下文 §1.3）
+                <strong>线下活动报名</strong>：你在活动页填写的称呼、邮箱、电话、参加人数、获知渠道、留言。这些信息用于给你发确认邮件（经 Resend 发送），并存入我们的 Notion 后台。提交前你需要勾选两条同意条款，其中一条涉及现场影像采集（见下文 §1.3）
               </li>
               <li>
                 <strong>来信</strong>：通过{" "}

@@ -79,10 +79,14 @@ function buildProps(p, slug, locale) {
   if (p.subtitle) props["摘要"] = { rich_text: [{ type: "text", text: { content: p.subtitle } }] };
   if (p.category) props["类型"] = { select: { name: p.category } };
   if (p.keywords) {
-    const tags = p.keywords.split(/[、,，]/).map((s) => s.trim()).filter(Boolean).map((name) => ({ name }));
+    // MD 约定写法是「词A · 词B · 词C」, 分隔符必须含 ·(U+00B7), 否则整串会变成一个 multi_select 标签,
+    // 导致 lib/notion.ts 的相关文章排序(按共同标签数)永远匹配不上。
+    const tags = p.keywords.split(/[、,，·]/).map((s) => s.trim()).filter(Boolean).map((name) => ({ name }));
     if (tags.length) props["关键词"] = { multi_select: tags };
   }
   if (p.status) props["状态"] = { select: { name: p.status } };
+  // 发布日期: 只接受 YYYY-MM-DD(纯日期, 不带时间), 对应 Notion date 的 is_datetime=0
+  if (p.publishDate && /^\d{4}-\d{2}-\d{2}$/.test(p.publishDate)) props["发布日期"] = { date: { start: p.publishDate } };
   if (p.readMinutes && /^\d+$/.test(p.readMinutes)) props["阅读时长"] = { number: parseInt(p.readMinutes, 10) };
   if (p.videoUrl) props["视频链接"] = { url: p.videoUrl };
   return props;
@@ -157,6 +161,9 @@ export async function importOne(file, { force } = {}) {
       // 否则会把线上「已发布」文章误打回「待发布」=下线。新建时才用 MD 的状态(见下方 create).
       const updateProps = { ...notionProps };
       delete updateProps["状态"];
+      // 发布日期 同理: 上线后 Scot 可能在 Notion 里手工改过(排期/补发), MD 里的是初稿日期。
+      // 重导正文不应覆盖线上日期 → 只在新建时写(见下方 create), update 时保留现有值。
+      delete updateProps["发布日期"];
       await notion.pages.update({ page_id: id, properties: updateProps });
     }
     await chunkAppend(id, blocks);

@@ -5,6 +5,7 @@ import { basename } from "path";
 const FIELD_ALIASES = {
   "标题": "title", "Slug": "slug", "摘要": "subtitle", "类型": "category",
   "关键词": "keywords", "状态": "status", "阅读时长": "readMinutes", "视频链接": "videoUrl",
+  "发布日期": "publishDate",
 };
 // YAML frontmatter 键 → 内部 key
 const YAML_ALIASES = {

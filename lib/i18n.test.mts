@@ -5,6 +5,7 @@ import {
   TRADITIONAL_LOCALE,
   eventStatusLabel,
   toTraditional,
+  localizeSiteHref,
 } from "./i18n.ts";
 
 test("eventStatusLabel keeps simplified statuses for simplified pages", () => {
@@ -26,4 +27,26 @@ test("toTraditional converts 么/两/冲/价 (blog 标题/摘要派生)", () => 
   assert.equal(toTraditional("拖着行李冲进告别厅"), "拖著行李衝進告別廳");
   assert.equal(toTraditional("以及三种选择各自的代价"), "以及三種選擇各自的代價");
   assert.equal(toTraditional("我儿子不知道中秋是什么"), "我兒子不知道中秋是什麼");
+});
+
+// 2026-09-19：繁体 blog 正文里的站内链接原样输出成 /blog/…，繁体读者点进去落到简体页
+test("localizeSiteHref keeps simplified pages unchanged", () => {
+  assert.equal(localizeSiteHref("/blog/a", DEFAULT_LOCALE), "/blog/a");
+  assert.equal(localizeSiteHref("/resources/handbook", DEFAULT_LOCALE), "/resources/handbook");
+});
+
+test("localizeSiteHref prefixes localized routes on traditional pages", () => {
+  assert.equal(localizeSiteHref("/blog/a", TRADITIONAL_LOCALE), "/zh-Hant/blog/a");
+  assert.equal(localizeSiteHref("/blog", TRADITIONAL_LOCALE), "/zh-Hant/blog");
+  assert.equal(localizeSiteHref("/blog/a#section", TRADITIONAL_LOCALE), "/zh-Hant/blog/a#section");
+  assert.equal(localizeSiteHref("/resources/handbook", TRADITIONAL_LOCALE), "/zh-Hant/resources/handbook");
+  assert.equal(localizeSiteHref("/resources/glossary#benefits", TRADITIONAL_LOCALE), "/zh-Hant/resources/glossary#benefits");
+  assert.equal(localizeSiteHref("/events/x", TRADITIONAL_LOCALE), "/zh-Hant/events/x");
+});
+
+test("localizeSiteHref leaves already-prefixed and non-localized paths alone", () => {
+  assert.equal(localizeSiteHref("/zh-Hant/blog/a", TRADITIONAL_LOCALE), "/zh-Hant/blog/a");
+  assert.equal(localizeSiteHref("/zh-Hant", TRADITIONAL_LOCALE), "/zh-Hant");
+  assert.equal(localizeSiteHref("/api/indexnow", TRADITIONAL_LOCALE), "/api/indexnow");
+  assert.equal(localizeSiteHref("/blogger", TRADITIONAL_LOCALE), "/blogger");
 });

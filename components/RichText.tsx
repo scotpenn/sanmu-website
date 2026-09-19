@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { DEFAULT_LOCALE, localizeSiteHref, type Locale } from "@/lib/i18n";
 import type { RichSegment } from "@/lib/notion";
 
 // 站内域名: href 命中这些 host 就归一成相对路径, 用 Next <Link> 客户端跳转
@@ -19,8 +20,14 @@ function resolveHref(href: string): { to: string; external: boolean } {
   return { to: href, external: true };
 }
 
-/** 渲染 Notion 段落分段: 无 href 是纯文字, 有 href 按站内/站外渲染成链接. */
-export function RichText({ segments }: { segments: RichSegment[] }) {
+/** 渲染 Notion 段落分段: 无 href 是纯文字, 有 href 按站内/站外渲染成链接. 繁体页的站内链接换成繁体路径. */
+export function RichText({
+  segments,
+  locale = DEFAULT_LOCALE,
+}: {
+  segments: RichSegment[];
+  locale?: Locale;
+}) {
   return (
     <>
       {segments.map((seg, i) => {
@@ -40,7 +47,7 @@ export function RichText({ segments }: { segments: RichSegment[] }) {
           );
         }
         return (
-          <Link key={i} href={to} className={LINK_CLASS}>
+          <Link key={i} href={localizeSiteHref(to, locale)} className={LINK_CLASS}>
             {seg.text}
           </Link>
         );

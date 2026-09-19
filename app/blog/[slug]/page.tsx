@@ -111,7 +111,7 @@ export async function BlogPostPage({
               if (block.type === "paragraph") {
                 return (
                   <p key={idx} className="text-lg leading-[1.85]">
-                    <RichText segments={block.segments} />
+                    <RichText segments={block.segments} locale={locale} />
                   </p>
                 );
               }
@@ -174,7 +174,7 @@ export async function BlogPostPage({
                   >
                     {block.items.map((item, i) => (
                       <li key={i}>
-                        <RichText segments={item} />
+                        <RichText segments={item} locale={locale} />
                       </li>
                     ))}
                   </ListTag>
@@ -195,7 +195,7 @@ export async function BlogPostPage({
                                   key={ci}
                                   className={`px-4 py-2 align-top border border-rule ${isHeader ? "font-semibold text-left bg-brand-yellow/[0.06]" : ""}`}
                                 >
-                                  <RichText segments={cell} />
+                                  <RichText segments={cell} locale={locale} />
                                 </Cell>
                               );
                             })}

@@ -64,6 +64,16 @@ export function localizedPath(path: string, locale: Locale): string {
   return withLocalePrefix(path, locale);
 }
 
+// Notion 正文里的站内链接统一写简体路径 (/blog/…)。繁体页渲染时换成 /zh-Hant/…,
+// 否则繁体读者点进去会落到简体页。只动有繁体版的路由, 已带前缀的不重复加。
+const LOCALIZED_ROUTE = /^\/(blog|resources|events|videos|about)(?=[/?#]|$)/;
+
+export function localizeSiteHref(href: string, locale: Locale): string {
+  if (locale === DEFAULT_LOCALE) return href;
+  if (!LOCALIZED_ROUTE.test(href)) return href;
+  return withLocalePrefix(href, locale);
+}
+
 export const navLabels: Record<Locale, Record<string, string>> = {
   "zh-Hans": {
     home: "首页",

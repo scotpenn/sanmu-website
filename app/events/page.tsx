@@ -41,7 +41,10 @@ function UpcomingCard({ event, locale }: { event: EventItem; locale: Locale }) {
     <article className="border border-rule bg-brand-yellow/10 overflow-hidden">
       <div className="p-8 md:p-10">
       <div className="text-xs font-en uppercase tracking-widest text-brand-navy/70 mb-4 font-medium">
-        {eventStatusLabel(event.status, locale)} · Upcoming
+        {event.signupMethod === "报名已满"
+          ? textForLocale(locale, "名额已满", "名額已滿")
+          : eventStatusLabel(event.status, locale)}{" "}
+        · Upcoming
       </div>
       <Link href={href} className="block group">
         <h3 className="text-2xl md:text-3xl mb-3 group-hover:text-brand-navy transition-colors">

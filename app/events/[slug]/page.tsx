@@ -103,7 +103,11 @@ export async function EventDetail({
           <div className="text-xs font-en uppercase tracking-widest text-brand-navy/70 mb-4 font-medium">
             {isPast
               ? `${textForLocale(locale, "活动已结束", "活動已結束")} · Ended`
-              : `${eventStatusLabel(event.status, locale)} · Upcoming`}
+              : `${
+                  event.signupMethod === "报名已满"
+                    ? textForLocale(locale, "名额已满", "名額已滿")
+                    : eventStatusLabel(event.status, locale)
+                } · Upcoming`}
           </div>
           <h1 className="text-3xl md:text-4xl lg:text-5xl leading-tight mb-8">
             {event.title}

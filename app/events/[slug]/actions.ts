@@ -5,6 +5,7 @@ import { saveRegistration } from "@/lib/registrations";
 import { getEventBySlug } from "@/lib/notion";
 import { DEFAULT_LOCALE, isLocale } from "@/lib/i18n";
 import { isReferralSource } from "@/lib/referral-sources";
+import { isValidEventInvite } from "@/lib/event-invite";
 
 export type RegistrationState = { ok: boolean; error?: string };
 
@@ -55,7 +56,11 @@ export async function registerForEvent(
   const event = await getEventBySlug(slug, locale);
   if (!event) return { ok: false, error: "活动不存在或已结束。" };
   // 名额已满 / 改为其他报名方式后, 仍开着旧页面的人提交也要拦下
-  if (event.signupMethod !== "网页表单") {
+  // 例外: 名额已满时, 持私密邀请口令的报名照收
+  const invited =
+    event.signupMethod === "报名已满" &&
+    isValidEventInvite(String(formData.get("invite") ?? ""));
+  if (event.signupMethod !== "网页表单" && !invited) {
     return { ok: false, error: "本场活动名额已满，报名已截止。" };
   }
 

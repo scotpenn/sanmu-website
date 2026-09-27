@@ -21,9 +21,11 @@ const INITIAL: RegistrationState = { ok: false };
 export function EventRegistrationForm({
   eventSlug,
   locale = DEFAULT_LOCALE,
+  invite,
 }: {
   eventSlug: string;
   locale?: Locale;
+  invite?: string;
 }) {
   const [state, action, pending] = useActionState(registerForEvent, INITIAL);
   const [referralSource, setReferralSource] = useState<ReferralSource | "">("");
@@ -94,6 +96,7 @@ export function EventRegistrationForm({
       />
       <input type="hidden" name="locale" value={locale} />
       <input type="hidden" name="eventSlug" value={eventSlug} />
+      {invite && <input type="hidden" name="invite" value={invite} />}
 
       <div>
         <label htmlFor="ev-name" className="block text-sm font-medium mb-1">

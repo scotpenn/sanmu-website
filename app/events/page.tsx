@@ -79,7 +79,9 @@ function UpcomingCard({ event, locale }: { event: EventItem; locale: Locale }) {
               点进去看不到表单, 仍用「查看详情」避免文案与落地内容不符. */}
           {event.signupMethod === "网页表单"
             ? textForLocale(locale, "点击报名 →", "點擊報名 →")
-            : textForLocale(locale, "查看详情 →", "查看詳情 →")}
+            : event.signupMethod === "报名已满"
+              ? textForLocale(locale, "名额已满 · 查看详情 →", "名額已滿 · 查看詳情 →")
+              : textForLocale(locale, "查看详情 →", "查看詳情 →")}
         </Button>
         <Button variant="secondary" href="mailto:info@sanmu.ca">
           ✉️ {textForLocale(locale, "写信咨询")}

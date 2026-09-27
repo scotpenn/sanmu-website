@@ -54,6 +54,10 @@ export async function registerForEvent(
 
   const event = await getEventBySlug(slug, locale);
   if (!event) return { ok: false, error: "活动不存在或已结束。" };
+  // 名额已满 / 改为其他报名方式后, 仍开着旧页面的人提交也要拦下
+  if (event.signupMethod !== "网页表单") {
+    return { ok: false, error: "本场活动名额已满，报名已截止。" };
+  }
 
   // 主路径: 邮件必须成功
   try {

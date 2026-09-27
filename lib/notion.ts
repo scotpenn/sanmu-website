@@ -444,7 +444,8 @@ export async function getRelatedPosts(
 
 export type EventStatus = "草稿" | "即将举办" | "报名中" | "已举办";
 
-export type SignupMethod = "网页表单" | "外部链接" | "无需报名";
+// 报名已满: 名额满了手动切换 → 详情页隐藏表单改显示「名额已满」, 服务端也拒收新报名.
+export type SignupMethod = "网页表单" | "外部链接" | "无需报名" | "报名已满";
 
 export type EventItem = {
   slug: string;

@@ -147,6 +147,20 @@ export async function EventDetail({
           {isUpcoming && event.signupMethod === "网页表单" && (
             <EventRegistrationForm eventSlug={event.slug} locale={locale} />
           )}
+          {isUpcoming && event.signupMethod === "报名已满" && (
+            <div className="border border-rule bg-paper p-8 md:p-10 max-w-[520px] text-center">
+              <div className="text-xl font-medium text-brand-navy mb-2">
+                {textForLocale(locale, "名额已满，报名已截止", "名額已滿，報名已截止")}
+              </div>
+              <p className="opacity-80 leading-relaxed">
+                {textForLocale(
+                  locale,
+                  "感谢大家的热情支持！本场活动名额已满，不再接受新报名。已报名的朋友请留意确认邮件，届时准时参加。",
+                  "感謝大家的熱情支持！本場活動名額已滿，不再接受新報名。已報名的朋友請留意確認郵件，屆時準時參加。",
+                )}
+              </p>
+            </div>
+          )}
           {isUpcoming && event.signupMethod === "无需报名" && (
             <p className="text-base text-brand-navy font-medium">
               {textForLocale(locale, "免费参与，无需报名。", "免費參與，無需報名。")}

@@ -98,17 +98,31 @@ export function EventRegistrationForm({
       <input type="hidden" name="eventSlug" value={eventSlug} />
       {invite && <input type="hidden" name="invite" value={invite} />}
 
-      <div>
-        <label htmlFor="ev-name" className="block text-sm font-medium mb-1">
-          {textForLocale(locale, "称呼", "稱呼")} *
-        </label>
-        <input
-          id="ev-name"
-          name="name"
-          required
-          placeholder={textForLocale(locale, "怎么称呼您", "怎麼稱呼您")}
-          className="w-full border border-rule px-3 py-2 bg-white focus:outline-none focus:border-brand-navy"
-        />
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label htmlFor="ev-last-name" className="block text-sm font-medium mb-1">
+            {textForLocale(locale, "姓")} *
+          </label>
+          <input
+            id="ev-last-name"
+            name="lastName"
+            required
+            autoComplete="family-name"
+            className="w-full border border-rule px-3 py-2 bg-white focus:outline-none focus:border-brand-navy"
+          />
+        </div>
+        <div>
+          <label htmlFor="ev-first-name" className="block text-sm font-medium mb-1">
+            {textForLocale(locale, "名")} *
+          </label>
+          <input
+            id="ev-first-name"
+            name="firstName"
+            required
+            autoComplete="given-name"
+            className="w-full border border-rule px-3 py-2 bg-white focus:outline-none focus:border-brand-navy"
+          />
+        </div>
       </div>
 
       <div>

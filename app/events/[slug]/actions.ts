@@ -6,6 +6,7 @@ import { getEventBySlug } from "@/lib/notion";
 import { DEFAULT_LOCALE, isLocale } from "@/lib/i18n";
 import { isReferralSource } from "@/lib/referral-sources";
 import { isValidEventInvite } from "@/lib/event-invite";
+import { joinPersonName } from "@/lib/person-name";
 
 export type RegistrationState = { ok: boolean; error?: string };
 
@@ -22,7 +23,8 @@ export async function registerForEvent(
   const slug = String(formData.get("eventSlug") ?? "").trim();
   const localeRaw = String(formData.get("locale") ?? "");
   const locale = isLocale(localeRaw) ? localeRaw : DEFAULT_LOCALE;
-  const name = String(formData.get("name") ?? "").trim();
+  const lastName = String(formData.get("lastName") ?? "").trim().slice(0, 50);
+  const firstName = String(formData.get("firstName") ?? "").trim().slice(0, 50);
   const email = String(formData.get("email") ?? "").trim();
   const phone = String(formData.get("phone") ?? "").trim().slice(0, 50);
   const message = String(formData.get("message") ?? "").trim().slice(0, 1000);
@@ -31,7 +33,9 @@ export async function registerForEvent(
   const sizeRaw = parseInt(String(formData.get("partySize") ?? ""), 10);
   const partySize = Math.min(Math.max(sizeRaw, 1), 20);
 
-  if (!name) return { ok: false, error: "请填写称呼。" };
+  if (!lastName) return { ok: false, error: "请填写姓。" };
+  if (!firstName) return { ok: false, error: "请填写名。" };
+  const name = joinPersonName(lastName, firstName);
   if (!EMAIL_RE.test(email)) {
     return { ok: false, error: "请填写有效的邮箱地址。" };
   }

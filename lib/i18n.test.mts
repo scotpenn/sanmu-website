@@ -27,6 +27,8 @@ test("toTraditional converts 么/两/冲/价 (blog 标题/摘要派生)", () => 
   assert.equal(toTraditional("拖着行李冲进告别厅"), "拖著行李衝進告別廳");
   assert.equal(toTraditional("以及三种选择各自的代价"), "以及三種選擇各自的代價");
   assert.equal(toTraditional("我儿子不知道中秋是什么"), "我兒子不知道中秋是什麼");
+  // 2026-09-29 #63：繁体摘要漏转「报账」
+  assert.equal(toTraditional("每一笔都要报账"), "每一筆都要報賬");
 });
 
 // 2026-09-19：繁体 blog 正文里的站内链接原样输出成 /blog/…，繁体读者点进去落到简体页

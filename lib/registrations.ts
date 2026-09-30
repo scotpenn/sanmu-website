@@ -8,6 +8,8 @@ import {
 export type Registration = {
   eventPageId: string;
   name: string;
+  lastName: string;
+  firstName: string;
   email: string;
   phone: string;
   partySize: number;
@@ -35,6 +37,8 @@ export async function saveRegistration(reg: Registration): Promise<void> {
     parent: { type: "data_source_id", data_source_id: dataSourceId },
     properties: {
       姓名: { title: [{ type: "text", text: { content: reg.name } }] },
+      姓: { rich_text: [{ type: "text", text: { content: reg.lastName } }] },
+      名: { rich_text: [{ type: "text", text: { content: reg.firstName } }] },
       邮箱: { email: reg.email },
       电话: { phone_number: reg.phone || null },
       参加人数: { number: reg.partySize },

@@ -96,6 +96,8 @@ export async function registerForEvent(
     await saveRegistration({
       eventPageId: event.pageId,
       name,
+      lastName,
+      firstName,
       email,
       phone,
       partySize,

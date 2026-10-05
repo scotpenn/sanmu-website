@@ -1,8 +1,8 @@
 {
   "channel": "@yyds3mu",
   "channel_id": "UCMhsp4Iyvgc_rCNfkaSNh0Q",
-  "generated_at": "2026-09-28T21:35:49.776Z",
-  "total": 92,
+  "generated_at": "2026-10-05T22:19:40.564Z",
+  "total": 94,
   "playlists": [
     {
       "id": "PLCkv8eKlrDmLKIP3m3GgLI1et9SwtPS6J",
@@ -79,8 +79,9 @@
       "title": "人生必修课",
       "description": "当我们被生活反复捶打，当内心被愧疚与遗憾填满，我们该如何寻找答案？\n在这个系列里，三木将以生命“终点站”见证者的独特视角，与你探讨关于痛苦、和解、自我成长与生命意义等一系列深刻话题。我们不提供标准答案，只愿陪你一起，从生死的视角看待问题，找到与自己和解的力量。",
       "published_at": "2025-08-28T16:47:13.038091Z",
-      "item_count": 24,
+      "item_count": 25,
       "video_ids": [
+        "9Tit_zlUeXQ",
         "nXOy4NMa51g",
         "B3VInlYkk5g",
         "YQCwiCiC0aM",
@@ -142,14 +143,36 @@
   ],
   "videos": [
     {
+      "video_id": "9Tit_zlUeXQ",
+      "title": "爹妈越卷，孩子越完蛋--送走上千人后我才明白：有些爱太重，会让孩子一辈子飞不起来",
+      "description": "前年，一位五十多岁的大哥在我们殡仪馆的会议室里打开他父亲的遗嘱，翻到一半，脸就绿了。\n\n上面写着：房子他可以住，但不许卖；每个月可以从老人提前设好的信托里领生活费，但每一笔都要跟受托人报账；还有一条——一旦他离婚，房子收回。\n\n一个五十多岁的成年人，还在被天上的父亲用一张纸管着。\n\n我在加拿大做了十六年殡葬，送走了上千个人。我见过很多子女在父母的葬礼上哭得撕心裂肺，可眼泪背后，藏着一种谁都不敢说出口的东西：松了一口气。\n\n这一集不批判谁，也不批判原生家庭。我想聊的是我们华人家庭里那份最沉重、又最不能割舍的爱——为什么倾尽一生的牺牲，会变成我们最怕传给下一代的负重；以及我们这代人，该怎么给自己和孩子松绑。\n\n⏳ 时间轴（Timecodes）\n00:00 开场：一份还在管着五十岁儿子的遗嘱\n01:54 遗嘱里那条永远解不开的绳子\n03:09 那份爱，是悲壮的，我们没资格指责\n05:44 爱到我们这一代，必须换一种方式\n07:58 把「托底」变成「祝福」，慢慢松开手\n\n👇 聊聊你的看法\n您的父母，给您留过什么「条件」吗？或者说，您打算给您孩子留一句什么话？评论区聊聊。\n\n🎁 免费领取\n《身后事安心手册》后面有几页备忘录，就是留给您写那段话的。想要的朋友，在评论区留言即可免费获取。\n📖 图文版（可细读＋转发家人）：https://www.sanmu.ca/blog/parents-push-too-hard\n\n📍 公益讲座（温哥华 · 今年最后一场）\n11月1日（周日）10:00-13:00，第十期生命关怀公益讲座，列治文殡仪馆。上一场报名的人太多没排上的朋友，这场加开。现场讲一份遗嘱到底怎么填，并免费派发遗嘱表格，座位有限。报名：https://www.sanmu.ca/events/life-care-lecture-richmond-2026-11\n\n▶️ 相关视频\n· 父母晚年最高级的做法，是学会“认怂”：https://youtu.be/nXOy4NMa51g\n· 父母老了，不代表你小时候受的伤就作废了：https://youtu.be/_sZfoPbhx4I\n· 有些父母，直到死，都不会爱你：https://youtu.be/d3VXy3-4aj8\n· 父母的道歉等不到了：有些答案到火化炉前也不会来：https://youtu.be/YQCwiCiC0aM\n· 团圆是把故事讲下去：我儿子不知道中秋节是什么：https://youtu.be/bg2SW7HXdtM\n\n🔔 订阅频道\n喜欢这样的内容，欢迎订阅 @yyds3mu，开启小铃铛，不错过每一期。\n\n#三木有话说 #原生家庭 #华人家庭 #身后事 #遗嘱",
+      "url": "https://www.youtube.com/watch?v=9Tit_zlUeXQ",
+      "published_at": "2026-10-02T19:00:34Z",
+      "duration_seconds": 669,
+      "view_count": 1533,
+      "like_count": 51,
+      "comment_count": 5
+    },
+    {
+      "video_id": "4Bjo_nXkMaY",
+      "title": "🇨🇦第八期【生命与关怀】公益讲座圆满结束 #情感 #遗嘱 #加拿大生活 @yyds3mu",
+      "description": "",
+      "url": "https://www.youtube.com/watch?v=4Bjo_nXkMaY",
+      "published_at": "2026-09-29T17:00:35Z",
+      "duration_seconds": 47,
+      "view_count": 146,
+      "like_count": 4,
+      "comment_count": 0
+    },
+    {
       "video_id": "bg2SW7HXdtM",
       "title": "团圆是把故事讲下去-我儿子不知道中秋节是什么-而我在殡仪馆见过这件事的结局",
       "description": "去年中秋，我家老二指着盘子里的月饼问我：这是什么？我说是月饼。他又问：那中秋节是什么？我没答上来。\n\n不是不知道怎么解释。是那一刻我想起了在殡仪馆见过太多次的画面：家里的老人走了，在这边长大的孩子站在告别厅里，不知道自己该做什么。他们哭得比谁都厉害，可哭完以后，土葬还是火葬、跪不跪、悼词用中文还是英文，一个个都是懵的。\n\n这不怪孩子。他们不是不孝，是从来没拿到过这套东西。加拿大承认您的文化，但承认，不代表会为您停下来。\n\n这一集我讲一个我认识的女儿：英文很好、做事雷厉风行，所有表格都填得明明白白，却在给母亲设计碑文的时候卡住了——她说不出母亲的祖籍，也不确定母亲真正的生日。以及一件每个家庭中秋晚上就能做的小事。\n\n⏳ 时间轴（Timecodes）\n00:00 一笔算漏的账：我们走后，孩子会送吗？\n02:48 承认您的文化，不代表会为您停下来\n05:27 殡仪馆里的残酷真相：填不出父母祖籍的女儿\n07:35 别人不停，我们可以自己为自己停下\n10:38 团圆不是把人聚齐，而是把故事讲下去\n\n👇 聊聊你的看法\n今年中秋，您打算跟孩子讲哪一件事？评论区聊聊。\n\n🎁 免费领取\n孩子将来需要知道的那些信息——祖籍、真实生日、父母的名字、您想怎么被送走——我都整理进了《身后事安心手册》。想要的朋友，在评论区留言即可免费获取。\n📖 图文版（可细读＋转发家人）：https://www.sanmu.ca/blog/mid-autumn-family-stories\n\n📍 线下讲座（温哥华 · 两场）\n9月27日（周日）10:00-13:00，第八期生命关怀公益讲座，列治文殡仪馆，现场讲一份遗嘱到底怎么填，并免费派发遗嘱表格。报名：https://www.sanmu.ca/events/life-care-lecture-vancouver-2026-09\n10月4日（周日）14:00-17:00，美丽人生讲座「规划今天，丰盛明天」，列治文 Quilchena 高尔夫乡村俱乐部。这是一场英文讲座，专门讲给在这边长大的子女：会计师讲离世税务与遗产规划，退休律师讲失能与身后文件准备，我讲殡葬规划。免费入场，名额有限。报名：https://www.sanmu.ca/events/beautiful-life-seminar-richmond-2026-10\n\n▶️ 相关视频\n· 海外游子的移民代价——赶得上见最后一面，遗憾就真的少了吗：https://youtu.be/Xj03s4A4fCc\n· 第一代移民子女的“终极考验”：和爸妈聊身后事，你敢吗：https://youtu.be/sDq-wT9dA0k\n· 手把手教你填平“完整遗嘱”留下的6个大坑｜家庭档案实操课：https://youtu.be/l1rDfaJU25U\n· 加拿大华人遗嘱陷阱：为什么你以为立了遗嘱就安心？其实只完成了50%：https://youtu.be/I-ZMbIhE28c\n\n🔔 订阅频道\n喜欢这样的内容，欢迎订阅 @yyds3mu，开启小铃铛，不错过每一期。\n\n#三木有话说 #中秋节 #海外华人 #移民二代 #身后事",
       "url": "https://www.youtube.com/watch?v=bg2SW7HXdtM",
       "published_at": "2026-09-25T19:00:16Z",
       "duration_seconds": 755,
-      "view_count": 962,
-      "like_count": 26,
+      "view_count": 1132,
+      "like_count": 29,
       "comment_count": 7
     },
     {
@@ -159,8 +182,8 @@
       "url": "https://www.youtube.com/watch?v=Xj03s4A4fCc",
       "published_at": "2026-09-18T19:00:31Z",
       "duration_seconds": 872,
-      "view_count": 1426,
-      "like_count": 35,
+      "view_count": 1488,
+      "like_count": 37,
       "comment_count": 13
     },
     {
@@ -170,8 +193,8 @@
       "url": "https://www.youtube.com/watch?v=3VKU24bJLQc",
       "published_at": "2026-09-11T19:00:38Z",
       "duration_seconds": 844,
-      "view_count": 1325,
-      "like_count": 31,
+      "view_count": 1339,
+      "like_count": 32,
       "comment_count": 12
     },
     {
@@ -181,7 +204,7 @@
       "url": "https://www.youtube.com/watch?v=QsAcFRI5a4I",
       "published_at": "2026-09-04T19:00:03Z",
       "duration_seconds": 790,
-      "view_count": 25537,
+      "view_count": 25638,
       "like_count": 111,
       "comment_count": 14
     },
@@ -192,7 +215,7 @@
       "url": "https://www.youtube.com/watch?v=fMV5AeVCaXE",
       "published_at": "2026-09-02T02:00:22Z",
       "duration_seconds": 109,
-      "view_count": 341,
+      "view_count": 349,
       "like_count": 7,
       "comment_count": 0
     },
@@ -203,7 +226,7 @@
       "url": "https://www.youtube.com/watch?v=_sZfoPbhx4I",
       "published_at": "2026-08-28T19:00:12Z",
       "duration_seconds": 757,
-      "view_count": 2607,
+      "view_count": 2631,
       "like_count": 83,
       "comment_count": 42
     },
@@ -214,7 +237,7 @@
       "url": "https://www.youtube.com/watch?v=uYxkhFDC0Lk",
       "published_at": "2026-08-21T19:00:32Z",
       "duration_seconds": 703,
-      "view_count": 5428,
+      "view_count": 5436,
       "like_count": 51,
       "comment_count": 4
     },
@@ -225,9 +248,9 @@
       "url": "https://www.youtube.com/watch?v=nXOy4NMa51g",
       "published_at": "2026-08-14T19:00:12Z",
       "duration_seconds": 691,
-      "view_count": 16715,
-      "like_count": 384,
-      "comment_count": 58
+      "view_count": 16953,
+      "like_count": 386,
+      "comment_count": 59
     },
     {
       "video_id": "0OYrRlfYgww",
@@ -236,7 +259,7 @@
       "url": "https://www.youtube.com/watch?v=0OYrRlfYgww",
       "published_at": "2026-08-13T02:00:13Z",
       "duration_seconds": 122,
-      "view_count": 1229,
+      "view_count": 1242,
       "like_count": 27,
       "comment_count": 1
     },
@@ -247,7 +270,7 @@
       "url": "https://www.youtube.com/watch?v=kO0JaPWTMa8",
       "published_at": "2026-08-07T19:00:10Z",
       "duration_seconds": 893,
-      "view_count": 2794,
+      "view_count": 2808,
       "like_count": 97,
       "comment_count": 33
     },
@@ -258,9 +281,9 @@
       "url": "https://www.youtube.com/watch?v=IwrfpTR81BA",
       "published_at": "2026-07-31T19:00:10Z",
       "duration_seconds": 850,
-      "view_count": 6835,
-      "like_count": 132,
-      "comment_count": 50
+      "view_count": 6880,
+      "like_count": 133,
+      "comment_count": 51
     },
     {
       "video_id": "DiBol1daziI",
@@ -269,7 +292,7 @@
       "url": "https://www.youtube.com/watch?v=DiBol1daziI",
       "published_at": "2026-07-29T02:00:26Z",
       "duration_seconds": 85,
-      "view_count": 1099,
+      "view_count": 1120,
       "like_count": 28,
       "comment_count": 3
     },
@@ -280,7 +303,7 @@
       "url": "https://www.youtube.com/watch?v=8o9QpLVQe38",
       "published_at": "2026-07-24T19:00:08Z",
       "duration_seconds": 643,
-      "view_count": 599,
+      "view_count": 602,
       "like_count": 40,
       "comment_count": 12
     },
@@ -291,7 +314,7 @@
       "url": "https://www.youtube.com/watch?v=B3VInlYkk5g",
       "published_at": "2026-07-17T19:00:21Z",
       "duration_seconds": 814,
-      "view_count": 2021,
+      "view_count": 2044,
       "like_count": 83,
       "comment_count": 8
     },
@@ -302,7 +325,7 @@
       "url": "https://www.youtube.com/watch?v=YQCwiCiC0aM",
       "published_at": "2026-07-10T19:00:21Z",
       "duration_seconds": 643,
-      "view_count": 4484,
+      "view_count": 4510,
       "like_count": 191,
       "comment_count": 46
     },
@@ -313,7 +336,7 @@
       "url": "https://www.youtube.com/watch?v=WzLEylU0YdA",
       "published_at": "2026-06-26T19:00:17Z",
       "duration_seconds": 673,
-      "view_count": 24667,
+      "view_count": 24676,
       "like_count": 336,
       "comment_count": 86
     },
@@ -324,7 +347,7 @@
       "url": "https://www.youtube.com/watch?v=iYIO2MQMQXo",
       "published_at": "2026-06-19T19:00:30Z",
       "duration_seconds": 706,
-      "view_count": 2825,
+      "view_count": 2838,
       "like_count": 104,
       "comment_count": 15
     },
@@ -335,8 +358,8 @@
       "url": "https://www.youtube.com/watch?v=J_R8PozRY1s",
       "published_at": "2026-06-12T19:00:20Z",
       "duration_seconds": 669,
-      "view_count": 66229,
-      "like_count": 1282,
+      "view_count": 66340,
+      "like_count": 1283,
       "comment_count": 202
     },
     {
@@ -346,8 +369,8 @@
       "url": "https://www.youtube.com/watch?v=oGhAiolAiMQ",
       "published_at": "2026-05-29T19:00:28Z",
       "duration_seconds": 773,
-      "view_count": 55066,
-      "like_count": 983,
+      "view_count": 55141,
+      "like_count": 984,
       "comment_count": 288
     },
     {
@@ -357,7 +380,7 @@
       "url": "https://www.youtube.com/watch?v=idlM3nTIqoU",
       "published_at": "2026-05-23T04:12:33Z",
       "duration_seconds": 655,
-      "view_count": 4080,
+      "view_count": 4098,
       "like_count": 166,
       "comment_count": 24
     },
@@ -368,7 +391,7 @@
       "url": "https://www.youtube.com/watch?v=wqHaCeqgitA",
       "published_at": "2026-05-15T19:00:49Z",
       "duration_seconds": 922,
-      "view_count": 2781,
+      "view_count": 2786,
       "like_count": 122,
       "comment_count": 34
     },
@@ -379,8 +402,8 @@
       "url": "https://www.youtube.com/watch?v=FuyhjMexjsE",
       "published_at": "2026-05-08T19:00:18Z",
       "duration_seconds": 890,
-      "view_count": 6065,
-      "like_count": 269,
+      "view_count": 6118,
+      "like_count": 270,
       "comment_count": 36
     },
     {
@@ -401,7 +424,7 @@
       "url": "https://www.youtube.com/watch?v=Hoz2Kaq-R3E",
       "published_at": "2026-04-24T19:00:13Z",
       "duration_seconds": 863,
-      "view_count": 4352,
+      "view_count": 4362,
       "like_count": 159,
       "comment_count": 41
     },
@@ -412,7 +435,7 @@
       "url": "https://www.youtube.com/watch?v=IP6pY3e7Tpc",
       "published_at": "2026-04-17T19:00:30Z",
       "duration_seconds": 987,
-      "view_count": 1827,
+      "view_count": 1834,
       "like_count": 115,
       "comment_count": 22
     },
@@ -434,7 +457,7 @@
       "url": "https://www.youtube.com/watch?v=lwzM8QleTuE",
       "published_at": "2026-04-03T19:00:43Z",
       "duration_seconds": 1083,
-      "view_count": 1579,
+      "view_count": 1588,
       "like_count": 73,
       "comment_count": 11
     },
@@ -445,7 +468,7 @@
       "url": "https://www.youtube.com/watch?v=htxDT4lA7Bw",
       "published_at": "2026-03-27T19:00:28Z",
       "duration_seconds": 1374,
-      "view_count": 12244,
+      "view_count": 12298,
       "like_count": 399,
       "comment_count": 70
     },
@@ -456,9 +479,9 @@
       "url": "https://www.youtube.com/watch?v=UQtsParOiVE",
       "published_at": "2026-03-20T19:00:37Z",
       "duration_seconds": 1165,
-      "view_count": 2227,
-      "like_count": 88,
-      "comment_count": 24
+      "view_count": 2239,
+      "like_count": 89,
+      "comment_count": 25
     },
     {
       "video_id": "yzkNS2uCkP8",
@@ -467,7 +490,7 @@
       "url": "https://www.youtube.com/watch?v=yzkNS2uCkP8",
       "published_at": "2026-03-13T19:01:05Z",
       "duration_seconds": 966,
-      "view_count": 9569,
+      "view_count": 9593,
       "like_count": 394,
       "comment_count": 54
     },
@@ -478,7 +501,7 @@
       "url": "https://www.youtube.com/watch?v=5OoMNtryaBY",
       "published_at": "2026-03-06T20:00:06Z",
       "duration_seconds": 780,
-      "view_count": 110505,
+      "view_count": 110666,
       "like_count": 3019,
       "comment_count": 560
     },
@@ -489,7 +512,7 @@
       "url": "https://www.youtube.com/watch?v=gCIufnJ4O80",
       "published_at": "2026-02-27T20:00:38Z",
       "duration_seconds": 723,
-      "view_count": 5188,
+      "view_count": 5219,
       "like_count": 225,
       "comment_count": 24
     },
@@ -500,7 +523,7 @@
       "url": "https://www.youtube.com/watch?v=d3VXy3-4aj8",
       "published_at": "2026-02-20T08:00:47Z",
       "duration_seconds": 939,
-      "view_count": 34596,
+      "view_count": 34625,
       "like_count": 701,
       "comment_count": 115
     },
@@ -522,7 +545,7 @@
       "url": "https://www.youtube.com/watch?v=VJ453OL8DC4",
       "published_at": "2026-02-06T20:00:21Z",
       "duration_seconds": 963,
-      "view_count": 6556,
+      "view_count": 6558,
       "like_count": 228,
       "comment_count": 35
     },
@@ -533,7 +556,7 @@
       "url": "https://www.youtube.com/watch?v=Xl3IJz6jt7s",
       "published_at": "2026-02-02T20:00:23Z",
       "duration_seconds": 50,
-      "view_count": 844,
+      "view_count": 846,
       "like_count": 15,
       "comment_count": 0
     },
@@ -544,7 +567,7 @@
       "url": "https://www.youtube.com/watch?v=36FPWyO6y5k",
       "published_at": "2026-01-30T20:00:03Z",
       "duration_seconds": 666,
-      "view_count": 15658,
+      "view_count": 15703,
       "like_count": 476,
       "comment_count": 79
     },
@@ -555,7 +578,7 @@
       "url": "https://www.youtube.com/watch?v=GNtTXd1xuUA",
       "published_at": "2026-01-29T20:00:13Z",
       "duration_seconds": 181,
-      "view_count": 964,
+      "view_count": 965,
       "like_count": 21,
       "comment_count": 1
     },
@@ -566,7 +589,7 @@
       "url": "https://www.youtube.com/watch?v=U5txAgaayvg",
       "published_at": "2026-01-28T20:00:24Z",
       "duration_seconds": 94,
-      "view_count": 608,
+      "view_count": 609,
       "like_count": 9,
       "comment_count": 2
     },
@@ -577,7 +600,7 @@
       "url": "https://www.youtube.com/watch?v=lpSGkO2Xk94",
       "published_at": "2026-01-25T16:33:18Z",
       "duration_seconds": 7346,
-      "view_count": 1387,
+      "view_count": 1388,
       "like_count": 42,
       "comment_count": 12
     },
@@ -588,9 +611,9 @@
       "url": "https://www.youtube.com/watch?v=WIlXUTdcpPQ",
       "published_at": "2026-01-23T20:00:34Z",
       "duration_seconds": 1053,
-      "view_count": 26052,
-      "like_count": 737,
-      "comment_count": 130
+      "view_count": 26113,
+      "like_count": 736,
+      "comment_count": 131
     },
     {
       "video_id": "D_xxA4XombI",
@@ -632,9 +655,9 @@
       "url": "https://www.youtube.com/watch?v=g0yTC8Liwpw",
       "published_at": "2026-01-16T20:00:38Z",
       "duration_seconds": 1139,
-      "view_count": 8606,
-      "like_count": 339,
-      "comment_count": 45
+      "view_count": 8660,
+      "like_count": 341,
+      "comment_count": 47
     },
     {
       "video_id": "WxkWyp7tn-4",
@@ -643,7 +666,7 @@
       "url": "https://www.youtube.com/watch?v=WxkWyp7tn-4",
       "published_at": "2026-01-09T20:00:34Z",
       "duration_seconds": 963,
-      "view_count": 24531,
+      "view_count": 24636,
       "like_count": 800,
       "comment_count": 88
     },
@@ -654,7 +677,7 @@
       "url": "https://www.youtube.com/watch?v=GRIi4Vs7d8o",
       "published_at": "2026-01-04T17:41:27Z",
       "duration_seconds": 111,
-      "view_count": 962,
+      "view_count": 965,
       "like_count": 24,
       "comment_count": 1
     },
@@ -665,7 +688,7 @@
       "url": "https://www.youtube.com/watch?v=lfmBz9ECs7E",
       "published_at": "2026-01-02T20:00:40Z",
       "duration_seconds": 994,
-      "view_count": 4092,
+      "view_count": 4093,
       "like_count": 149,
       "comment_count": 49
     },
@@ -676,7 +699,7 @@
       "url": "https://www.youtube.com/watch?v=BC6xzOCix6s",
       "published_at": "2025-12-29T17:11:43Z",
       "duration_seconds": 7116,
-      "view_count": 930,
+      "view_count": 934,
       "like_count": 46,
       "comment_count": 18
     },
@@ -698,7 +721,7 @@
       "url": "https://www.youtube.com/watch?v=RhGpha-QHi4",
       "published_at": "2025-12-26T20:00:20Z",
       "duration_seconds": 720,
-      "view_count": 2379,
+      "view_count": 2394,
       "like_count": 145,
       "comment_count": 48
     },
@@ -709,7 +732,7 @@
       "url": "https://www.youtube.com/watch?v=QoP-IAh46Aw",
       "published_at": "2025-12-22T20:00:32Z",
       "duration_seconds": 132,
-      "view_count": 1674,
+      "view_count": 1686,
       "like_count": 36,
       "comment_count": 3
     },
@@ -742,9 +765,9 @@
       "url": "https://www.youtube.com/watch?v=XU6k64dxYCA",
       "published_at": "2025-12-12T20:00:33Z",
       "duration_seconds": 928,
-      "view_count": 31511,
+      "view_count": 31623,
       "like_count": 810,
-      "comment_count": 208
+      "comment_count": 207
     },
     {
       "video_id": "5T84ca8JbsU",
@@ -775,9 +798,9 @@
       "url": "https://www.youtube.com/watch?v=TW8BBSTim4g",
       "published_at": "2025-12-05T20:00:28Z",
       "duration_seconds": 1007,
-      "view_count": 21115,
-      "like_count": 696,
-      "comment_count": 74
+      "view_count": 21239,
+      "like_count": 697,
+      "comment_count": 76
     },
     {
       "video_id": "NDYCP-6ghNw",
@@ -786,7 +809,7 @@
       "url": "https://www.youtube.com/watch?v=NDYCP-6ghNw",
       "published_at": "2025-12-02T20:00:21Z",
       "duration_seconds": 53,
-      "view_count": 1155,
+      "view_count": 1157,
       "like_count": 20,
       "comment_count": 0
     },
@@ -797,8 +820,8 @@
       "url": "https://www.youtube.com/watch?v=DYV4Ps3UqDQ",
       "published_at": "2025-11-28T20:00:10Z",
       "duration_seconds": 1069,
-      "view_count": 246890,
-      "like_count": 6314,
+      "view_count": 248379,
+      "like_count": 6319,
       "comment_count": 489
     },
     {
@@ -808,7 +831,7 @@
       "url": "https://www.youtube.com/watch?v=fm1dDbNgLoU",
       "published_at": "2025-11-25T03:00:50Z",
       "duration_seconds": 79,
-      "view_count": 1624,
+      "view_count": 1627,
       "like_count": 54,
       "comment_count": 4
     },
@@ -819,9 +842,9 @@
       "url": "https://www.youtube.com/watch?v=xFYL4Xq57JA",
       "published_at": "2025-11-21T20:00:55Z",
       "duration_seconds": 983,
-      "view_count": 2367,
+      "view_count": 2372,
       "like_count": 122,
-      "comment_count": 81
+      "comment_count": 82
     },
     {
       "video_id": "FscwRx_YnGI",
@@ -830,7 +853,7 @@
       "url": "https://www.youtube.com/watch?v=FscwRx_YnGI",
       "published_at": "2025-11-14T20:00:21Z",
       "duration_seconds": 925,
-      "view_count": 3857,
+      "view_count": 3866,
       "like_count": 189,
       "comment_count": 35
     },
@@ -841,8 +864,8 @@
       "url": "https://www.youtube.com/watch?v=aSFqqXKQecM",
       "published_at": "2025-11-07T20:00:02Z",
       "duration_seconds": 1016,
-      "view_count": 21090,
-      "like_count": 796,
+      "view_count": 21117,
+      "like_count": 797,
       "comment_count": 46
     },
     {
@@ -852,7 +875,7 @@
       "url": "https://www.youtube.com/watch?v=NMsh9WhxYNg",
       "published_at": "2025-11-05T20:00:32Z",
       "duration_seconds": 65,
-      "view_count": 1141,
+      "view_count": 1145,
       "like_count": 22,
       "comment_count": 1
     },
@@ -863,8 +886,8 @@
       "url": "https://www.youtube.com/watch?v=KsLF3PdInQE",
       "published_at": "2025-10-31T19:00:22Z",
       "duration_seconds": 932,
-      "view_count": 25994,
-      "like_count": 761,
+      "view_count": 26034,
+      "like_count": 762,
       "comment_count": 55
     },
     {
@@ -874,7 +897,7 @@
       "url": "https://www.youtube.com/watch?v=GKc6c2jVUHg",
       "published_at": "2025-10-28T04:30:14Z",
       "duration_seconds": 89,
-      "view_count": 1402,
+      "view_count": 1407,
       "like_count": 38,
       "comment_count": 0
     },
@@ -885,7 +908,7 @@
       "url": "https://www.youtube.com/watch?v=_mutK8H-6Kc",
       "published_at": "2025-10-26T17:33:29Z",
       "duration_seconds": 60,
-      "view_count": 3754,
+      "view_count": 3763,
       "like_count": 144,
       "comment_count": 5
     },
@@ -896,7 +919,7 @@
       "url": "https://www.youtube.com/watch?v=l1rDfaJU25U",
       "published_at": "2025-10-24T19:00:45Z",
       "duration_seconds": 1040,
-      "view_count": 1910,
+      "view_count": 1921,
       "like_count": 97,
       "comment_count": 48
     },
@@ -907,8 +930,8 @@
       "url": "https://www.youtube.com/watch?v=I-ZMbIhE28c",
       "published_at": "2025-10-20T19:00:27Z",
       "duration_seconds": 900,
-      "view_count": 13172,
-      "like_count": 277,
+      "view_count": 13181,
+      "like_count": 278,
       "comment_count": 73
     },
     {
@@ -918,7 +941,7 @@
       "url": "https://www.youtube.com/watch?v=-FRdYnGDWBk",
       "published_at": "2025-10-15T23:36:49Z",
       "duration_seconds": 41,
-      "view_count": 1417,
+      "view_count": 1419,
       "like_count": 14,
       "comment_count": 2
     },
@@ -929,7 +952,7 @@
       "url": "https://www.youtube.com/watch?v=NdtZMUmzmC4",
       "published_at": "2025-10-14T00:26:32Z",
       "duration_seconds": 45,
-      "view_count": 1915,
+      "view_count": 1919,
       "like_count": 20,
       "comment_count": 0
     },
@@ -940,7 +963,7 @@
       "url": "https://www.youtube.com/watch?v=Us2IgvtgUno",
       "published_at": "2025-10-10T23:00:37Z",
       "duration_seconds": 1104,
-      "view_count": 2182,
+      "view_count": 2189,
       "like_count": 96,
       "comment_count": 20
     },
@@ -951,9 +974,9 @@
       "url": "https://www.youtube.com/watch?v=venTq4QJUsU",
       "published_at": "2025-10-03T23:30:30Z",
       "duration_seconds": 1445,
-      "view_count": 19043,
-      "like_count": 799,
-      "comment_count": 84
+      "view_count": 19142,
+      "like_count": 800,
+      "comment_count": 85
     },
     {
       "video_id": "7nOrKsitaFc",
@@ -962,8 +985,8 @@
       "url": "https://www.youtube.com/watch?v=7nOrKsitaFc",
       "published_at": "2025-09-29T23:00:08Z",
       "duration_seconds": 897,
-      "view_count": 7824,
-      "like_count": 375,
+      "view_count": 7860,
+      "like_count": 376,
       "comment_count": 32
     },
     {
@@ -973,7 +996,7 @@
       "url": "https://www.youtube.com/watch?v=yY84CKQkvYc",
       "published_at": "2025-09-29T03:52:13Z",
       "duration_seconds": 35,
-      "view_count": 1066,
+      "view_count": 1067,
       "like_count": 11,
       "comment_count": 4
     },
@@ -984,9 +1007,9 @@
       "url": "https://www.youtube.com/watch?v=zvrmhXdvNu8",
       "published_at": "2025-09-26T23:30:31Z",
       "duration_seconds": 1092,
-      "view_count": 18659,
+      "view_count": 18674,
       "like_count": 665,
-      "comment_count": 105
+      "comment_count": 107
     },
     {
       "video_id": "CTXZomz9YOQ",
@@ -995,7 +1018,7 @@
       "url": "https://www.youtube.com/watch?v=CTXZomz9YOQ",
       "published_at": "2025-09-24T01:14:20Z",
       "duration_seconds": 86,
-      "view_count": 2531,
+      "view_count": 2560,
       "like_count": 40,
       "comment_count": 4
     },
@@ -1006,7 +1029,7 @@
       "url": "https://www.youtube.com/watch?v=TaljgHM1OX0",
       "published_at": "2025-09-22T02:57:21Z",
       "duration_seconds": 83,
-      "view_count": 1479,
+      "view_count": 1480,
       "like_count": 24,
       "comment_count": 5
     },
@@ -1017,9 +1040,9 @@
       "url": "https://www.youtube.com/watch?v=aoWrghqDmes",
       "published_at": "2025-09-12T23:00:04Z",
       "duration_seconds": 1504,
-      "view_count": 32879,
-      "like_count": 929,
-      "comment_count": 160
+      "view_count": 32987,
+      "like_count": 931,
+      "comment_count": 162
     },
     {
       "video_id": "FrDlYi50hGQ",
@@ -1028,9 +1051,9 @@
       "url": "https://www.youtube.com/watch?v=FrDlYi50hGQ",
       "published_at": "2025-09-06T01:00:29Z",
       "duration_seconds": 1093,
-      "view_count": 79521,
-      "like_count": 2152,
-      "comment_count": 707
+      "view_count": 79593,
+      "like_count": 2153,
+      "comment_count": 705
     },
     {
       "video_id": "XXyV-biVX0A",
@@ -1039,7 +1062,7 @@
       "url": "https://www.youtube.com/watch?v=XXyV-biVX0A",
       "published_at": "2025-08-29T01:00:28Z",
       "duration_seconds": 1280,
-      "view_count": 2537,
+      "view_count": 2540,
       "like_count": 119,
       "comment_count": 24
     },
@@ -1050,7 +1073,7 @@
       "url": "https://www.youtube.com/watch?v=sDq-wT9dA0k",
       "published_at": "2025-08-20T02:30:46Z",
       "duration_seconds": 884,
-      "view_count": 2052,
+      "view_count": 2078,
       "like_count": 74,
       "comment_count": 12
     },
@@ -1061,7 +1084,7 @@
       "url": "https://www.youtube.com/watch?v=GgSLNoQX8S0",
       "published_at": "2025-08-02T02:00:18Z",
       "duration_seconds": 1111,
-      "view_count": 2705,
+      "view_count": 2713,
       "like_count": 104,
       "comment_count": 13
     },
@@ -1072,7 +1095,7 @@
       "url": "https://www.youtube.com/watch?v=vCXoOesFg9c",
       "published_at": "2025-07-24T02:00:47Z",
       "duration_seconds": 1213,
-      "view_count": 2716,
+      "view_count": 2727,
       "like_count": 95,
       "comment_count": 4
     },
@@ -1083,7 +1106,7 @@
       "url": "https://www.youtube.com/watch?v=ol297agC04c",
       "published_at": "2025-07-16T02:00:43Z",
       "duration_seconds": 1064,
-      "view_count": 2305,
+      "view_count": 2308,
       "like_count": 76,
       "comment_count": 6
     },
@@ -1094,8 +1117,8 @@
       "url": "https://www.youtube.com/watch?v=O0b5Q4VoZbw",
       "published_at": "2025-07-12T02:00:18Z",
       "duration_seconds": 1010,
-      "view_count": 13651,
-      "like_count": 400,
+      "view_count": 13676,
+      "like_count": 401,
       "comment_count": 62
     },
     {
@@ -1116,7 +1139,7 @@
       "url": "https://www.youtube.com/watch?v=XX9pjiSAB2M",
       "published_at": "2025-07-06T02:00:37Z",
       "duration_seconds": 547,
-      "view_count": 2215,
+      "view_count": 2223,
       "like_count": 61,
       "comment_count": 9
     },
@@ -1127,7 +1150,7 @@
       "url": "https://www.youtube.com/watch?v=5V-SCCXQGb0",
       "published_at": "2025-07-03T02:00:06Z",
       "duration_seconds": 532,
-      "view_count": 3651,
+      "view_count": 3657,
       "like_count": 130,
       "comment_count": 31
     },
@@ -1138,7 +1161,7 @@
       "url": "https://www.youtube.com/watch?v=uJvvhSbnjys",
       "published_at": "2025-06-29T04:00:14Z",
       "duration_seconds": 521,
-      "view_count": 2176,
+      "view_count": 2178,
       "like_count": 81,
       "comment_count": 12
     },
@@ -1149,7 +1172,7 @@
       "url": "https://www.youtube.com/watch?v=yve_tP9vC6Q",
       "published_at": "2025-06-27T02:00:54Z",
       "duration_seconds": 1258,
-      "view_count": 7965,
+      "view_count": 7996,
       "like_count": 336,
       "comment_count": 54
     }

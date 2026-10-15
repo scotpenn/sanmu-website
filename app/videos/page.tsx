@@ -42,6 +42,7 @@ function VideoCard({ video }: { video: Video }) {
       <div className="aspect-video relative overflow-hidden bg-rule mb-3">
         <Image
           src={thumbnailUrl(video.video_id)}
+          unoptimized
           alt={video.title}
           fill
           sizes="(min-width: 1024px) 320px, (min-width: 640px) 50vw, 100vw"

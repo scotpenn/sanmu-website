@@ -202,6 +202,7 @@ export default async function HomePage() {
                   <div className="aspect-video relative overflow-hidden bg-rule mb-4">
                     <Image
                       src={thumbnailUrl(video.video_id)}
+                      unoptimized
                       alt={video.title}
                       fill
                       sizes="(min-width: 768px) 320px, 100vw"

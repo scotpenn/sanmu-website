@@ -197,6 +197,7 @@ export default async function TraditionalHomePage() {
                   <div className="aspect-video relative overflow-hidden bg-rule mb-4">
                     <Image
                       src={thumbnailUrl(video.video_id)}
+                      unoptimized
                       alt={localizeVideoTitle(video.title, TRADITIONAL_LOCALE, curation.get(video.video_id)?.titleHant)}
                       fill
                       sizes="(min-width: 768px) 320px, 100vw"

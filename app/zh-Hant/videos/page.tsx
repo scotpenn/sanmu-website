@@ -45,6 +45,7 @@ function VideoCard({ video, curation }: { video: Video; curation: Map<string, Vi
       <div className="aspect-video relative overflow-hidden bg-rule mb-3">
         <Image
           src={thumbnailUrl(video.video_id)}
+          unoptimized
           alt={localizeVideoTitle(video.title, TRADITIONAL_LOCALE, curation.get(video.video_id)?.titleHant)}
           fill
           sizes="(min-width: 1024px) 320px, (min-width: 640px) 50vw, 100vw"

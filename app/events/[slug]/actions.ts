@@ -64,7 +64,9 @@ export async function registerForEvent(
   const invited =
     event.signupMethod === "报名已满" &&
     isValidEventInvite(String(formData.get("invite") ?? ""));
-  if (event.signupMethod !== "网页表单" && !invited) {
+  // 意向登记(时间地点未定)同样走站内表单, 只是确认信换成「登记成功」且不附日历
+  const interest = event.signupMethod === "意向登记";
+  if (event.signupMethod !== "网页表单" && !interest && !invited) {
     return { ok: false, error: "本场活动名额已满，报名已截止。" };
   }
 
@@ -74,6 +76,7 @@ export async function registerForEvent(
       to: email,
       name,
       locale,
+      interest,
       event: {
         slug: event.slug,
         title: event.title,

@@ -445,7 +445,9 @@ export async function getRelatedPosts(
 export type EventStatus = "草稿" | "即将举办" | "报名中" | "已举办";
 
 // 报名已满: 名额满了手动切换 → 详情页隐藏表单改显示「名额已满」, 服务端也拒收新报名.
-export type SignupMethod = "网页表单" | "外部链接" | "无需报名" | "报名已满";
+// 意向登记: 时间地点未定, 先收登记. 「日期」只是占位(决定排序和何时下线), 页面显示「时间地点待定」,
+//   确认信改为「登记成功」且不附 .ics, 也不向搜索引擎输出 Event 结构化数据. 定下来后改回「网页表单」.
+export type SignupMethod = "网页表单" | "意向登记" | "外部链接" | "无需报名" | "报名已满";
 
 export type EventItem = {
   slug: string;

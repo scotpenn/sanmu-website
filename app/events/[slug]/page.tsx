@@ -75,6 +75,8 @@ export async function EventDetail({
   // 日期已过(温哥华时区)或手动标记已举办 → 已结束. 日期驱动, 无需手动改状态.
   const isPast = isEventPast(event.date, event.dateEnd) || event.status === "已举办";
   const isUpcoming = !isPast;
+  // 意向登记: 日期只是占位, 不对外显示
+  const isInterest = event.signupMethod === "意向登记";
 
   return (
     <>
@@ -106,7 +108,9 @@ export async function EventDetail({
               : `${
                   event.signupMethod === "报名已满"
                     ? textForLocale(locale, "名额已满", "名額已滿")
-                    : eventStatusLabel(event.status, locale)
+                    : isInterest
+                      ? textForLocale(locale, "意向登记中", "意向登記中")
+                      : eventStatusLabel(event.status, locale)
                 } · Upcoming`}
           </div>
           <h1 className="text-3xl md:text-4xl lg:text-5xl leading-tight mb-8">
@@ -119,9 +123,13 @@ export async function EventDetail({
                 Date
               </dt>
               <dd>
-                <time dateTime={event.date}>
-                  {formatEventDateLabel(event.date, event.dateEnd, locale)}
-                </time>
+                {isInterest ? (
+                  textForLocale(locale, "时间地点待定，确定后第一时间通知", "時間地點待定，確定後第一時間通知")
+                ) : (
+                  <time dateTime={event.date}>
+                    {formatEventDateLabel(event.date, event.dateEnd, locale)}
+                  </time>
+                )}
               </dd>
             </div>
             {event.location && (
@@ -148,8 +156,12 @@ export async function EventDetail({
             </p>
           )}
 
-          {isUpcoming && event.signupMethod === "网页表单" && (
-            <EventRegistrationForm eventSlug={event.slug} locale={locale} />
+          {isUpcoming && (event.signupMethod === "网页表单" || isInterest) && (
+            <EventRegistrationForm
+              eventSlug={event.slug}
+              locale={locale}
+              interest={isInterest}
+            />
           )}
           {isUpcoming && event.signupMethod === "报名已满" && (
             <div className="border border-rule bg-paper p-8 md:p-10 max-w-[520px] text-center">

@@ -66,12 +66,17 @@ export function EventJsonLd({
     ],
   };
 
+  // 意向登记: 日期只是占位, 不能当成真实活动时间交给搜索引擎, 只输出面包屑
+  const showEvent = event.signupMethod !== "意向登记";
+
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(ev) }}
-      />
+      {showEvent && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(ev) }}
+        />
+      )}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}

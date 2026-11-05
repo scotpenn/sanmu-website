@@ -117,14 +117,18 @@ type EventInfo = {
   end: string | null;
 };
 
-function eventTextHans(name: string, e: EventInfo): string {
+function eventTextHans(name: string, e: EventInfo, interest: boolean): string {
   return `${name}，您好：
 
-您已成功报名「${e.title}」。
+${interest ? `您已成功登记「${e.title}」的参加意向。` : `您已成功报名「${e.title}」。`}
 
 📅 ${e.summary}${e.location ? `\n📍 ${e.location}` : ""}
 
-请准时参加。如活动有变动，我们会通过邮件通知您。
+${
+  interest
+    ? "活动的具体时间和地址还在最后确认中。确定后，我们会第一时间通过邮件通知您，并为您优先保留座位。"
+    : "请准时参加。如活动有变动，我们会通过邮件通知您。"
+}
 
 为免后续通知被误判为垃圾邮件，建议把本邮件发件地址 ${SENDER_EMAIL} 加入您的通讯录。
 
@@ -143,14 +147,18 @@ Sunny · 三木有话说 频道小助理
 温馨提示：以上为官方联系方式，请勿轻信其他渠道，谨防诈骗。`;
 }
 
-function eventTextHant(name: string, e: EventInfo): string {
+function eventTextHant(name: string, e: EventInfo, interest: boolean): string {
   return `${name}，您好：
 
-您已成功報名「${e.title}」。
+${interest ? `您已成功登記「${e.title}」的參加意向。` : `您已成功報名「${e.title}」。`}
 
 📅 ${e.summary}${e.location ? `\n📍 ${e.location}` : ""}
 
-請準時參加。如活動有變動，我們會透過郵件通知您。
+${
+  interest
+    ? "活動的具體時間和地址還在最後確認中。確定後，我們會第一時間透過郵件通知您，並為您優先保留座位。"
+    : "請準時參加。如活動有變動，我們會透過郵件通知您。"
+}
 
 為免後續通知被誤判為垃圾郵件，建議把本郵件寄件地址 ${SENDER_EMAIL} 加入您的通訊錄。
 
@@ -169,39 +177,52 @@ Sunny · 三木有話說 頻道小助理
 溫馨提示：以上為官方聯絡方式，請勿輕信其他來源，謹防詐騙。`;
 }
 
-/** 发送活动「报名成功」确认邮件(附 .ics 日历文件, 随 locale). 失败抛错(主路径). */
+/**
+ * 发送活动「报名成功」确认邮件(附 .ics 日历文件, 随 locale). 失败抛错(主路径).
+ * interest=true(意向登记, 时间地点未定): 改发「登记成功」, 不附 .ics —— 占位日期不能进对方日历.
+ */
 export async function sendEventConfirmationEmail(params: {
   to: string;
   name: string;
   locale: Locale;
+  interest?: boolean;
   event: EventInfo;
 }): Promise<void> {
   const isHant = params.locale === TRADITIONAL_LOCALE;
+  const interest = params.interest ?? false;
   const e = params.event;
   const eventUrl = `${SITE_URL}${isHant ? "/zh-Hant" : ""}/events/${e.slug}`;
-  const ics = buildEventIcs({
-    uid: e.slug,
-    title: e.title,
-    description: `${e.summary}\n${eventUrl}`,
-    location: e.location,
-    url: eventUrl,
-    start: e.start,
-    end: e.end,
-  });
+  const attachments = interest
+    ? []
+    : [
+        {
+          filename: isHant ? "活動日程.ics" : "活动日程.ics",
+          content: Buffer.from(
+            buildEventIcs({
+              uid: e.slug,
+              title: e.title,
+              description: `${e.summary}\n${eventUrl}`,
+              location: e.location,
+              url: eventUrl,
+              start: e.start,
+              end: e.end,
+            }),
+            "utf8",
+          ),
+        },
+      ];
+  const subjectTag = interest
+    ? isHant ? "【登記成功】" : "【登记成功】"
+    : isHant ? "【報名成功】" : "【报名成功】";
   const { error } = await getResend().emails.send({
     from: isHant ? FROM["zh-Hant"] : FROM["zh-Hans"],
     to: [params.to],
     replyTo: REPLY_TO,
-    subject: `${isHant ? "【報名成功】" : "【报名成功】"}${e.title}`,
+    subject: `${subjectTag}${e.title}`,
     text: isHant
-      ? eventTextHant(params.name, e)
-      : eventTextHans(params.name, e),
-    attachments: [
-      {
-        filename: isHant ? "活動日程.ics" : "活动日程.ics",
-        content: Buffer.from(ics, "utf8"),
-      },
-    ],
+      ? eventTextHant(params.name, e, interest)
+      : eventTextHans(params.name, e, interest),
+    attachments,
   });
   if (error) throw new Error(`Resend 发送失败: ${error.message}`);
 }

@@ -22,10 +22,13 @@ export function EventRegistrationForm({
   eventSlug,
   locale = DEFAULT_LOCALE,
   invite,
+  interest = false,
 }: {
   eventSlug: string;
   locale?: Locale;
   invite?: string;
+  /** 意向登记(时间地点未定): 文案用「登记」而非「报名」 */
+  interest?: boolean;
 }) {
   const [state, action, pending] = useActionState(registerForEvent, INITIAL);
   const [referralSource, setReferralSource] = useState<ReferralSource | "">("");
@@ -59,14 +62,22 @@ export function EventRegistrationForm({
           </svg>
         </div>
         <div className="text-xl font-medium text-brand-navy mb-2">
-          {textForLocale(locale, "报名成功", "報名成功")}
+          {interest
+            ? textForLocale(locale, "登记成功", "登記成功")
+            : textForLocale(locale, "报名成功", "報名成功")}
         </div>
         <p className="opacity-80 leading-relaxed">
-          {textForLocale(
-            locale,
-            "确认邮件已发到你的邮箱，请查收，届时准时参加。",
-            "確認郵件已寄到你的信箱，請查收，屆時準時參加。",
-          )}
+          {interest
+            ? textForLocale(
+                locale,
+                "确认邮件已发到你的邮箱。时间地址确定后，我们会第一时间通知你，并为你优先保留座位。",
+                "確認郵件已寄到你的信箱。時間地址確定後，我們會第一時間通知你，並為你優先保留座位。",
+              )
+            : textForLocale(
+                locale,
+                "确认邮件已发到你的邮箱，请查收，届时准时参加。",
+                "確認郵件已寄到你的信箱，請查收，屆時準時參加。",
+              )}
         </p>
         <p className="mt-5 border-t border-rule pt-5 text-sm opacity-70 leading-relaxed">
           {textForLocale(
@@ -278,7 +289,9 @@ export function EventRegistrationForm({
       >
         {pending
           ? textForLocale(locale, "提交中…", "提交中…")
-          : textForLocale(locale, "✉️ 提交报名", "✉️ 提交報名")}
+          : interest
+            ? textForLocale(locale, "✉️ 提交登记", "✉️ 提交登記")
+            : textForLocale(locale, "✉️ 提交报名", "✉️ 提交報名")}
       </button>
     </form>
   );

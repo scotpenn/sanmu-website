@@ -37,13 +37,17 @@ export const metadata = generateEventsIndexMetadata(DEFAULT_LOCALE);
 
 function UpcomingCard({ event, locale }: { event: EventItem; locale: Locale }) {
   const href = localizedPath(`/events/${event.slug}`, locale);
+  // 意向登记: 日期只是占位, 不对外显示
+  const isInterest = event.signupMethod === "意向登记";
   return (
     <article className="border border-rule bg-brand-yellow/10 overflow-hidden">
       <div className="p-8 md:p-10">
       <div className="text-xs font-en uppercase tracking-widest text-brand-navy/70 mb-4 font-medium">
         {event.signupMethod === "报名已满"
           ? textForLocale(locale, "名额已满", "名額已滿")
-          : eventStatusLabel(event.status, locale)}{" "}
+          : isInterest
+            ? textForLocale(locale, "意向登记中", "意向登記中")
+            : eventStatusLabel(event.status, locale)}{" "}
         · Upcoming
       </div>
       <Link href={href} className="block group">
@@ -61,9 +65,13 @@ function UpcomingCard({ event, locale }: { event: EventItem; locale: Locale }) {
             Date
           </dt>
           <dd>
-            <time dateTime={event.date}>
-              {formatEventDateLabel(event.date, event.dateEnd, locale)}
-            </time>
+            {isInterest ? (
+              textForLocale(locale, "时间地点待定", "時間地點待定")
+            ) : (
+              <time dateTime={event.date}>
+                {formatEventDateLabel(event.date, event.dateEnd, locale)}
+              </time>
+            )}
           </dd>
         </div>
         {event.location && (
@@ -82,9 +90,11 @@ function UpcomingCard({ event, locale }: { event: EventItem; locale: Locale }) {
               点进去看不到表单, 仍用「查看详情」避免文案与落地内容不符. */}
           {event.signupMethod === "网页表单"
             ? textForLocale(locale, "点击报名 →", "點擊報名 →")
-            : event.signupMethod === "报名已满"
-              ? textForLocale(locale, "名额已满 · 查看详情 →", "名額已滿 · 查看詳情 →")
-              : textForLocale(locale, "查看详情 →", "查看詳情 →")}
+            : isInterest
+              ? textForLocale(locale, "点击登记 →", "點擊登記 →")
+              : event.signupMethod === "报名已满"
+                ? textForLocale(locale, "名额已满 · 查看详情 →", "名額已滿 · 查看詳情 →")
+                : textForLocale(locale, "查看详情 →", "查看詳情 →")}
         </Button>
         <Button variant="secondary" href="mailto:info@sanmu.ca">
           ✉️ {textForLocale(locale, "写信咨询")}

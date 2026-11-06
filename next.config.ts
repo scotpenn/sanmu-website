@@ -11,6 +11,8 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "i.ytimg.com" },
       { protocol: "https", hostname: "res.cloudinary.com" },
+      // 活动现场照片也可放在仓库 public/events/<slug>/ 下, Notion「现场照片」填完整网址.
+      { protocol: "https", hostname: "www.sanmu.ca", pathname: "/events/**" },
     ],
   },
 };

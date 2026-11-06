@@ -237,12 +237,12 @@ export function videoSummary(
 }
 
 /**
- * 从 YouTube watch/embed/youtu.be 链接里抽出 11 位 videoId. 抽不到返回 null.
+ * 从 YouTube watch/embed/shorts/youtu.be 链接里抽出 11 位 videoId. 抽不到返回 null.
  */
 export function videoIdFromUrl(url: string | null | undefined): string | null {
   if (!url) return null;
   const match = url.match(
-    /(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{11})/,
+    /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/,
   );
   return match?.[1] ?? null;
 }

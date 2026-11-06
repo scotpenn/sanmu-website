@@ -353,10 +353,11 @@ export async function EventDetail({
                 />
               )}
               <iframe
-                src={event.videoReviewUrl.replace(
-                  "youtube.com/watch?v=",
-                  "youtube.com/embed/",
-                )}
+                src={
+                  videoIdFromUrl(event.videoReviewUrl)
+                    ? `https://www.youtube.com/embed/${videoIdFromUrl(event.videoReviewUrl)}`
+                    : event.videoReviewUrl
+                }
                 title="Event recap video"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen

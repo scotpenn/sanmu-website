@@ -464,6 +464,8 @@ export type EventItem = {
   coverImageUrl: string | null;
   photos: string[];
   signupMethod: SignupMethod;
+  /** 本场专属的「从哪里得知」选项(Notion 多选「额外获知渠道」, 如推荐人). 空 = 只用固定选项 */
+  extraReferralSources: string[];
   pageId: string;
 };
 
@@ -503,6 +505,7 @@ function parseEventProperties(page: PageObjectResponse): EventItem | null {
   const coverProp = props["封面图"];
   const photosProp = props["现场照片"];
   const localeProp = props["语言版本"];
+  const extraReferralProp = props["额外获知渠道"];
 
   if (!titleProp || titleProp.type !== "title") return null;
   if (!slugProp || slugProp.type !== "rich_text") return null;
@@ -543,6 +546,10 @@ function parseEventProperties(page: PageObjectResponse): EventItem | null {
       videoReviewProp?.type === "url" ? videoReviewProp.url || null : null,
     coverImageUrl: coverImages[0] ?? null,
     photos: parseExternalFiles(photosProp),
+    extraReferralSources:
+      extraReferralProp?.type === "multi_select"
+        ? extraReferralProp.multi_select.map((o) => o.name.trim()).filter(Boolean)
+        : [],
     pageId: page.id,
     signupMethod:
       props["报名方式"]?.type === "select" && props["报名方式"].select

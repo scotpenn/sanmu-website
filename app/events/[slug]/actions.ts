@@ -4,7 +4,11 @@ import { sendEventConfirmationEmail } from "@/lib/email";
 import { saveRegistration } from "@/lib/registrations";
 import { getEventBySlug } from "@/lib/notion";
 import { DEFAULT_LOCALE, isLocale } from "@/lib/i18n";
-import { isReferralSource } from "@/lib/referral-sources";
+import {
+  EXTRA_REFERRAL_PREFIX,
+  REFERRAL_SOURCE_NOTION_LABELS,
+  isReferralSource,
+} from "@/lib/referral-sources";
 import { isValidEventInvite } from "@/lib/event-invite";
 import { joinPersonName } from "@/lib/person-name";
 
@@ -43,7 +47,11 @@ export async function registerForEvent(
   if (!Number.isFinite(sizeRaw)) {
     return { ok: false, error: "请填写参加人数。" };
   }
-  if (!isReferralSource(referralSource)) {
+  // 本场专属渠道(如推荐人)以 extra: 开头, 具体名字等读到活动后再核对
+  const extraReferral = referralSource.startsWith(EXTRA_REFERRAL_PREFIX)
+    ? referralSource.slice(EXTRA_REFERRAL_PREFIX.length)
+    : null;
+  if (!isReferralSource(referralSource) && extraReferral === null) {
     return { ok: false, error: "请选择您从哪里得知这次活动。" };
   }
   if (referralSource === "other" && !referralOther) {
@@ -69,6 +77,13 @@ export async function registerForEvent(
   if (event.signupMethod !== "网页表单" && !interest && !invited) {
     return { ok: false, error: "本场活动名额已满，报名已截止。" };
   }
+  // 专属渠道必须是本场 Notion「额外获知渠道」里配置过的, 防止伪造任意值写进报名库
+  if (extraReferral !== null && !event.extraReferralSources.includes(extraReferral)) {
+    return { ok: false, error: "请选择您从哪里得知这次活动。" };
+  }
+  const referralLabel =
+    extraReferral ??
+    (isReferralSource(referralSource) ? REFERRAL_SOURCE_NOTION_LABELS[referralSource] : "其他");
 
   // 主路径: 邮件必须成功
   try {
@@ -105,7 +120,7 @@ export async function registerForEvent(
       phone,
       partySize,
       message,
-      referralSource,
+      referralLabel,
       referralOther,
       locale,
     });

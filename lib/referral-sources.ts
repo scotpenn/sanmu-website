@@ -25,3 +25,9 @@ export const REFERRAL_SOURCE_NOTION_LABELS: Record<ReferralSource, string> = {
 export function isReferralSource(value: string): value is ReferralSource {
   return REFERRAL_SOURCES.includes(value as ReferralSource);
 }
+
+/**
+ * 单场活动专属的获知渠道(如推荐人), 在 Notion 活动库「额外获知渠道」里配置.
+ * 表单 value 用此前缀与固定渠道区分; 写入报名库时直接用名字作为「获知渠道」.
+ */
+export const EXTRA_REFERRAL_PREFIX = "extra:";

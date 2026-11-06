@@ -43,7 +43,12 @@ export default async function EventInvitePage({
           </time>
         </p>
         {event.location && <p className="text-base mb-8">{event.location}</p>}
-        <EventRegistrationForm eventSlug={event.slug} locale={locale} invite={code} />
+        <EventRegistrationForm
+          eventSlug={event.slug}
+          locale={locale}
+          invite={code}
+          extraReferralSources={event.extraReferralSources}
+        />
       </Container>
     </section>
   );

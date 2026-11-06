@@ -161,6 +161,7 @@ export async function EventDetail({
               eventSlug={event.slug}
               locale={locale}
               interest={isInterest}
+              extraReferralSources={event.extraReferralSources}
             />
           )}
           {isUpcoming && event.signupMethod === "报名已满" && (

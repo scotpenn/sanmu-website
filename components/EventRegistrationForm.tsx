@@ -13,7 +13,11 @@ import {
 } from "@/lib/i18n";
 import { trackConversion } from "@/lib/analytics";
 import { SENDER_EMAIL } from "@/lib/sender";
-import { REFERRAL_SOURCES, type ReferralSource } from "@/lib/referral-sources";
+import {
+  EXTRA_REFERRAL_PREFIX,
+  REFERRAL_SOURCES,
+  type ReferralSource,
+} from "@/lib/referral-sources";
 
 const INITIAL: RegistrationState = { ok: false };
 
@@ -23,15 +27,18 @@ export function EventRegistrationForm({
   locale = DEFAULT_LOCALE,
   invite,
   interest = false,
+  extraReferralSources = [],
 }: {
   eventSlug: string;
   locale?: Locale;
   invite?: string;
   /** 意向登记(时间地点未定): 文案用「登记」而非「报名」 */
   interest?: boolean;
+  /** 本场专属的「从哪里得知」选项(如推荐人), 排在「其他」之前 */
+  extraReferralSources?: string[];
 }) {
   const [state, action, pending] = useActionState(registerForEvent, INITIAL);
-  const [referralSource, setReferralSource] = useState<ReferralSource | "">("");
+  const [referralSource, setReferralSource] = useState<string>("");
 
   // 报名成功 → 触发转化事件(GA4 generate_lead + Vercel Analytics).
   useEffect(() => {
@@ -189,19 +196,23 @@ export function EventRegistrationForm({
           name="referralSource"
           required
           value={referralSource}
-          onChange={(event) =>
-            setReferralSource(event.target.value as ReferralSource | "")
-          }
+          onChange={(event) => setReferralSource(event.target.value)}
           className="w-full border border-rule px-3 py-2 bg-white focus:outline-none focus:border-brand-navy"
         >
           <option value="" disabled>
             {textForLocale(locale, "请选择", "請選擇")}
           </option>
-          {REFERRAL_SOURCES.map((source) => (
+          {REFERRAL_SOURCES.filter((source) => source !== "other").map((source) => (
             <option key={source} value={source}>
               {referralSourceLabel(source, locale)}
             </option>
           ))}
+          {extraReferralSources.map((name) => (
+            <option key={`extra-${name}`} value={`${EXTRA_REFERRAL_PREFIX}${name}`}>
+              {name}
+            </option>
+          ))}
+          <option value="other">{referralSourceLabel("other", locale)}</option>
         </select>
       </div>
 

@@ -41,7 +41,7 @@ function emailTextHans(name: string): string {
 
 如果您觉得我们的内容有价值，也希望您能订阅我们的频道并留下评论，这对我们非常重要！
 
-如果您就在大温居住的话，也可以直接给三木打电话咨询，他的手机是 778-828-6881。
+如果您就在大温居住的话，也可以直接打电话咨询：250-726-6822（250-SANMUCA）。
 
 请注意：本邮件由系统自动发送，请勿直接回复本邮件。如需联系我们，请发送邮件至 info@sanmu.ca。
 
@@ -49,7 +49,7 @@ function emailTextHans(name: string): string {
 
 Sunny · 三木有话说 频道小助理
 
-📞 电话/Phone: 778-828-6881
+📞 电话/Phone: 250-726-6822（250-SANMUCA）
 ✉️ 邮箱/Email: info@sanmu.ca
 💬 微信/WeChat: yyds3mu
 📱 WhatsApp/LINE: 778-828-6881
@@ -71,7 +71,7 @@ function emailTextHant(name: string): string {
 
 如果您覺得我們的內容有價值，也希望您能訂閱我們的頻道並留言支持，這對我們非常重要！
 
-如果您就在大溫地區居住，也可以直接致電三木諮詢，他的手機是 778-828-6881。
+如果您就在大溫地區居住，也可以直接來電諮詢：250-726-6822（250-SANMUCA）。
 
 請注意：本郵件由系統自動發送，請勿直接回覆本郵件。如需聯絡我們，請發送郵件至 info@sanmu.ca。
 
@@ -79,7 +79,7 @@ function emailTextHant(name: string): string {
 
 Sunny · 三木有話說 頻道小助理
 
-📞 電話/Phone: 778-828-6881
+📞 電話/Phone: 250-726-6822（250-SANMUCA）
 ✉️ 郵箱/Email: info@sanmu.ca
 💬 微信/WeChat: yyds3mu
 📱 WhatsApp/LINE: 778-828-6881
@@ -138,7 +138,7 @@ ${
 
 Sunny · 三木有话说 频道小助理
 
-📞 电话/Phone: 778-828-6881
+📞 电话/Phone: 250-726-6822（250-SANMUCA）
 ✉️ 邮箱/Email: info@sanmu.ca
 💬 微信/WeChat: yyds3mu
 📱 WhatsApp/LINE: 778-828-6881
@@ -168,7 +168,7 @@ ${
 
 Sunny · 三木有話說 頻道小助理
 
-📞 電話/Phone: 778-828-6881
+📞 電話/Phone: 250-726-6822（250-SANMUCA）
 ✉️ 郵箱/Email: info@sanmu.ca
 💬 微信/WeChat: yyds3mu
 📱 WhatsApp/LINE: 778-828-6881

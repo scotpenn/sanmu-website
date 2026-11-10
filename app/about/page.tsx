@@ -169,6 +169,12 @@ export default function AboutPage() {
           <p className="text-base opacity-70 max-w-[520px] mx-auto">
             任何咨询、合作、媒体采访请来信。我会亲自回复。
           </p>
+          <p className="text-base opacity-70 mt-4">
+            电话：
+            <a href="tel:+12507266822" className="text-brand-navy hover:opacity-80 transition-opacity">
+              250-726-6822（250-SANMUCA）
+            </a>
+          </p>
         </Container>
       </section>
     </>

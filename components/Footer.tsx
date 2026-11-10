@@ -106,6 +106,12 @@ export function Footer() {
             >
               info@sanmu.ca
             </a>
+            <a
+              href="tel:+12507266822"
+              className="block text-sm mb-4 -mt-2 hover:text-brand-navy transition-colors"
+            >
+              250-726-6822（250-SANMUCA）
+            </a>
             <ul className="space-y-2 text-sm">
               {SOCIAL_LINKS.map(({ href, name, handle, Icon }) => (
                 <li key={href}>
